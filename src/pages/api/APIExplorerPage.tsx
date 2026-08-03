@@ -25,10 +25,11 @@ const endpoints = [
     params: ['companyId'],
     exampleResponse: '{\n  "actions": [\n    { "id": "1", "title": "Dividend announcement" }\n  ]\n}',
   },
-]
+] as const
 
 export function APIExplorerPage() {
-  const [selected, setSelected] = useState(endpoints[0])
+  const [selectedPath, setSelectedPath] = useState(endpoints[0].path)
+  const selected = useMemo(() => endpoints.find((ep) => ep.path === selectedPath) ?? endpoints[0], [selectedPath])
   const paramList = useMemo(() => selected.params.join(', '), [selected])
 
   return (
@@ -43,25 +44,28 @@ export function APIExplorerPage() {
         <aside style={{ borderRadius: 24, border: '1px solid rgba(148,163,184,0.15)', background: 'rgba(15,23,42,0.65)', padding: 20 }}>
           <div style={{ fontSize: 12, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#94a3b8' }}>Endpoints</div>
           <div style={{ marginTop: 16, display: 'grid', gap: 10 }}>
-            {endpoints.map((ep) => (
-              <button
-                key={ep.path}
-                type="button"
-                onClick={() => setSelected(ep)}
-                style={{
-                  textAlign: 'left',
-                  padding: 14,
-                  borderRadius: 16,
-                  border: '1px solid rgba(148,163,184,0.12)',
-                  background: ep.path === selected.path ? 'rgba(59,130,246,0.18)' : 'rgba(2,6,23,0.75)',
-                  color: '#e2e8f0',
-                  cursor: 'pointer',
-                }}
-              >
-                <div style={{ fontWeight: 700 }}>{ep.name}</div>
-                <div style={{ marginTop: 6, color: '#94a3b8', fontSize: 12 }}>{ep.method} {ep.path}</div>
-              </button>
-            ))}
+            {endpoints.map((ep) => {
+              const active = ep.path === selected.path
+              return (
+                <button
+                  key={ep.path}
+                  type="button"
+                  onClick={() => setSelectedPath(ep.path)}
+                  style={{
+                    textAlign: 'left',
+                    padding: 14,
+                    borderRadius: 16,
+                    border: '1px solid rgba(148,163,184,0.12)',
+                    background: active ? 'rgba(59,130,246,0.18)' : 'rgba(2,6,23,0.75)',
+                    color: '#e2e8f0',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <div style={{ fontWeight: 700 }}>{ep.name}</div>
+                  <div style={{ marginTop: 6, color: '#94a3b8', fontSize: 12 }}>{ep.method} {ep.path}</div>
+                </button>
+              )
+            })}
           </div>
         </aside>
 
