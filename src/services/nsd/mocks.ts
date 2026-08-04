@@ -106,28 +106,28 @@ export const mockCompanies: Company[] = [
 
 const baseKpis: Record<string, CompanyKpiSnapshot[]> = {
   MOEX_GAZP: [
-    { date: '2024-Q4', price: '148,2 ₽', marketCap: '3,5 трлн ₽', pe: '3,8', roe: '11,2%', revenue: 7_980_000, ebitda: 2_010_000, netProfit: 960_000 },
+    { date: '2024-Q4', price: '148,2 ₽', marketCap: '3,5 трлн ₽', pe: '3,8', roe: '11,2%', revenue: 7_980_000, ebitda: 2_010_000, netProfit: 960_000, assets: 16_200_000, equity: 8_570_000, debt: 4_120_000 },
     { date: '2025-Q1', price: '152,8 ₽', marketCap: '3,6 трлн ₽', pe: '3,9', roe: '11,5%', revenue: 8_020_000, ebitda: 2_040_000, netProfit: 970_000 },
     { date: '2025-Q2', price: '158,1 ₽', marketCap: '3,7 трлн ₽', pe: '4,0', roe: '11,8%', revenue: 8_100_000, ebitda: 2_050_000, netProfit: 980_000 },
     { date: '2025-Q3', price: '162,4 ₽', marketCap: '3,8 трлн ₽', pe: '4,2', roe: '12,4%', revenue: 8_420_000, ebitda: 2_180_000, netProfit: 1_020_000 },
   ],
   MOEX_SBER: [
-    { date: '2024-Q4', price: '265,4 ₽', marketCap: '5,9 трлн ₽', pe: '4,7', roe: '20,8%', revenue: 2_720_000, ebitda: 1_310_000, netProfit: 1_060_000 },
+    { date: '2024-Q4', price: '265,4 ₽', marketCap: '5,9 трлн ₽', pe: '4,7', roe: '20,8%', revenue: 2_720_000, ebitda: 1_310_000, netProfit: 1_060_000, assets: 52_400_000, equity: 5_100_000, debt: 41_200_000 },
     { date: '2025-Q1', price: '271,0 ₽', marketCap: '6,0 трлн ₽', pe: '4,8', roe: '21,2%', revenue: 2_760_000, ebitda: 1_330_000, netProfit: 1_080_000 },
     { date: '2025-Q2', price: '278,2 ₽', marketCap: '6,2 трлн ₽', pe: '4,9', roe: '21,9%', revenue: 2_810_000, ebitda: 1_360_000, netProfit: 1_120_000 },
     { date: '2025-Q3', price: '285,6 ₽', marketCap: '6,4 трлн ₽', pe: '5,1', roe: '22,8%', revenue: 2_940_000, ebitda: 1_420_000, netProfit: 1_180_000 },
   ],
   MOEX_LKOH: [
-    { date: '2025-Q3', price: '7 420 ₽', marketCap: '5,1 трлн ₽', pe: '3,8', roe: '18,2%', revenue: 2_180_000, ebitda: 620_000, netProfit: 410_000 },
+    { date: '2025-Q3', price: '7 420 ₽', marketCap: '5,1 трлн ₽', pe: '3,8', roe: '18,2%', revenue: 2_180_000, ebitda: 620_000, netProfit: 410_000, assets: 5_474_421, equity: 3_626_453, debt: 1_847_968 },
   ],
   MOEX_ROSN: [
-    { date: '2025-Q3', price: '512 ₽', marketCap: '5,4 трлн ₽', pe: '4,5', roe: '15,6%', revenue: 3_120_000, ebitda: 890_000, netProfit: 520_000 },
+    { date: '2025-Q3', price: '512 ₽', marketCap: '5,4 трлн ₽', pe: '4,5', roe: '15,6%', revenue: 3_120_000, ebitda: 890_000, netProfit: 520_000, assets: 12_800_000, equity: 3_330_000, debt: 6_450_000 },
   ],
   MOEX_NLMK: [
-    { date: '2025-Q3', price: '142 ₽', marketCap: '850 млрд ₽', pe: '5,8', roe: '19,4%', revenue: 680_000, ebitda: 142_000, netProfit: 88_000 },
+    { date: '2025-Q3', price: '142 ₽', marketCap: '850 млрд ₽', pe: '5,8', roe: '19,4%', revenue: 680_000, ebitda: 142_000, netProfit: 88_000, assets: 1_420_000, equity: 454_000, debt: 620_000 },
   ],
   MOEX_VTBR: [
-    { date: '2025-Q3', price: '98,4 ₽', marketCap: '1,9 трлн ₽', pe: '3,2', roe: '17,1%', revenue: 980_000, ebitda: 420_000, netProfit: 310_000 },
+    { date: '2025-Q3', price: '98,4 ₽', marketCap: '1,9 трлн ₽', pe: '3,2', roe: '17,1%', revenue: 980_000, ebitda: 420_000, netProfit: 310_000, assets: 18_600_000, equity: 1_810_000, debt: 14_900_000 },
   ],
   MOEX_NVTK: [
     { date: '2025-Q3', price: '1 240 ₽', marketCap: '3,7 трлн ₽', pe: '6,1', roe: '24,3%', revenue: 1_420_000, ebitda: 780_000, netProfit: 540_000 },

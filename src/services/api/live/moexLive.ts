@@ -18,6 +18,8 @@ import type {
 } from '../moexTypes'
 import type { CompanyListItem } from '../../../types/companyComparison'
 import type { CompanyProfile, CompanyKpiSnapshot, CompanyReport } from '../../../types/company'
+import type { FinancialLineItems } from '../../../types/financialIndicators'
+import { parseMsfoReportValues } from '../../analytics/financialLines'
 import type {
   CompanyCorporateActionItem,
   CorporateActionCalendarItem,
@@ -364,6 +366,34 @@ export async function liveGetCompanyKpiHistory(companyIdValue: string, limit = 6
   )
 
   return snapshots.filter((item): item is CompanyKpiSnapshot => item != null)
+}
+
+export async function liveGetCompanyFinancialLines(
+  companyIdValue: string,
+  reportId?: string,
+): Promise<FinancialLineItems | null> {
+  const { data: reportsData } = await issClient.get(
+    `/cci/accounting/msfo-short/companies/${companyIdValue}/reports.json`,
+    { params: { limit: 20 } },
+  )
+
+  const reports = parseIssTable<MoexMsfoReportRecord>(reportsData?.cci_reports)
+  if (!reports.length) return null
+
+  const report = reportId
+    ? reports.find((row) => String(row.basis_type_report_id) === reportId) ?? reports[0]
+    : reports[0]
+
+  const response = await issClient.get(`/cci/accounting/msfo-short/reports/${report.basis_type_report_id}.json`)
+  const values = parseIssTable<MoexMsfoReportValueRecord>(response.data?.cci_report_values)
+
+  return parseMsfoReportValues(
+    companyIdValue,
+    String(report.basis_type_report_id),
+    report.period_name_short_ru ?? report.period_code ?? '—',
+    values,
+    { publishedAt: (report.report_publicate_date ?? '').slice(0, 10) },
+  )
 }
 
 export { readMoexJson }
