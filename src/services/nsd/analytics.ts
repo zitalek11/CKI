@@ -71,19 +71,11 @@ export async function nsdCalculateComparisonIndicators(
   }
 }
 
-export async function nsdGetCompanyNames(companyIds: string[]) {
-  const results = await Promise.all(
+export async function nsdGetComparisonCompaniesMeta(companyIds: string[]) {
+  return Promise.all(
     companyIds.map(async (id) => {
-      const profile = mockCompanyProfiles[id]
-      const mockMeta = mockCompanies.find((c) => c.id === id)
-      const { data: lines } = await loadCompanyFinancialLines(id)
-      return {
-        id,
-        name: profile?.name ?? mockMeta?.name ?? id,
-        ticker: profile?.ticker ?? mockMeta?.ticker ?? '—',
-        period: lines?.period,
-      }
+      const meta = await resolveCompanyMeta(id)
+      return { id, ...meta }
     }),
   )
-  return results
 }

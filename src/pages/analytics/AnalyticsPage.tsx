@@ -1,16 +1,22 @@
 import { useMemo, useState } from 'react'
 import { useNavigate, useSearch } from '@tanstack/react-router'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { Calculator } from 'lucide-react'
 import { IndicatorTooltip } from '../../components/analytics/IndicatorTooltip'
 import { BASIC_FINANCIAL_INDICATORS } from '../../services/analytics/indicators'
-import { nsdCalculateComparisonIndicators } from '../../services/nsd/analytics'
+import { nsdCalculateComparisonIndicators, nsdGetComparisonCompaniesMeta } from '../../services/nsd/analytics'
 import { DataSourceBadge } from '../../components/DataSourceBadge'
 
 export function AnalyticsPage() {
   const navigate = useNavigate()
   const search = useSearch({ from: '/analytics/banks' }) as { compareIds?: string[] }
   const compareIds = search.compareIds ?? []
+
+  const { data: companiesMeta, isLoading: metaLoading } = useQuery({
+    queryKey: ['comparison-companies-meta', compareIds],
+    queryFn: () => nsdGetComparisonCompaniesMeta(compareIds),
+    enabled: compareIds.length > 0,
+  })
 
   const [calculated, setCalculated] = useState(false)
 
@@ -66,10 +72,20 @@ export function AnalyticsPage() {
             <div className="eyebrow">Выбранные эмитенты</div>
             <div className="muted">{compareIds.length} компаний</div>
           </div>
-          <div className="tag-list">
-            {compareIds.map((id) => (
-              <span key={id} className="tag">{id}</span>
-            ))}
+          <div className="comparison-chip-list">
+            {metaLoading ? (
+              <div className="muted">Загрузка наименований...</div>
+            ) : (
+              (companiesMeta ?? compareIds.map((id) => ({ id, name: id, ticker: '—' }))).map((company) => (
+                <div key={company.id} className="comparison-chip">
+                  <div className="comparison-chip-name">{company.name}</div>
+                  <div className="comparison-chip-meta">
+                    {company.ticker !== '—' ? `${company.ticker} · ` : ''}
+                    ID {company.id}
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </section>
       ) : null}
