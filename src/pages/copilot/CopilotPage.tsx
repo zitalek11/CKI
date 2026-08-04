@@ -85,7 +85,7 @@ export function CopilotPage() {
       </section>
 
       <section className="cards-grid cols-3">
-        {(companies ?? []).slice(0, 6).map((company: CompanyListItem) => (
+        {(companiesResult?.items ?? []).slice(0, 6).map((company: CompanyListItem) => (
           <button
             key={company.id}
             type="button"

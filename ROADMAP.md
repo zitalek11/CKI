@@ -29,6 +29,16 @@
 - Auto fallback на mock при ошибках
 - API Explorer Try request через proxy
 - Data source badge (MOEX Live / Mock), debounced search, error UI
+- **Pagination layer** (`pagination.ts`): cursor parsing, `fetchAllNewApiPages`, `fetchAllIssTablePages`
+- Companies list: server pagination + `fetchAll` для полной выгрузки в service layer
+- Industry map: полная пагинация (до 200k записей)
+- Corp actions: server-side filter `basis_company_id`
+
+**Подключение prod API (после согласования):**
+1. Реализовать `liveGet*` в `src/services/api/live/moexLive.ts` (или новый адаптер) по путям из `endpoints.ts`
+2. Service layer (`src/services/nsd/*.ts`) менять не нужно — только `withLiveFallback(liveFn, mockFn)`
+3. Для полной синхронизации: `nsdFetchAllCompanies()` / `fetchAllNewApiPages` / `fetchAllIssTablePages`
+4. Production: BFF-proxy (как `server/moexAuthPlugin.ts`), не credentials в браузере
 
 **Осталось:**
 - MOEX Passport credentials в `.env` для закрытых endpoints (МСФО, рейтинги)

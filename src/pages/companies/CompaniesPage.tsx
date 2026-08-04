@@ -6,26 +6,35 @@ import { useDebouncedValue } from '../../hooks/useDebouncedValue'
 import { nsdGetCompaniesList } from '../../services/nsd/companiesList'
 import type { CompanyListItem } from '../../types/companyComparison'
 
+const PAGE_SIZE = 50
+
 export function CompaniesPage() {
   const navigate = useNavigate()
   const searchParams = useSearch({ from: '/companies' }) as { q?: string }
   const [search, setSearch] = useState(searchParams.q ?? '')
   const [sector, setSector] = useState('')
+  const [page, setPage] = useState(1)
   const [selected, setSelected] = useState<string[]>([])
   const debouncedSearch = useDebouncedValue(search)
 
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery({
-    queryKey: ['companies-list', sector, debouncedSearch],
+    queryKey: ['companies-list', sector, debouncedSearch, page],
     queryFn: () => nsdGetCompaniesList({
       sector: sector || undefined,
       q: debouncedSearch || undefined,
-      limit: 50,
+      limit: PAGE_SIZE,
+      page,
     }),
     placeholderData: (previous) => previous,
   })
 
   const filtered = useMemo<CompanyListItem[]>(() => data?.items ?? [], [data])
   const source = data?.source ?? 'mock'
+  const pagination = data?.pagination
+  const total = pagination?.total ?? filtered.length
+  const totalPages = pagination?.pageSize
+    ? Math.max(1, Math.ceil(total / pagination.pageSize))
+    : 1
 
   const toggleSelected = (id: string) => {
     setSelected((prev) => prev.includes(id) ? prev.filter((x) => x !== id) : prev.length < 5 ? [...prev, id] : prev)
@@ -40,7 +49,9 @@ export function CompaniesPage() {
             <DataSourceBadge source={source} />
           </div>
           <h1 style={{ margin: '8px 0 0', fontSize: 30 }}>Российские эмитенты</h1>
-          <p style={{ margin: '8px 0 0', color: '#94a3b8', fontSize: 14 }}>Список эмитентов, фильтры, поиск и выбор до 5 компаний для сравнения.</p>
+          <p style={{ margin: '8px 0 0', color: '#94a3b8', fontSize: 14 }}>
+            Список эмитентов с серверной пагинацией. Всего в API: {total.toLocaleString('ru-RU')}.
+          </p>
         </div>
         <button
           type="button"
@@ -58,29 +69,32 @@ export function CompaniesPage() {
           <div style={{ display: 'grid', gap: 12, marginTop: 16 }}>
             <label style={{ display: 'grid', gap: 6, fontSize: 13 }}>
               <span style={{ color: '#94a3b8' }}>Поиск</span>
-              <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Название, тикер, ISIN" style={{ borderRadius: 12, border: '1px solid rgba(148,163,184,0.15)', background: 'rgba(2,6,23,0.85)', color: '#e2e8f0', padding: '10px 12px' }} />
+              <input
+                value={search}
+                onChange={(e) => { setSearch(e.target.value); setPage(1) }}
+                placeholder="Название, тикер, ISIN"
+                style={{ borderRadius: 12, border: '1px solid rgba(148,163,184,0.15)', background: 'rgba(2,6,23,0.85)', color: '#e2e8f0', padding: '10px 12px' }}
+              />
             </label>
             <label style={{ display: 'grid', gap: 6, fontSize: 13 }}>
-              <span style={{ color: '#94a3b8' }}>Сектор</span>
-              <select value={sector} onChange={(e) => setSector(e.target.value)} style={{ borderRadius: 12, border: '1px solid rgba(148,163,184,0.15)', background: 'rgba(2,6,23,0.85)', color: '#e2e8f0', padding: '10px 12px' }}>
-                <option value="">Все</option>
-                <option value="Финансовый сектор">Финансовый сектор</option>
-                <option value="Нефть и газ">Нефть и газ</option>
-                <option value="Металлы">Металлы</option>
-                <option value="Энергетика">Энергетика</option>
-                <option value="Транспорт">Транспорт</option>
-              </select>
+              <span style={{ color: '#94a3b8' }}>Сектор / отрасль</span>
+              <input
+                value={sector}
+                onChange={(e) => { setSector(e.target.value); setPage(1) }}
+                placeholder="Например: Банки, Нефтегаз"
+                style={{ borderRadius: 12, border: '1px solid rgba(148,163,184,0.15)', background: 'rgba(2,6,23,0.85)', color: '#e2e8f0', padding: '10px 12px' }}
+              />
             </label>
             <div style={{ fontSize: 12, color: '#94a3b8' }}>Выбрано для сравнения: {selected.length} / 5</div>
           </div>
         </aside>
 
         <div style={{ borderRadius: 24, border: '1px solid rgba(148,163,184,0.15)', background: 'rgba(15,23,42,0.65)', padding: 20 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10 }}>
             <div style={{ fontSize: 12, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#94a3b8' }}>Список эмитентов</div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 12, color: '#94a3b8' }}>
               {isFetching && !isLoading ? <span>Обновление...</span> : null}
-              <span>{filtered.length} найдено</span>
+              <span>{filtered.length} на странице · {total.toLocaleString('ru-RU')} всего</span>
             </div>
           </div>
 
@@ -127,6 +141,30 @@ export function CompaniesPage() {
               </table>
             )}
           </div>
+
+          {totalPages > 1 ? (
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 16, gap: 12 }}>
+              <button
+                type="button"
+                className="ghost-button"
+                disabled={page <= 1}
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+              >
+                ← Назад
+              </button>
+              <span style={{ fontSize: 13, color: '#94a3b8' }}>
+                Страница {page} из {totalPages.toLocaleString('ru-RU')}
+              </span>
+              <button
+                type="button"
+                className="ghost-button"
+                disabled={!pagination?.hasMore}
+                onClick={() => setPage((p) => p + 1)}
+              >
+                Вперёд →
+              </button>
+            </div>
+          ) : null}
         </div>
       </section>
     </div>
