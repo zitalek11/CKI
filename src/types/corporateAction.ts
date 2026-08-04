@@ -21,3 +21,25 @@ export interface CorporateAction {
   isin?: string
   important?: boolean
 }
+
+export interface CompanyCorporateActionItem {
+  id: string
+  title: string
+  date: string
+  type: string
+}
+
+export interface CorporateActionFeedItem {
+  id: string
+  title: string
+  date: string
+  sector: string
+  type: CorporateActionType
+}
+
+export interface CorporateActionCalendarItem {
+  id: string
+  title: string
+  date: string
+  type: CorporateActionType
+}

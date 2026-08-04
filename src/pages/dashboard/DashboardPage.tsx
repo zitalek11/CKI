@@ -1,43 +1,69 @@
+import { Link } from '@tanstack/react-router'
+import { useQuery } from '@tanstack/react-query'
+import { ArrowRight, Sparkles } from 'lucide-react'
 import { DashboardWidgets } from './DashboardWidgets'
+import { FinanceBarChart } from '../../components/charts/FinanceCharts'
+import { nsdGetDashboardStats, nsdGetDashboardSectorDistribution } from '../../services/nsd/dashboard'
 
 export function DashboardPage() {
+  const { data: stats } = useQuery({
+    queryKey: ['dashboard-stats'],
+    queryFn: nsdGetDashboardStats,
+  })
+
+  const { data: sectors } = useQuery({
+    queryKey: ['dashboard-sectors'],
+    queryFn: nsdGetDashboardSectorDistribution,
+  })
+
   return (
-    <div style={{ display: 'grid', gap: 20 }}>
-      <section style={{ display: 'grid', gap: 12, padding: 28, borderRadius: 24, border: '1px solid rgba(148,163,184,0.15)', background: 'rgba(15,23,42,0.65)', boxShadow: '0 24px 60px rgba(0,0,0,0.35)' }}>
-        <div style={{ fontSize: 12, textTransform: 'uppercase', letterSpacing: '0.2em', color: '#94a3b8' }}>Dashboard</div>
-        <h1 style={{ fontSize: 34, lineHeight: 1.1, margin: 0 }}>Что происходит на рынке сегодня?</h1>
-        <p style={{ margin: 0, maxWidth: 760, color: '#cbd5e1', fontSize: 15 }}>Премиальный рабочий стол для CEO, инвестбанков, управляющих компаний и аналитиков. Здесь каждый API‑эндпоинт превращается в бизнес‑сценарий, а не в сырую JSON‑таблицу.</p>
+    <div className="page-grid">
+      <section className="hero-card">
+        <div className="eyebrow">Dashboard</div>
+        <h1>Что происходит на рынке сегодня?</h1>
+        <p>
+          Премиальный рабочий стол для CEO, инвестбанков, управляющих компаний и аналитиков.
+          Каждый сценарий ЦКИ превращён в бизнес-инсайт, а не в сырой JSON.
+        </p>
       </section>
 
-      <section style={{ display: 'grid', gridTemplateColumns: 'repeat(12, minmax(0, 1fr))', gap: 16 }}>
-        <div style={{ gridColumn: 'span 8', borderRadius: 24, border: '1px solid rgba(148,163,184,0.15)', background: 'rgba(15,23,42,0.65)', padding: 20, minHeight: 320 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+      <section className="dashboard-top-grid">
+        <div className="panel-card copilot-panel">
+          <div className="panel-header">
             <div>
-              <div style={{ fontSize: 12, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.15em' }}>AI Copilot</div>
-              <div style={{ fontSize: 22, fontWeight: 700, marginTop: 4 }}>Ask anything about companies or financial data...</div>
+              <div className="eyebrow"><Sparkles size={14} /> AI Copilot</div>
+              <div className="panel-title">Ask anything about companies or financial data...</div>
             </div>
-            <div style={{ fontSize: 12, color: '#22c55e' }}>Mock mode ready</div>
+            <div className="status-pill">Mock mode</div>
           </div>
-          <div style={{ borderRadius: 20, border: '1px solid rgba(148,163,184,0.15)', background: 'rgba(2,6,23,0.8)', padding: 18, minHeight: 170 }}>
-            <div style={{ color: '#cbd5e1', fontSize: 14 }}>Например: сравнить Газпром и Роснефть, показать компании с ростом EBITDA выше 20%, найти эмитентов с ухудшающейся долговой нагрузкой.</div>
+          <div className="copilot-preview">
+            Сравните Газпром и Роснефть, найдите компании с ростом EBITDA выше 20%,
+            посмотрите дивиденды и корпоративные события на ближайший месяц.
           </div>
+          <Link to="/ask" className="primary-button inline-link">
+            Открыть Copilot
+            <ArrowRight size={16} />
+          </Link>
         </div>
-        <div style={{ gridColumn: 'span 4', display: 'grid', gap: 16 }}>
-          {[
-            ['Recent disclosures', '24'],
-            ['Upcoming dividends', '17'],
-            ['Upcoming coupon payments', '31'],
-            ['New financial reports', '9'],
-          ].map(([label, value]) => (
-            <div key={label} style={{ borderRadius: 20, border: '1px solid rgba(148,163,184,0.15)', background: 'rgba(15,23,42,0.65)', padding: 18 }}>
-              <div style={{ fontSize: 12, color: '#94a3b8' }}>{label}</div>
-              <div style={{ fontSize: 30, fontWeight: 800, marginTop: 8 }}>{value}</div>
+
+        <div className="kpi-stack">
+          {(stats ?? []).map((item) => (
+            <div key={item.label} className="metric-card">
+              <div className="metric-label">{item.label}</div>
+              <div className="metric-value">{item.value}</div>
             </div>
           ))}
         </div>
       </section>
 
-      <DashboardWidgets />
+      <section className="dashboard-charts-grid">
+        <div className="panel-card">
+          <div className="eyebrow">Reports by sector</div>
+          <div className="panel-title">Распределение эмитентов</div>
+          <FinanceBarChart data={sectors ?? []} dataKey="issuers" color="#3b82f6" />
+        </div>
+        <DashboardWidgets />
+      </section>
     </div>
   )
 }

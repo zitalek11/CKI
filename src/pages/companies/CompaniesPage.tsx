@@ -1,6 +1,8 @@
 import { useMemo, useState } from 'react'
 import { useNavigate, useSearch } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
+import { DataSourceBadge } from '../../components/DataSourceBadge'
+import { useDebouncedValue } from '../../hooks/useDebouncedValue'
 import { nsdGetCompaniesList } from '../../services/nsd/companiesList'
 import type { CompanyListItem } from '../../types/companyComparison'
 
@@ -10,17 +12,20 @@ export function CompaniesPage() {
   const [search, setSearch] = useState(searchParams.q ?? '')
   const [sector, setSector] = useState('')
   const [selected, setSelected] = useState<string[]>([])
+  const debouncedSearch = useDebouncedValue(search)
 
-  const { data, isLoading } = useQuery({
-    queryKey: ['companies-list', sector],
-    queryFn: () => nsdGetCompaniesList({ sector: sector || undefined }),
+  const { data, isLoading, isFetching, isError, error, refetch } = useQuery({
+    queryKey: ['companies-list', sector, debouncedSearch],
+    queryFn: () => nsdGetCompaniesList({
+      sector: sector || undefined,
+      q: debouncedSearch || undefined,
+      limit: 50,
+    }),
+    placeholderData: (previous) => previous,
   })
 
-  const filtered = useMemo<CompanyListItem[]>(() => (data ?? []).filter((c) => {
-    if (!search) return true
-    const q = search.toLowerCase()
-    return c.name.toLowerCase().includes(q) || c.ticker.toLowerCase().includes(q) || c.isin.toLowerCase().includes(q)
-  }), [data, search])
+  const filtered = useMemo<CompanyListItem[]>(() => data?.items ?? [], [data])
+  const source = data?.source ?? 'mock'
 
   const toggleSelected = (id: string) => {
     setSelected((prev) => prev.includes(id) ? prev.filter((x) => x !== id) : prev.length < 5 ? [...prev, id] : prev)
@@ -30,7 +35,10 @@ export function CompaniesPage() {
     <div style={{ display: 'grid', gap: 20 }}>
       <section style={{ display: 'flex', justifyContent: 'space-between', gap: 16, alignItems: 'end' }}>
         <div>
-          <div style={{ fontSize: 12, textTransform: 'uppercase', letterSpacing: '0.2em', color: '#94a3b8' }}>Компании</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div style={{ fontSize: 12, textTransform: 'uppercase', letterSpacing: '0.2em', color: '#94a3b8' }}>Компании</div>
+            <DataSourceBadge source={source} />
+          </div>
           <h1 style={{ margin: '8px 0 0', fontSize: 30 }}>Российские эмитенты</h1>
           <p style={{ margin: '8px 0 0', color: '#94a3b8', fontSize: 14 }}>Список эмитентов, фильтры, поиск и выбор до 5 компаний для сравнения.</p>
         </div>
@@ -70,12 +78,24 @@ export function CompaniesPage() {
         <div style={{ borderRadius: 24, border: '1px solid rgba(148,163,184,0.15)', background: 'rgba(15,23,42,0.65)', padding: 20 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div style={{ fontSize: 12, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#94a3b8' }}>Список эмитентов</div>
-            <div style={{ fontSize: 12, color: '#94a3b8' }}>{filtered.length} найдено</div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 12, color: '#94a3b8' }}>
+              {isFetching && !isLoading ? <span>Обновление...</span> : null}
+              <span>{filtered.length} найдено</span>
+            </div>
           </div>
 
           <div style={{ marginTop: 16, overflow: 'auto' }}>
             {isLoading ? (
-              <div style={{ color: '#94a3b8' }}>Загрузка компаний...</div>
+              <div style={{ color: '#94a3b8' }}>Загрузка компаний из MOEX CCI...</div>
+            ) : isError ? (
+              <div style={{ display: 'grid', gap: 12 }}>
+                <div style={{ color: '#fca5a5' }}>
+                  Не удалось загрузить данные: {error instanceof Error ? error.message : 'неизвестная ошибка'}
+                </div>
+                <button type="button" className="ghost-button" onClick={() => refetch()}>Повторить</button>
+              </div>
+            ) : filtered.length === 0 ? (
+              <div style={{ color: '#94a3b8' }}>Ничего не найдено. Попробуйте изменить запрос.</div>
             ) : (
               <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                 <thead>

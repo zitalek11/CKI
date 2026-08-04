@@ -1,8 +1,16 @@
 import { useMemo } from 'react'
 import { useNavigate, useParams } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
+import { DataSourceBadge } from '../../components/DataSourceBadge'
 import { nsdGetCompanyKpiHistory, nsdGetCompanyProfile } from '../../services/nsd/companies'
 import { nsdGetCompanyCorporateActions } from '../../services/nsd/corporateActions'
+import { getApiMode } from '../../services/api/config'
+import { FinanceBarChart, FinanceLineChart } from '../../components/charts/FinanceCharts'
+
+function formatMillions(value?: number) {
+  if (value == null) return '—'
+  return `${value.toLocaleString('ru-RU')} млн`
+}
 
 export function CompanyProfilePage() {
   const navigate = useNavigate()
@@ -23,69 +31,97 @@ export function CompanyProfilePage() {
     queryFn: () => nsdGetCompanyCorporateActions(id),
   })
 
-  const latest = useMemo(() => profile?.snapshot ?? kpis?.[0], [profile, kpis])
+  const latest = useMemo(() => kpis?.[0] ?? profile?.snapshot, [profile, kpis])
+  const isLiveProfile = getApiMode() !== 'mock' && !id.startsWith('MOEX_')
+
+  const revenueChart = useMemo(
+    () => [...(kpis ?? [])].reverse().map((item) => ({
+      label: item.date,
+      revenue: item.revenue ?? 0,
+      ebitda: item.ebitda ?? 0,
+    })),
+    [kpis],
+  )
 
   if (profileLoading) {
-    return <div style={{ color: '#94a3b8' }}>Загрузка профиля компании...</div>
+    return <div className="muted">Загрузка профиля компании...</div>
   }
 
   if (!profile) {
     return (
-      <div style={{ display: 'grid', gap: 12 }}>
+      <div className="page-grid">
         <div>Компания не найдена.</div>
-        <button type="button" onClick={() => navigate({ to: '/companies' })}>Назад к списку компаний</button>
+        <button type="button" className="ghost-button" onClick={() => navigate({ to: '/companies', search: { q: undefined } })}>
+          Назад к списку компаний
+        </button>
       </div>
     )
   }
 
   return (
-    <div style={{ display: 'grid', gap: 20 }}>
-      <section style={{ borderRadius: 28, border: '1px solid rgba(148,163,184,0.15)', background: 'rgba(15,23,42,0.65)', padding: 24 }}>
-        <div style={{ fontSize: 12, textTransform: 'uppercase', letterSpacing: '0.18em', color: '#94a3b8' }}>Company profile</div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', gap: 16, alignItems: 'start', marginTop: 10 }}>
+    <div className="page-grid">
+      <section className="hero-card">
+        <div className="eyebrow" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <span>Company profile</span>
+          <DataSourceBadge source={isLiveProfile ? 'live' : 'mock'} />
+        </div>
+        <div className="panel-header">
           <div>
-            <h1 style={{ margin: 0, fontSize: 34 }}>{profile.name}</h1>
-            <div style={{ marginTop: 10, color: '#cbd5e1', fontSize: 14 }}>{profile.ticker} · {profile.isin} · {profile.sector} · {profile.industry}</div>
-            <div style={{ marginTop: 8, color: '#94a3b8', fontSize: 13 }}>Карточка эмитента, KPI, отчётность и хронология корпоративных событий.</div>
+            <h1>{profile.name}</h1>
+            <p>{profile.ticker} · {profile.isin} · {profile.sector} · {profile.industry}</p>
+            <p className="muted">{profile.description}</p>
           </div>
-          <button type="button" onClick={() => navigate({ to: '/companies' })} style={{ borderRadius: 14, padding: '10px 14px', border: '1px solid rgba(148,163,184,0.15)', background: 'rgba(2,6,23,0.8)', color: '#e2e8f0' }}>Назад</button>
+          <button type="button" className="ghost-button" onClick={() => navigate({ to: '/companies', search: { q: undefined } })}>
+            Назад
+          </button>
         </div>
       </section>
 
-      <section style={{ display: 'grid', gridTemplateColumns: 'repeat(12, minmax(0, 1fr))', gap: 16 }}>
+      <section className="kpi-grid">
         {[
-          ['Price', latest?.price ?? '—'],
-          ['Market Cap', latest?.marketCap ?? '—'],
-          ['P/E', latest?.pe ?? '—'],
+          ['Revenue', formatMillions(latest?.revenue)],
+          ['EBITDA', formatMillions(latest?.ebitda)],
+          ['Net profit', formatMillions(latest?.netProfit)],
           ['ROE', latest?.roe ?? '—'],
         ].map(([label, value]) => (
-          <div key={label as string} style={{ gridColumn: 'span 3', borderRadius: 22, border: '1px solid rgba(148,163,184,0.15)', background: 'rgba(15,23,42,0.65)', padding: 18 }}>
-            <div style={{ color: '#94a3b8', fontSize: 12, textTransform: 'uppercase', letterSpacing: '0.12em' }}>{label}</div>
-            <div style={{ marginTop: 10, fontSize: 28, fontWeight: 800 }}>{value as string}</div>
+          <div key={label} className="metric-card">
+            <div className="metric-label">{label}</div>
+            <div className="metric-value">{value}</div>
           </div>
         ))}
       </section>
 
-      <section style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: 16 }}>
-        <div style={{ borderRadius: 24, border: '1px solid rgba(148,163,184,0.15)', background: 'rgba(15,23,42,0.65)', padding: 20 }}>
-          <div style={{ fontSize: 12, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#94a3b8' }}>Отчётность</div>
-          <div style={{ marginTop: 16, display: 'grid', gap: 10 }}>
+      <section className="profile-grid">
+        <div className="panel-card">
+          <div className="eyebrow">Revenue dynamics</div>
+          <FinanceLineChart data={revenueChart} dataKey="revenue" color="#3b82f6" />
+        </div>
+        <div className="panel-card">
+          <div className="eyebrow">EBITDA</div>
+          <FinanceBarChart data={revenueChart} dataKey="ebitda" color="#22c55e" height={220} />
+        </div>
+      </section>
+
+      <section className="profile-grid">
+        <div className="panel-card">
+          <div className="eyebrow">Отчётность</div>
+          <div className="feed-list">
             {(profile.reports ?? []).map((report) => (
-              <div key={report.id} style={{ padding: 14, borderRadius: 16, background: 'rgba(2,6,23,0.75)', border: '1px solid rgba(148,163,184,0.12)' }}>
+              <div key={report.id} className="feed-item">
                 <div style={{ fontWeight: 700 }}>{report.title}</div>
-                <div style={{ marginTop: 6, color: '#94a3b8', fontSize: 13 }}>{report.period} · {report.publishedAt}</div>
+                <div className="muted">{report.period} · {report.publishedAt} · {report.standard}</div>
               </div>
             ))}
           </div>
         </div>
 
-        <div style={{ borderRadius: 24, border: '1px solid rgba(148,163,184,0.15)', background: 'rgba(15,23,42,0.65)', padding: 20 }}>
-          <div style={{ fontSize: 12, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#94a3b8' }}>Таймлайн</div>
-          <div style={{ marginTop: 16, display: 'grid', gap: 10 }}>
+        <div className="panel-card">
+          <div className="eyebrow">Таймлайн</div>
+          <div className="feed-list">
             {(actions ?? []).map((item) => (
-              <div key={item.id} style={{ padding: 14, borderRadius: 16, background: 'rgba(2,6,23,0.75)', border: '1px solid rgba(148,163,184,0.12)' }}>
+              <div key={item.id} className="feed-item">
                 <div style={{ fontWeight: 700 }}>{item.title}</div>
-                <div style={{ marginTop: 6, color: '#94a3b8', fontSize: 13 }}>{item.date} · {item.type}</div>
+                <div className="muted">{item.date} · {item.type}</div>
               </div>
             ))}
           </div>
