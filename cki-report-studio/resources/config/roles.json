@@ -1,0 +1,6 @@
+{
+  "admin": ["*"],
+  "sales": ["general", "metrics", "funnel", "charts"],
+  "marketing": ["general", "activities", "products"],
+  "dev": ["general", "activities", "roadmap", "team"]
+}

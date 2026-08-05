@@ -8,8 +8,8 @@
 | 2. Модель данных | [02-data-model.md](./02-data-model.md) | ✅ |
 | 3. Архитектура | [03-architecture.md](./03-architecture.md) | ✅ |
 | 4. Структура проекта | [04-project-structure.md](./04-project-structure.md) | ✅ |
-| 5. Согласование | [05-decisions.md](./05-decisions.md) | ⏳ ждём OK |
-| 6. Реализация | — | 🔒 после согласования |
+| 5. Согласование | [05-decisions.md](./05-decisions.md) | ✅ подтверждено |
+| 6. Реализация | `cki-report-studio/` | ✅ MVP |
 
 **Исходный HTML:** `templates/cki-weekly-report-source-2026-07-23.html`  
 **Seed JSON:** [examples/2026-07-23.json](./examples/2026-07-23.json)

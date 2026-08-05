@@ -1,0 +1,61 @@
+{
+  "sections": [
+    {
+      "id": "general",
+      "title": "Общее",
+      "wizardStep": 1,
+      "roleAccess": ["admin", "sales", "marketing", "dev"],
+      "fields": [
+        { "path": "meta.reportDate", "label": "Дата отчёта", "type": "date", "searchTags": ["дата", "неделя"] },
+        { "path": "meta.weekNumber", "label": "Номер недели", "type": "number", "searchTags": ["неделя"] }
+      ]
+    },
+    {
+      "id": "metrics",
+      "title": "KPI",
+      "wizardStep": 2,
+      "roleAccess": ["admin", "sales"],
+      "fields": [
+        { "path": "metrics[id=clientsExternal].value", "label": "Клиенты (внешние)", "type": "number", "searchTags": ["клиенты", "KPI", "база"] },
+        { "path": "metrics[id=apiRequests].value", "label": "API запросы", "type": "number", "searchTags": ["API", "активность"] },
+        { "path": "metrics[id=revenueAccumulated].value", "label": "Выручка", "type": "number", "searchTags": ["выручка", "монетизация"] }
+      ]
+    },
+    {
+      "id": "funnel",
+      "title": "Воронка",
+      "wizardStep": 3,
+      "roleAccess": ["admin", "sales"],
+      "fields": [
+        { "path": "funnel.stages", "label": "Этапы воронки", "type": "collection", "searchTags": ["воронка", "продажи"] }
+      ]
+    },
+    {
+      "id": "activities",
+      "title": "Активности",
+      "wizardStep": 4,
+      "roleAccess": ["admin", "dev", "marketing"],
+      "fields": [
+        { "path": "activities.rows", "label": "Матрица активностей", "type": "matrix", "searchTags": ["CLIENTS", "FRONT", "BACK", "ADMIN"] }
+      ]
+    },
+    {
+      "id": "roadmap",
+      "title": "Roadmap",
+      "wizardStep": 5,
+      "roleAccess": ["admin", "dev"],
+      "fields": [
+        { "path": "roadmap", "label": "Дорожная карта", "type": "collection", "searchTags": ["roadmap", "квартал"] }
+      ]
+    },
+    {
+      "id": "charts",
+      "title": "Графики",
+      "wizardStep": 6,
+      "roleAccess": ["admin", "sales"],
+      "fields": [
+        { "path": "charts", "label": "Серии план/факт", "type": "collection", "searchTags": ["график", "выручка", "подписки"] }
+      ]
+    }
+  ]
+}
