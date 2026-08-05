@@ -3,11 +3,13 @@ import { APP_VERSION } from '@/shared/config/navigation'
 import { Button } from '@/shared/ui/button'
 import { useShellStore } from '@/features/shell/model/shell-store'
 import { useThemeStore } from '@/features/theme/model/theme-store'
+import { useWorkspaceStore } from '@/features/workspace/model/workspace-store'
 
 export function AppTopbar() {
   const toggleSidebar = useShellStore((s) => s.toggleSidebar)
   const mode = useThemeStore((s) => s.mode)
   const cycleMode = useThemeStore((s) => s.cycleMode)
+  const summary = useWorkspaceStore((s) => s.summary)
 
   return (
     <header className="flex h-12 shrink-0 items-center gap-2 border-b border-[var(--color-border-subtle)] bg-[var(--color-bg-surface)] px-3">
@@ -17,12 +19,12 @@ export function AppTopbar() {
 
       <div className="flex items-center gap-1.5 text-[12px] text-[var(--color-text-secondary)]">
         <span className="rounded-[6px] bg-[var(--color-bg-subtle)] px-2 py-1 font-medium text-[var(--color-text-primary)]">
-          CKI
+          {summary?.product.key ?? 'CKI'}
         </span>
         <span>·</span>
-        <span>2026-Q3</span>
+        <span>{summary?.quarter?.key ?? '—'}</span>
         <span>·</span>
-        <span>Team Core</span>
+        <span>{summary?.sprint?.name ?? 'No sprint'}</span>
       </div>
 
       <div className="ml-auto flex items-center gap-1.5">

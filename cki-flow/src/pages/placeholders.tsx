@@ -20,16 +20,6 @@ export function SprintPage() {
   )
 }
 
-export function BacklogPage() {
-  return (
-    <PlaceholderPage
-      title="Backlog"
-      description="Приоритизация, DoR, bulk-операции и rank."
-      stageHint="Stage 10+"
-    />
-  )
-}
-
 export function BoardPage() {
   return (
     <PlaceholderPage
@@ -60,16 +50,6 @@ export function ReleasesPage() {
   )
 }
 
-export function LoadPage() {
-  return (
-    <PlaceholderPage
-      title="Load"
-      description="Capacity по ролевым пулам и людям. UI-имя Load, домен — Capacity."
-      stageHint="Stage 9–10"
-    />
-  )
-}
-
 export function RisksPage() {
   return (
     <PlaceholderPage
@@ -86,16 +66,6 @@ export function AnalyticsPage() {
       title="Analytics"
       description="One-minute pulse: health, velocity, bottleneck, release readiness."
       stageHint="Stage 11"
-    />
-  )
-}
-
-export function TemplatesPage() {
-  return (
-    <PlaceholderPage
-      title="Templates"
-      description="WorkflowTemplate Studio — конфигурируемые процессы Story → WorkItems."
-      stageHint="Stage 5–6"
     />
   )
 }

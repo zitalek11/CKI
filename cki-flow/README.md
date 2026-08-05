@@ -14,20 +14,18 @@ Desktop-приложение для управления продуктовой 
 
 ---
 
-## Этап 1 (текущий) — каркас
+## Статус разработки
 
-Сделано:
+Этапы **1–7** (каркас → domain → storage → seed → workflow/auto-tasks → dependency core → capacity demand) — см. [DEVELOPMENT.md](./DEVELOPMENT.md).
 
-- Tauri + Vite + React + TS проект
-- FSD-скелет (`app`, `pages`, `widgets`, `features`, `shared`)
-- App Shell: sidebar / topbar по UX IA (Today · Plan · Deliver · Insights · System)
-- Light / Dark / System тема (`⌘⇧L`)
-- Collapse sidebar (`⌘\`)
-- Error Boundary + logger
-- Placeholder-экраны всех разделов
-- Заготовка macOS bundle (`.dmg` / `.app`)
+Уже можно:
+
+- создать User Story с автогенерацией WorkItems и зависимостей из Workflow Template;
+- смотреть Backlog / Templates / Load;
+- хранить данные локально (LocalStorage) с возможностью смены StoragePort.
 
 ---
+
 
 ## Quick start (web)
 

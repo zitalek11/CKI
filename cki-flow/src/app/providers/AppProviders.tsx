@@ -3,6 +3,7 @@ import { HashRouter } from 'react-router-dom'
 import { ErrorBoundary } from '@/app/providers/ErrorBoundary'
 import { useShellStore } from '@/features/shell/model/shell-store'
 import { applyThemeMode, useThemeStore } from '@/features/theme/model/theme-store'
+import { WorkspaceBootstrap } from '@/features/workspace/ui/WorkspaceBootstrap'
 
 type AppProvidersProps = {
   children: ReactNode
@@ -44,7 +45,9 @@ export function AppProviders({ children }: AppProvidersProps) {
   return (
     <ErrorBoundary>
       {/* HashRouter: required for Tauri asset:// protocol in production builds */}
-      <HashRouter>{children}</HashRouter>
+      <HashRouter>
+        <WorkspaceBootstrap>{children}</WorkspaceBootstrap>
+      </HashRouter>
     </ErrorBoundary>
   )
 }

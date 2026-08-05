@@ -1,18 +1,18 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { AppShell } from '@/app/layouts/AppShell'
+import { BacklogPage } from '@/pages/backlog/ui/BacklogPage'
+import { LoadPage } from '@/pages/load/ui/LoadPage'
 import {
   AnalyticsPage,
-  BacklogPage,
   BoardPage,
-  LoadPage,
   QuarterPage,
   ReleasesPage,
   RisksPage,
   RoadmapPage,
   SettingsPage,
   SprintPage,
-  TemplatesPage,
 } from '@/pages/placeholders'
+import { TemplatesPage } from '@/pages/templates/ui/TemplatesPage'
 import { TodayPage } from '@/pages/today/ui/TodayPage'
 
 export function App() {
