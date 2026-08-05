@@ -12,11 +12,14 @@
   "app": {
     "windows": [
       {
+        "label": "main",
         "title": "CKI Report Studio",
         "width": 1440,
         "height": 900,
         "minWidth": 1100,
-        "minHeight": 700
+        "minHeight": 700,
+        "resizable": true,
+        "fullscreen": false
       }
     ],
     "security": {
@@ -25,18 +28,25 @@
   },
   "bundle": {
     "active": true,
-    "targets": [
-      "dmg",
-      "app"
-    ],
+    "targets": ["dmg", "app"],
+    "category": "Productivity",
+    "shortDescription": "Еженедельный отчёт ЦКИ",
+    "longDescription": "Desktop-приложение для подготовки еженедельного HTML-отчёта команды ЦКИ без ручного редактирования HTML.",
+    "macOS": {
+      "minimumSystemVersion": "11.0",
+      "dmg": {
+        "appPosition": { "x": 180, "y": 220 },
+        "applicationFolderPosition": { "x": 480, "y": 220 }
+      }
+    },
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",
       "icons/henry.w@example.net",
+      "icons/icon.icns",
+      "icons/icon.ico",
       "icons/icon.png"
-    ],
-    "macOS": {
-      "minimumSystemVersion": "10.15"
-    }
-  }
+    ]
+  },
+  "plugins": {}
 }

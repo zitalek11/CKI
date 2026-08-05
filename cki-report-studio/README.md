@@ -2,7 +2,16 @@
 
 Desktop-приложение для подготовки еженедельного HTML-отчёта команды ЦКИ.
 
-**Стек:** React 19 · TypeScript · Vite · Zustand · Zod · Handlebars · Chart.js · Tauri 2 (macOS .dmg)
+**Стек:** React 19 · TypeScript · Vite · Zustand · Zod · Handlebars · Chart.js · Tauri 2
+
+## Установка на этот Mac
+
+См. [INSTALL.md](./INSTALL.md).
+
+Кратко:
+- Приложение: `/Applications/CKI Report Studio.app`
+- DMG: `~/Desktop/CKI Report Studio_0.1.0_aarch64.dmg`
+- Данные: `~/Documents/CKI Report Studio/reports/`
 
 ## Быстрый старт (web / UI)
 
@@ -12,40 +21,31 @@ npm install
 npm run dev
 ```
 
-Откройте http://localhost:5173/
-
 ## Возможности MVP
 
 - JSON-модель отчёта вместо ручного HTML
-- Live Preview справа
-- Click-to-edit в preview
+- Live Preview справа + click-to-edit
 - Авто-расчёты ▲/▼, progress %, суммы воронки
 - Мастер обновления недели
-- История отчётов + «Новый отчёт» (копия прошлой недели)
-- Импорт JSON / CSV метрик
-- Экспорт HTML (self-contained + Chart.js)
-- Undo / Redo
-- Поиск по полям
-- Валидация перед экспортом
+- История + «Новый отчёт»
+- Импорт JSON / CSV, экспорт HTML (Chart.js)
+- Undo / Redo, поиск, валидация
+- Хранение в `~/Documents/CKI Report Studio/` (desktop)
 
 ## Сборка macOS (.dmg)
 
-На машине с macOS + Xcode:
-
 ```bash
 npm install
-npm run tauri build
+npm run build:dmg
 ```
 
-Требуется Rust toolchain. Конфиг: `src-tauri/`.
+Нужны: Node 22+, Rust (`rustup`), Xcode CLT.
 
-## Данные
+## Данные в репозитории
 
 - Seed: `resources/reports/2026-07-23.json`
 - Шаблон: `resources/templates/template.html`
-- Схема полей: `resources/config/report-schema.json`
-
-В браузерном режиме отчёты хранятся в `localStorage`. В Tauri — планируется `~/Documents/CKI Report Studio/`.
+- Схема: `resources/config/report-schema.json`
 
 ## Тесты
 
@@ -54,6 +54,6 @@ npm test
 npm run build
 ```
 
-## Документация архитектуры
+## Архитектура
 
 См. `../docs/cki-report-studio/`.

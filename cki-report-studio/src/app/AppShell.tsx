@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
   History,
   Redo2,
@@ -8,6 +8,7 @@ import {
   Plus,
   Upload,
   FileJson,
+  FolderOpen,
 } from 'lucide-react'
 import { useStore } from 'zustand'
 import { useReportStore, useActiveReport } from '@/stores/report-store'
@@ -18,8 +19,11 @@ import { HistoryPanel } from '@/features/history/HistoryPanel'
 import { exportHtmlFile, exportJsonFile } from '@/features/export/export-html'
 import { Button, Panel } from '@/shared/ui/primitives'
 import { formatReportDate } from '@/core/format/format'
+import { documentsPathHint, isTauri } from '@/shared/lib/storage'
 
 export function AppShell() {
+  const hydrate = useReportStore((s) => s.hydrate)
+  const hydrated = useReportStore((s) => s.hydrated)
   const mode = useReportStore((s) => s.mode)
   const wizardStep = useReportStore((s) => s.wizardStep)
   const setMode = useReportStore((s) => s.setMode)
@@ -31,18 +35,32 @@ export function AppShell() {
   const report = useActiveReport()
   const fileRef = useRef<HTMLInputElement>(null)
   const csvRef = useRef<HTMLInputElement>(null)
+  const [status, setStatus] = useState<string>('')
 
   const temporal = useStore(useReportStore.temporal)
 
-  const doExport = () => {
-    const result = exportHtmlFile(report, previous)
+  useEffect(() => {
+    void hydrate()
+  }, [hydrate])
+
+  const doExport = async () => {
+    const result = await exportHtmlFile(report, previous)
     if (!result.ok) {
-      alert(`Экспорт заблокирован:\n${result.message}`)
+      alert(`Экспорт: ${result.message}`)
       return
     }
     useReportStore.getState().patchReport((d) => {
       d.meta.status = 'exported'
     })
+    setStatus(result.path ? `HTML сохранён: ${result.path}` : 'HTML экспортирован')
+  }
+
+  if (!hydrated) {
+    return (
+      <div className="flex h-full items-center justify-center text-sm text-[#8b8bb8]">
+        Загрузка отчётов…
+      </div>
+    )
   }
 
   return (
@@ -76,10 +94,16 @@ export function AppShell() {
         <Button variant="ghost" onClick={() => csvRef.current?.click()}>
           CSV
         </Button>
-        <Button variant="ghost" onClick={() => exportJsonFile(report)}>
+        <Button
+          variant="ghost"
+          onClick={async () => {
+            const path = await exportJsonFile(report)
+            if (path) setStatus(`JSON сохранён: ${path}`)
+          }}
+        >
           <FileJson size={16} />
         </Button>
-        <Button onClick={doExport}>
+        <Button onClick={() => void doExport()}>
           <Download size={16} /> Экспорт HTML
         </Button>
         <input
@@ -111,7 +135,7 @@ export function AppShell() {
       <div className="grid min-h-0 flex-1 gap-3 lg:grid-cols-[380px_1fr]">
         <Panel className="min-h-0 overflow-hidden p-3">
           {mode === 'editor' && <EditorPanel />}
-          {mode === 'wizard' && <WizardPanel onExport={doExport} />}
+          {mode === 'wizard' && <WizardPanel onExport={() => void doExport()} />}
           {mode === 'history' && <HistoryPanel />}
         </Panel>
         <div className="min-h-0">
@@ -130,8 +154,13 @@ export function AppShell() {
           Ошибки: {issues.filter((i) => i.level === 'error').length} · Предупреждения:{' '}
           {issues.filter((i) => i.level === 'warning').length}
         </span>
-        <span className="ml-auto">Данные → Preview → HTML. HTML вручную больше не редактируется.</span>
-        <Button onClick={doExport}>
+        <span className="inline-flex items-center gap-1">
+          <FolderOpen size={12} />
+          {isTauri() ? documentsPathHint() : 'localStorage (web)'}
+        </span>
+        {status ? <span className="text-emerald-300">{status}</span> : null}
+        <span className="ml-auto">Данные → Preview → HTML</span>
+        <Button onClick={() => void doExport()}>
           <Download size={14} /> Экспорт HTML
         </Button>
       </footer>

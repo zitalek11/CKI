@@ -3,11 +3,12 @@ import { renderHtml } from '@/core/render/render-html'
 import { canExport, validateReport } from '@/core/validate/validate-report'
 import type { WeeklyReport } from '@/core/model/types'
 import { deriveReport } from '@/core/derive/derive-report'
+import { exportHtmlToDisk, exportJsonToDisk } from '@/shared/lib/storage'
 
-export function exportHtmlFile(
+export async function exportHtmlFile(
   report: WeeklyReport,
   previous: WeeklyReport | null,
-): { ok: true } | { ok: false; message: string } {
+): Promise<{ ok: true; path: string | null } | { ok: false; message: string }> {
   const issues = validateReport(report).filter((i) => i.level === 'error')
   if (!canExport(report)) {
     return {
@@ -17,22 +18,13 @@ export function exportHtmlFile(
   }
 
   const html = renderHtml(templateSource, deriveReport(report, previous))
-  const blob = new Blob([html], { type: 'text/html;charset=utf-8' })
-  const url = URL.createObjectURL(blob)
-  const a = document.createElement('a')
-  a.href = url
-  a.download = `CKI-report-${report.meta.reportDate}.html`
-  a.click()
-  URL.revokeObjectURL(url)
-  return { ok: true }
+  const path = await exportHtmlToDisk(`CKI-report-${report.meta.reportDate}.html`, html)
+  if (path === null) {
+    return { ok: false, message: 'Экспорт отменён' }
+  }
+  return { ok: true, path }
 }
 
-export function exportJsonFile(report: WeeklyReport) {
-  const blob = new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' })
-  const url = URL.createObjectURL(blob)
-  const a = document.createElement('a')
-  a.href = url
-  a.download = `${report.meta.id}.json`
-  a.click()
-  URL.revokeObjectURL(url)
+export async function exportJsonFile(report: WeeklyReport): Promise<string | null> {
+  return exportJsonToDisk(`${report.meta.id}.json`, report)
 }
