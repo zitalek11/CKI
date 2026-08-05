@@ -26,7 +26,18 @@ Set `VITE_API_MODE` in `.env`:
 
 Optional MOEX Passport credentials for protected endpoints: `MOEX_USER`, `MOEX_PASSWORD`.
 
+## Apps
+
+| App | Path | Description |
+|-----|------|-------------|
+| CKI Portal | `src/` | Витрина данных / analytics |
+| **CKI Flow** | [`cki-flow/`](./cki-flow/) | Desktop workspace управления продуктовой разработкой ЦКИ (Tauri) |
+
+```bash
+cd cki-flow && npm install && npm run dev
+```
+
 ## Docs
 
 - Portal roadmap: [ROADMAP.md](./ROADMAP.md)
-- **CKI Flow** — архитектура системы управления продуктовой разработкой команды ЦКИ (этап проектирования, без кода): [`docs/cki-flow/`](./docs/cki-flow/)
+- **CKI Flow** architecture / domain / UX: [`docs/cki-flow/`](./docs/cki-flow/)
