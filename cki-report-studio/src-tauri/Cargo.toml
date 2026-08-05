@@ -1,6 +1,6 @@
 [package]
 name = "cki-report-studio"
-version = "0.1.1"
+version = "0.1.2"
 description = "CKI weekly report studio"
 authors = ["CKI"]
 edition = "2021"

@@ -13,6 +13,7 @@ import {
   persistActiveId,
   persistLibrary,
 } from '@/shared/lib/storage'
+import { parseFlexibleDate } from '@/core/format/format'
 
 export type AppMode = 'editor' | 'wizard' | 'history'
 export type EditorSection =
@@ -84,6 +85,14 @@ export const useReportStore = create<ReportState>()(
       hydrate: async () => {
         try {
           const library = await loadLibrary()
+          // Repair any human-readable dates accidentally saved earlier
+          for (const report of Object.values(library)) {
+            const iso = parseFlexibleDate(report.meta.reportDate)
+            if (iso && iso !== report.meta.reportDate) {
+              report.meta.reportDate = iso
+              report.meta.id = iso
+            }
+          }
           const fallback = Object.keys(library).sort().at(-1)!
           const activeIdCandidate = await loadActiveId(fallback)
           const activeId = library[activeIdCandidate] ? activeIdCandidate : fallback
@@ -142,8 +151,14 @@ export const useReportStore = create<ReportState>()(
       setFieldByPath: (path, value) =>
         get().patchReport((draft) => {
           if (path === 'meta.reportDate' && typeof value === 'string') {
-            draft.meta.reportDate = value
-            draft.meta.id = value
+            const yearHint = Number(draft.meta.reportDate.slice(0, 4)) || undefined
+            const iso = parseFlexibleDate(value, yearHint)
+            if (!iso) {
+              console.warn('Invalid date input, ignored:', value)
+              return
+            }
+            draft.meta.reportDate = iso
+            draft.meta.id = iso
           } else if (path === 'meta.weekNumber') {
             draft.meta.weekNumber = Number(value)
           } else if (path.startsWith('metrics.') && path.endsWith('.value')) {

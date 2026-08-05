@@ -129,7 +129,7 @@ body{font-family:"Inter",sans-serif;color:var(--color-text);overflow:hidden;heig
       <span class="tag-purple" style="font-size:0.7rem;padding:6px 18px;">
         <span style="width:6px;height:6px;border-radius:50%;background:#a78bfa;display:inline-block;animation:glow-pulse 2s ease-in-out infinite;"></span>&nbsp;
         <span data-field="general.brandTag">{{report.general.brandTag}}</span>&nbsp;·&nbsp;
-        <span data-field="meta.reportDate">{{formattedDate}}</span>
+        <span data-field="meta.reportDate" data-raw="{{report.meta.reportDate}}">{{formattedDate}}</span>
         {{#if report.meta.weekNumber}}&nbsp;·&nbsp;нед. <span data-field="meta.weekNumber">{{report.meta.weekNumber}}</span>{{/if}}
       </span>
     </div>

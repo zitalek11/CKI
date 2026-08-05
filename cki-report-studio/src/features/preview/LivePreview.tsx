@@ -100,6 +100,11 @@ export function LivePreview() {
           style={{ left: Math.min(edit.x, 420), top: Math.min(edit.y, 420) }}
         >
           <div className="mb-2 text-xs text-[#8b8bb8]">{edit.path}</div>
+          {edit.path.includes('Date') || edit.path.includes('date') ? (
+            <div className="mb-2 text-[11px] text-[#6060a0]">
+              Формат: 2026-08-06 или 06.08.2026 или 6 августа 2026
+            </div>
+          ) : null}
           <Input
             autoFocus
             value={edit.value}

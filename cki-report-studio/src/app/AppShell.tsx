@@ -68,7 +68,7 @@ export function AppShell() {
       <header className="flex flex-wrap items-center gap-2 rounded-2xl border border-white/10 bg-[#12121f]/80 px-4 py-3 backdrop-blur">
         <div className="mr-auto">
           <div className="text-xs uppercase tracking-[0.2em] text-violet-300">
-            CKI Report Studio <span className="text-white/40 normal-case tracking-normal">v0.1.1</span>
+            CKI Report Studio <span className="text-white/40 normal-case tracking-normal">v0.1.2</span>
           </div>
           <div className="text-sm text-[#b8b8e0]">
             Неделя {report.meta.weekNumber} · {formatReportDate(report.meta.reportDate)} ·{' '}
