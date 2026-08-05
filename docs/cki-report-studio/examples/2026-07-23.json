@@ -1,0 +1,329 @@
+{
+  "meta": {
+    "id": "2026-07-23",
+    "weekNumber": 30,
+    "reportDate": "2026-07-23",
+    "previousReportId": "2026-07-16",
+    "status": "draft",
+    "schemaVersion": 1,
+    "notes": "Migrated from legacy HTML. Title date in source was '16 июля 2026' (likely stale)."
+  },
+  "general": {
+    "title": "Еженедельный отчёт",
+    "subtitle": "Команда продукта ЦКИ",
+    "brandTag": "ЦКИ | НРД",
+    "pillars": [
+      { "title": "Golden Source", "caption": "корп. данных", "tone": "cyan" },
+      { "title": "ГК МБ", "caption": "партнёр", "tone": "purple" },
+      { "title": "Moex.com", "caption": "данные B2C", "tone": "amber" }
+    ]
+  },
+  "goals": {
+    "revenueYear": 60000000,
+    "revenueMonthly": 4700000,
+    "clients": 53,
+    "subscriptions": 103,
+    "coverage": 90
+  },
+  "products": {
+    "items": [
+      "Корп. действия",
+      "IR-календарь",
+      "Справочники компаний",
+      "Excel Add-In",
+      "МСФО",
+      "РСБУ",
+      "Рейтинги",
+      "Корп. информация",
+      "Справочники выпусков"
+    ],
+    "highlight": {
+      "label": "Календарь выплат — июль 2026",
+      "tone": "green"
+    },
+    "valueProps": {
+      "external": [
+        { "title": "Чистые данные", "description": "Первоисточник. Лучшая скорость, покрытие и SLA." },
+        { "title": "Value-added services", "description": "Аналитические продукты. Комплаенс." },
+        { "title": "RegTech", "description": "Адаптируем продукты под регуляторику раньше клиентов." }
+      ],
+      "internal": [
+        { "title": "Нет зависимости", "description": "Замещаем внешних поставщиков. Быстрее." },
+        { "title": "Экономия", "description": "Снижение расходов. Легальное право." },
+        { "title": "Данные moex.com", "description": "Привлекаем и конвертируем инвесторов B2C." }
+      ],
+      "strategy": [
+        { "title": "Рост экосистемы МБ", "description": "Расширение услуг для эмитентов и профучастников." },
+        { "title": "Качество данных", "description": "= доверие инвесторов = ликвидность = доходы." },
+        { "title": "Регуляторное партнёрство", "description": "Биржа — ИнфоХаб." }
+      ]
+    }
+  },
+  "metrics": [
+    {
+      "id": "clientsExternal",
+      "label": "Клиенты (внешние)",
+      "category": "base",
+      "value": 17,
+      "unit": "шт",
+      "goalKey": "clients",
+      "format": "number",
+      "compareWithPrevious": true,
+      "accent": "cyan"
+    },
+    {
+      "id": "clientsInternal",
+      "label": "Клиенты (внутренние МБ)",
+      "category": "base",
+      "value": 13,
+      "unit": "шт внутри МБ",
+      "format": "number",
+      "compareWithPrevious": true,
+      "accent": "purple"
+    },
+    {
+      "id": "subscriptions",
+      "label": "Подписки (активные)",
+      "category": "base",
+      "value": 40,
+      "unit": "шт",
+      "goalKey": "subscriptions",
+      "format": "number",
+      "compareWithPrevious": true,
+      "accent": "purple"
+    },
+    {
+      "id": "apiRequests",
+      "label": "Запросы к API за месяц",
+      "category": "activity",
+      "value": 906,
+      "unit": "тыс. запросов",
+      "format": "thousands",
+      "compareWithPrevious": true,
+      "accent": "purple"
+    },
+    {
+      "id": "multiServiceClients",
+      "label": "Клиенты с 2+ сервисами",
+      "category": "activity",
+      "value": 76,
+      "unit": "% клиентов",
+      "format": "percent",
+      "compareWithPrevious": true,
+      "accent": "purple"
+    },
+    {
+      "id": "churnRate",
+      "label": "Churn Rate",
+      "category": "retention",
+      "value": 0,
+      "unit": "за период",
+      "format": "percent",
+      "compareWithPrevious": true,
+      "accent": "green"
+    },
+    {
+      "id": "revenueAccumulated",
+      "label": "Накопленная выручка",
+      "category": "monetization",
+      "value": 1732000,
+      "unit": "руб. / мес",
+      "goalKey": "revenueMonthly",
+      "format": "currency",
+      "compareWithPrevious": true,
+      "accent": "amber"
+    },
+    {
+      "id": "ltv",
+      "label": "LTV (c 01.01.2026)",
+      "category": "monetization",
+      "value": 547680,
+      "unit": "руб. / клиент накопл.",
+      "format": "currency",
+      "compareWithPrevious": false,
+      "accent": "amber"
+    },
+    {
+      "id": "arpu",
+      "label": "ARPU",
+      "category": "monetization",
+      "value": 103250,
+      "unit": "руб. / клиент / мес",
+      "format": "currency",
+      "compareWithPrevious": true,
+      "accent": "amber"
+    }
+  ],
+  "funnel": {
+    "stages": [
+      { "id": "needAssessment", "label": "Оценка потребности", "count": 61, "amountThousands": 17940 },
+      { "id": "proposalSent", "label": "Отправлено КП", "count": 31, "amountThousands": 8100 },
+      { "id": "negotiation", "label": "Согласование", "count": 12, "amountThousands": 5395 },
+      { "id": "signing", "label": "Подписание", "count": 5, "amountThousands": 1223, "highlight": "amber" },
+      { "id": "signed", "label": "✓ Подписан", "count": 9, "amountThousands": 2847, "highlight": "green" }
+    ],
+    "comments": [
+      { "id": "c1", "tone": "green", "text": "Сбер - в процессе подписания, Альфа Капитал – заявление подано" },
+      { "id": "c2", "tone": "cyan", "text": "Держава – заявление подписано, согласование старта" },
+      { "id": "c3", "tone": "amber", "text": "Озон, Интеррао – согласование пакета, онбординг по демо" },
+      { "id": "c4", "tone": "purple", "text": "ВЭБ — согласование на 500 тр в 2026 г." },
+      { "id": "c5", "tone": "purple", "text": "Биткоган — подписание запланировано на июль" }
+    ]
+  },
+  "roadmap": [
+    { "id": "q1-2026", "period": "Q1 2026", "status": "done", "description": "Справочник выпусков, Excel Add-In" },
+    { "id": "apr-2026", "period": "Апрель 2026", "status": "done", "description": "Справочник выпусков, Excel Add-In (расширение)" },
+    { "id": "jun-2026", "period": "Июнь 2026", "status": "done", "description": "Индикаторы, бенчмарки. МСФО консолидация, итоги торгов в AddIn" },
+    { "id": "q3-2026", "period": "Q3 2026", "status": "current", "description": "Календарь выплат, оцифровка МСФО.\nКлиентский вебинар и офлайн семинар" },
+    { "id": "q4-2026", "period": "Q4 2026", "status": "planned", "description": "Профиль эмитента. Excel AddIn под роли клиента" },
+    { "id": "y2027", "period": "2027", "status": "future", "description": "ЦКИ — Golden Source" }
+  ],
+  "activities": {
+    "weekDates": ["2026-07-20", "2026-07-27", "2026-08-03"],
+    "rows": [
+      {
+        "role": "CLIENTS",
+        "cells": [
+          "Обратная связь по отчетностям и Эксель аддину\nОбсуждение КП с ТР",
+          "Работа с интеграторами для интеграции данных ЦКИ\nКампания по индикаторам\nКампания по справочным данным и КД для клиентов НРД\nExcel AddIn по ценовым данным",
+          "Наполнение воронки ЦКИ\nПодготовка списка почт для дайджеста за месяц\nПриглашения для вебинара\nОнбординг АК Барс"
+        ]
+      },
+      {
+        "role": "FRONT",
+        "cells": [
+          "Справочник выпусков: Перевод связанных методов на новый справочник (Рейтинги и IR-Календари)\nСправочник компаний: CFI классификатор\nДоработки в: рейтингах(сортировка), КД (secid)\nExcel AddIn: Итоги торгов+доп параметры ЦЦ: прототипирование и клиентское исследование",
+          "КД: статусы, перевод на новые методы V2\nСправочник выпусков: Перевод связанных методов на новый справочник (КД)\nСправочник компаний: новая схема связей со справочниками\nСправочник выпусков: добавляем параметры, метрики\nExcel AddIn: Релиз внутри НРД",
+          "Справочник компаний: добавляем статусы компаний и отраслевые коды для бенчмарков\nСправочник выпусков: доработка параметров\nИндикаторы ПРО: добавление раздела\nКалендарь выплат: подготовка требований"
+        ]
+      },
+      {
+        "role": "BACK",
+        "cells": [
+          "Справочник выпусков: Перевод всех связанных методов на новый справочник\nКД: статусы, новые методы V2\nСправочник компаний: Новая схема связей компаний со справочниками\nОтчётность МСФО: расчет бенчмарки МСФО для всех типов отчетностей\nРСБУ: добавление страховое, ОДДС, форма 135",
+          "Календарь выплат: аналитика, подготовка БТ\nСправочник выпусков: добавление параметров, метрики по облигациям с плавающим куп. Доходом, доработка CFI классификатора\nРСБУ: квартальная из ГИРБО\nИндикаторы ПРО: Расчет индикаторов, добавление раздела (аналитика)\nРейтинги: данные по ОСК из НРА\nАфф. Лица: Учет группы владения 20%",
+          "Календарь выплат: подготовка хранилища для данных\nСправочник компаний: добавляем статусы компаний и отраслевые коды (ОКВЭД, ОКОПФ) для построения бенчмарков\nСправочник выпусков: метрики по облигациям с плавающим куп. оходом\nРСБУ: квартальная из ГИРБО\nИндикаторы ПРО: Расчет индикаторов, добавление раздела (разработка)\nАфф. Лица: Учет группы владения 20%"
+        ]
+      },
+      {
+        "role": "ADMIN",
+        "cells": [
+          "Согласование тарифа на итоги торгов и доп параметры в AddIn. Подготовка к вебинару для клиентов. Рассылка дайджеста для клиентов",
+          "Переоценка тарификации ЦКИ, согласование договоров",
+          "Финальная подготовка к вебинару, подготовка к офлайн семинару ЦКИ в сентябре + подготовка к IR-форуму"
+        ]
+      }
+    ]
+  },
+  "team": {
+    "fteTotal": 18,
+    "fteStaff": 14,
+    "fteContract": 4,
+    "fteNrd": 14,
+    "fteMb": 4,
+    "dynamics": {
+      "before": { "fte": 22.3, "costThousands": 8469.1 },
+      "after": { "fte": 18, "costThousands": 6543.1 }
+    },
+    "orgUnits": [
+      {
+        "id": "data",
+        "title": "Обработка данных",
+        "fte": 5,
+        "accent": "green",
+        "members": [
+          "Методолог",
+          "Аналитик МСФО",
+          "Аналитик Отчётность",
+          "Марин Тюмавина",
+          "Колганова Светлана",
+          "Быков Александр"
+        ]
+      },
+      {
+        "id": "product",
+        "title": "Product Discovery, БД, интерфейсы",
+        "fte": 10,
+        "accent": "purple",
+        "members": [
+          "Product Manager (Савёлов В.)",
+          "Architect/DM (Кошелев С.)",
+          "System Analyst ×2",
+          "Business Analyst ×2",
+          "Dev Lead",
+          "Developer C#",
+          "Analyst",
+          "Developer Postgres"
+        ]
+      },
+      {
+        "id": "support",
+        "title": "Онбординг и клиентская поддержка",
+        "fte": 3,
+        "accent": "amber",
+        "members": [
+          "Manager (Щербель М.)",
+          "IT-лидер (Бугаев С.)",
+          "Client/service support (Онищук Ю.)"
+        ]
+      }
+    ]
+  },
+  "charts": [
+    {
+      "id": "revenue",
+      "title": "Накопленная выручка, млн ₽*",
+      "unit": "млн ₽",
+      "yMax": 60,
+      "color": "#5eead4",
+      "plan": [2.3, 4.5, 7.2, 11.0, 18.5, 22.0, 26.5, 31.0, 36.5, 42.0, 50.0, 60.0],
+      "fact": [2.3, 4.5, 6.1, 7.8, 9.4, 11.04]
+    },
+    {
+      "id": "clients",
+      "title": "Кол-во клиентов, шт.",
+      "unit": "шт",
+      "yMax": 60,
+      "color": "#a78bfa",
+      "plan": [20, 24, 26, 29, 32, 35, 38, 41, 44, 47, 50, 53],
+      "fact": [17, 19, 15, 15, 16, 17]
+    },
+    {
+      "id": "subscriptions",
+      "title": "Подписки, шт.",
+      "unit": "шт",
+      "yMax": 100,
+      "color": "#22d3ee",
+      "plan": [40, 45, 50, 55, 60, 65, 70, 75, 80, 88, 95, 103],
+      "fact": [57, 61, 44, 45, 44, 41, 40]
+    },
+    {
+      "id": "coverage",
+      "title": "Покрытие сервисами, %",
+      "unit": "%",
+      "yMax": 100,
+      "color": "#fbbf24",
+      "plan": [70, 72, 74, 76, 78, 80, 82, 84, 86, 87, 88, 90],
+      "fact": [76, 77, 81, 83, 87, 89]
+    }
+  ],
+  "ticker": {
+    "slides": {
+      "title": [
+        { "type": "static", "text": "ЦКИ | Центр Корпоративной Информации" },
+        { "type": "binding", "template": "Накопленная выручка {{metrics.revenueAccumulated|currency}} ₽/мес" },
+        { "type": "binding", "template": "{{metrics.clientsExternal}} внешних клиентов" },
+        { "type": "binding", "template": "{{metrics.apiRequests}}K API запросов" },
+        { "type": "binding", "template": "Churn Rate {{metrics.churnRate}}%" },
+        { "type": "binding", "template": "Цель 2026: {{goals.revenueYear|millions}} млн ₽" }
+      ],
+      "closing": [
+        { "type": "static", "text": "ЦКИ — Golden Source корпоративных данных" },
+        { "type": "binding", "template": "{{metrics.clientsExternal}} внешних клиентов" },
+        { "type": "binding", "template": "Churn Rate {{metrics.churnRate}}% — удержание на максимуме" },
+        { "type": "binding", "template": "{{team.fteTotal}} FTE · {{team.dynamics.after.costThousands|millions}} млн руб/мес" },
+        { "type": "static", "text": "Сбер и Альфа Капитал — подача заявлений" }
+      ]
+    }
+  }
+}
