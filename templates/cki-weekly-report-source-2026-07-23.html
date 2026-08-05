@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="slides-format" content="viewport">
+<title>ЦКИ | НРД — ЕЖЕНЕДЕЛЬНЫЙ ОТЧЁТ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<style type="text/tailwindcss">
+@theme {
+  --color-bg: #050510;
+  --color-bg-deep: #020208;
+  --color-surface: #0d0d20;
+  --color-text: #f0f0ff;
+  --color-text-secondary: #b8b8e0;
+  --color-text-muted: #6060a0;
+  --color-accent-1: #7c3aed;
+  --color-accent-2: #06b6d4;
+  --color-accent-3: #f59e0b;
+  --color-glass-bg: rgba(255,255,255,0.04);
+  --color-glass-border: rgba(255,255,255,0.08);
+  --color-vignette: rgba(0,0,0,0.6);
+  --font-display: "Instrument Serif", serif;
+  --font-body: "Inter", sans-serif;
+}
+</style>
+<style>
+:root{--color-bg:#050510;--color-text:#f0f0ff;--glow-color-rgb:124,58,237;}
+*,*::before,*::after{box-sizing:border-box;}
+html,body{background:var(--color-bg);margin:0;}
+body{font-family:"Inter",sans-serif;color:var(--color-text);overflow:hidden;height:100vh;width:100vw;}
+.deck{width:100vw;height:100vh;position:relative;}
+.slide{position:absolute;top:0;left:0;width:100%;height:100%;background:var(--color-bg);display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;transform:scale(0.97) translateY(8px);transition:opacity 0.9s cubic-bezier(0.16,1,0.3,1),transform 0.9s cubic-bezier(0.16,1,0.3,1);pointer-events:none;overflow:hidden;}
+.slide.active{opacity:1;transform:scale(1) translateY(0);pointer-events:all;}
+.slide>.content{position:relative;z-index:2;width:100%;max-width:1200px;padding:clamp(1rem,3vw,3.5rem);}
+.nav-controls{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:12px;z-index:100;background:rgba(5,5,16,0.8);backdrop-filter:blur(20px);padding:8px 20px;border-radius:40px;border:1px solid rgba(124,58,237,0.3);box-shadow:0 0 20px rgba(124,58,237,0.15);}
+.nav-btn{width:34px;height:34px;border:none;background:rgba(124,58,237,0.15);color:#a78bfa;border-radius:50%;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.3s;}
+.nav-btn:hover{background:rgba(124,58,237,0.4);box-shadow:0 0 12px rgba(124,58,237,0.5);}
+.slide-dots{display:flex;gap:6px;}
+.slide-dots .dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.15);cursor:pointer;transition:all 0.3s;}
+.slide-dots .dot.active{background:#7c3aed;transform:scale(1.5);box-shadow:0 0 8px rgba(124,58,237,0.8);}
+.slide-counter{font-size:0.72rem;color:#6060a0;min-width:34px;text-align:center;font-variant-numeric:tabular-nums;}
+.reveal{opacity:0;transform:translateY(24px);}
+
+/* Background animations */
+@keyframes morph-bg{0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
+@keyframes float-slow{0%{transform:translate(0,0) scale(1);}25%{transform:translate(65px,-55px) scale(1.12);}50%{transform:translate(-45px,40px) scale(0.9);}75%{transform:translate(55px,22px) scale(1.08);}100%{transform:translate(0,0) scale(1);}}
+@keyframes float-drift{0%{transform:translate(0,0) scale(1) rotate(0deg);}33%{transform:translate(-55px,-70px) scale(1.18) rotate(4deg);}66%{transform:translate(45px,35px) scale(0.85) rotate(-3deg);}100%{transform:translate(0,0) scale(1) rotate(0deg);}}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-14px);}}
+@keyframes spin-slow{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+@keyframes breathe{0%,100%{opacity:0.3;transform:scale(1);}50%{opacity:0.7;transform:scale(1.06);}}
+@keyframes shimmer{0%{background-position:-200% 0;}100%{background-position:200% 0;}}
+@keyframes pulse-border{0%,100%{box-shadow:0 0 0 0 rgba(124,58,237,0.4);}50%{box-shadow:0 0 0 8px rgba(124,58,237,0);}}
+@keyframes glow-pulse{0%,100%{text-shadow:0 0 20px rgba(124,58,237,0.6),0 0 40px rgba(124,58,237,0.2),0 0 80px rgba(124,58,237,0.1);}50%{text-shadow:0 0 30px rgba(124,58,237,1),0 0 60px rgba(124,58,237,0.4),0 0 100px rgba(124,58,237,0.2);}}
+@keyframes scan-line{0%{top:-2px;}100%{top:100%;}}
+@keyframes neon-flicker{0%,100%{opacity:1;}92%{opacity:1;}93%{opacity:0.7;}94%{opacity:1;}96%{opacity:0.9;}97%{opacity:1;}}
+
+.gradient-mesh{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;}
+.blob{position:absolute;border-radius:50%;filter:blur(90px);animation:float-slow 14s ease-in-out infinite;}
+.blob:nth-child(2){animation:float-drift 18s ease-in-out infinite;}
+.blob:nth-child(3){animation:float-slow 22s ease-in-out infinite reverse;}
+.blob:nth-child(4){animation:breathe 8s ease-in-out infinite;}
+.slide::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");background-repeat:repeat;background-size:256px 256px;opacity:0.04;mix-blend-mode:overlay;}
+.slide::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at center,transparent 40%,rgba(0,0,0,0.65) 100%);}
+
+/* Scanline overlay */
+.scanline{position:absolute;inset:0;z-index:3;pointer-events:none;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);}
+
+/* Shimmer text */
+.shimmer-text{background:linear-gradient(90deg,#f0f0ff 0%,#a78bfa 30%,#06b6d4 50%,#a78bfa 70%,#f0f0ff 100%);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:shimmer 5s linear infinite;}
+
+/* Glass ultra premium */
+.glass{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:16px;backdrop-filter:blur(20px);}
+.glass-bright{background:rgba(124,58,237,0.08);border:1px solid rgba(124,58,237,0.25);border-radius:16px;backdrop-filter:blur(16px);}
+.glass-cyan{background:rgba(6,182,212,0.06);border:1px solid rgba(6,182,212,0.2);border-radius:16px;backdrop-filter:blur(16px);}
+.glass-amber{background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.2);border-radius:16px;backdrop-filter:blur(16px);}
+
+/* Glow accent line */
+.accent-line{height:2px;background:linear-gradient(90deg,transparent,#7c3aed,#06b6d4,transparent);border-radius:2px;margin:12px 0;}
+
+/* Metric glow */
+.stat-glow{text-shadow:0 0 20px rgba(124,58,237,0.7),0 0 50px rgba(124,58,237,0.3);animation:glow-pulse 3s ease-in-out infinite;}
+.cyan-glow{text-shadow:0 0 20px rgba(6,182,212,0.8),0 0 50px rgba(6,182,212,0.3);}
+.amber-glow{text-shadow:0 0 20px rgba(245,158,11,0.8),0 0 50px rgba(245,158,11,0.3);}
+
+/* Progress ring */
+.ring-wrap{position:relative;display:inline-flex;align-items:center;justify-content:center;}
+
+/* Magnetic cards */
+.mag-card{transition:transform 0.4s cubic-bezier(0.25,0.46,0.45,0.94);}
+
+/* Corner decoration */
+.corner-tl::before,.corner-br::after{content:"";position:absolute;width:20px;height:20px;border-color:#7c3aed;border-style:solid;opacity:0.6;}
+.corner-tl::before{top:0;left:0;border-width:2px 0 0 2px;border-radius:2px 0 0 0;}
+.corner-br::after{bottom:0;right:0;border-width:0 2px 2px 0;border-radius:0 0 2px 0;}
+
+/* Orbital deco */
+.orbital{position:absolute;border-radius:50%;border:1px solid;animation:spin-slow 20s linear infinite;opacity:0.15;}
+
+/* Tag labels */
+.tag{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:20px;font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;}
+.tag-purple{background:rgba(124,58,237,0.15);border:1px solid rgba(124,58,237,0.35);color:#a78bfa;}
+.tag-cyan{background:rgba(6,182,212,0.12);border:1px solid rgba(6,182,212,0.3);color:#22d3ee;}
+.tag-amber{background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.3);color:#fbbf24;}
+.tag-green{background:rgba(52,211,153,0.12);border:1px solid rgba(52,211,153,0.3);color:#34d399;}
+.tag-red{background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);color:#f87171;}
+
+/* Progress bar neon */
+.prog{height:5px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;position:relative;}
+.prog::after{content:"";position:absolute;top:0;left:0;height:100%;background:linear-gradient(90deg,#7c3aed,#06b6d4);border-radius:3px;transition:width 1s cubic-bezier(0.16,1,0.3,1);}
+
+/* Neon card border */
+.neon-card{background:rgba(5,5,16,0.8);border:1px solid rgba(124,58,237,0.3);border-radius:16px;position:relative;overflow:hidden;}
+.neon-card::before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(124,58,237,0.05) 0%,transparent 60%);pointer-events:none;}
+
+/* Activity matrix */
+.matrix-cell{padding:7px 8px;border-bottom:1px solid rgba(255,255,255,0.04);font-size:0.63rem;color:#b8b8e0;line-height:1.5;vertical-align:top;}
+.matrix-cell:last-child{border-bottom:none;}
+.matrix-header{padding:8px;text-align:center;border-bottom:2px solid rgba(124,58,237,0.4);font-size:0.72rem;font-weight:700;}
+
+/* Number grid */
+.neon-number{font-size:clamp(2rem,4vw,3.5rem);font-weight:900;line-height:1;font-variant-numeric:tabular-nums;}
+
+/* Funnel special */
+.funnel-neo{display:flex;flex-direction:column;gap:6px;}
+.funnel-row-neo{display:grid;grid-template-columns:170px 1fr 50px 100px;gap:10px;align-items:center;}
+.funnel-track{background:rgba(255,255,255,0.04);border-radius:4px;height:32px;overflow:hidden;position:relative;}
+.funnel-fill{height:100%;border-radius:4px;display:flex;align-items:center;padding-left:10px;font-size:0.8rem;font-weight:800;position:relative;overflow:hidden;}
+.funnel-fill::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,0.08) 50%,transparent 100%);animation:shimmer 3s linear infinite;}
+
+/* Timeline neon */
+.tl-line{width:2px;background:linear-gradient(180deg,#7c3aed 0%,#06b6d4 50%,#f59e0b 100%);position:absolute;left:6px;top:12px;bottom:8px;border-radius:2px;}
+.tl-dot{width:14px;height:14px;border-radius:50%;position:relative;flex-shrink:0;box-shadow:0 0 12px currentColor;}
+
+/* SCROLLING TEXT TICKER */
+@keyframes ticker-scroll{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+.ticker-wrap{position:absolute;bottom:0;left:0;right:0;z-index:4;height:26px;background:rgba(124,58,237,0.08);border-top:1px solid rgba(124,58,237,0.2);overflow:hidden;display:flex;align-items:center;}
+.ticker-inner{display:flex;white-space:nowrap;animation:ticker-scroll 30s linear infinite;}
+.ticker-item{padding:0 40px;font-size:0.65rem;font-weight:600;letter-spacing:0.1em;color:#7c3aed;text-transform:uppercase;}
+.ticker-sep{color:#06b6d4;padding:0 4px;}
+</style>
+
+<style>
+@media (max-width: 900px) {
+  html, body { overflow: auto !important; height: auto !important; }
+  body { background: #0b1020 !important; }
+  .deck { height: auto !important; min-height: 100vh !important; }
+  .slide {
+    position: relative !important;
+    opacity: 1 !important;
+    transform: none !important;
+    pointer-events: auto !important;
+    min-height: auto !important;
+    height: auto !important;
+    overflow: visible !important;
+    padding: 0 0 18px 0 !important;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .slide:not(.active) { display: flex !important; }
+  .slide > .content {
+    max-width: 100% !important;
+    width: 100% !important;
+    padding: 18px 14px 86px !important;
+  }
+  .content h1, .content h2 { word-break: break-word; }
+  .nav-controls {
+    position: fixed !important;
+    bottom: 10px !important;
+    left: 10px !important;
+    right: 10px !important;
+    transform: none !important;
+    width: auto !important;
+    justify-content: center;
+    gap: 10px !important;
+    padding: 8px 12px !important;
+  }
+  .nav-btn { width: 36px !important; height: 36px !important; }
+  .slide-counter { min-width: 48px !important; }
+  .mouse-spotlight, .particle-canvas, .particle-canvas-ambient { display: none !important; }
+  .blob { filter: blur(60px) !important; }
+  table { display: block; width: 100% !important; overflow-x: auto; }
+  svg { max-width: 100% !important; height: auto !important; }
+  [style*="grid-template-columns:repeat(3,1fr)"] { grid-template-columns: 1fr !important; }
+  [style*="grid-template-columns:repeat(4,1fr)"] { grid-template-columns: 1fr 1fr !important; }
+  [style*="grid-template-columns:1fr 1fr"] { grid-template-columns: 1fr !important; }
+  [style*="grid-template-columns:165px 1fr 44px 96px"] { grid-template-columns: 110px 1fr 40px 78px !important; gap: 6px !important; }
+  [style*="display:flex;align-items:flex-start;justify-content:space-between"],
+  [style*="display:flex;align-items:center;justify-content:space-between"] {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 10px !important;
+  }
+  [style*="margin-left:16px;flex-shrink:0;"] { margin-left: 0 !important; }
+  .glass, .neon-card { backdrop-filter: blur(8px); }
+  .reveal { opacity: 1 !important; transform: none !important; }
+}
+
+@media (max-width: 640px) {
+  .slide > .content { padding: 16px 12px 88px !important; }
+  .nav-controls { padding: 8px 10px !important; }
+  [style*="font-size:clamp(2.5rem,6vw,5rem)"] { font-size: 2.1rem !important; }
+  [style*="font-size:clamp(2rem,4.5vw,3rem)"] { font-size: 1.6rem !important; }
+  [style*="font-size:clamp(1.8rem,3.5vw,2.8rem)"] { font-size: 1.45rem !important; }
+  [style*="font-size:clamp(1.6rem,3vw,2.4rem)"] { font-size: 1.35rem !important; }
+  [style*="font-size:clamp(1.5rem,2.8vw,2.2rem)"] { font-size: 1.3rem !important; }
+  [style*="font-size:0.72rem"] { font-size: 0.68rem !important; }
+  [style*="font-size:0.75rem"] { font-size: 0.7rem !important; }
+  [style*="font-size:0.78rem"] { font-size: 0.72rem !important; }
+  [style*="font-size:0.85rem"] { font-size: 0.76rem !important; }
+  [style*="text-[120px]"] { font-size: 72px !important; }
+  [style*="writing-mode:vertical-lr"] {
+    writing-mode: horizontal-tb !important;
+    transform: none !important;
+    display: inline-block !important;
+    padding: 2px 0 !important;
+  }
+}
+</style>
+
+</head>
+<body>
+<div class="mouse-spotlight" style="position:fixed;inset:0;z-index:99;pointer-events:none;"></div>
+
+<div class="deck">
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SLIDE 1: EPIC TITLE -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="slide slide-1 active" data-slide="1">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:700px;height:700px;top:-200px;right:-200px;background:radial-gradient(circle,#7c3aed,#4c1d95);opacity:0.18;"></div>
+    <div class="blob" style="width:500px;height:500px;bottom:-150px;left:-150px;background:radial-gradient(circle,#06b6d4,#0284c7);opacity:0.14;"></div>
+    <div class="blob" style="width:300px;height:300px;top:30%;left:30%;background:radial-gradient(circle,#f59e0b,#d97706);opacity:0.08;"></div>
+    <div class="blob" style="width:200px;height:200px;top:20%;right:30%;background:#4c1d95;opacity:0.12;animation:breathe 6s ease-in-out infinite;filter:blur(60px);"></div>
+  </div>
+  <canvas class="particle-canvas" style="position:absolute;inset:0;z-index:1;"></canvas>
+  <div class="scanline"></div>
+  <!-- Orbital rings -->
+  <div class="orbital" style="width:600px;height:600px;border-color:#7c3aed;top:50%;left:50%;transform:translate(-50%,-50%);animation-duration:30s;"></div>
+  <div class="orbital" style="width:400px;height:400px;border-color:#06b6d4;top:50%;left:50%;transform:translate(-50%,-50%);animation-duration:20s;animation-direction:reverse;"></div>
+  <div class="content text-center" style="position:relative;z-index:5;">
+    <div class="reveal" style="margin-bottom:1.5rem;">
+      <span class="tag-purple" style="font-size:0.7rem;padding:6px 18px;"><span style="width:6px;height:6px;border-radius:50%;background:#a78bfa;display:inline-block;animation:glow-pulse 2s ease-in-out infinite;"></span>&nbsp;ЦКИ | НРД &nbsp;·&nbsp; 16 июля 2026</span>
+    </div>
+    <h1 class="shimmer-text reveal" style="font-family:'Manrope',sans-serif;font-size:clamp(3.5rem,8vw,7rem);font-weight:400;font-style:normal;line-height:1.0;margin-bottom:0.4rem;letter-spacing:-2px;">Еженедельный<br>отчёт</h1>
+    <div class="accent-line reveal" style="width:280px;margin:14px auto;"></div>
+    <p class="reveal" style="font-size:0.82rem;color:#6060a0;letter-spacing:0.3em;text-transform:uppercase;margin-bottom:2.5rem;">Команда продукта ЦКИ</p>
+    <div class="reveal" style="display:flex;justify-content:center;gap:40px;">
+      <div style="text-align:center;position:relative;">
+        <div class="cyan-glow" style="font-size:1.6rem;font-weight:900;color:#06b6d4;">Golden Source</div>
+        <div style="font-size:0.65rem;color:#6060a0;letter-spacing:0.1em;text-transform:uppercase;margin-top:2px;">корп. данных</div>
+      </div>
+      <div style="width:1px;background:linear-gradient(180deg,transparent,rgba(124,58,237,0.5),transparent);"></div>
+      <div style="text-align:center;">
+        <div class="stat-glow" style="font-size:1.6rem;font-weight:900;color:#a78bfa;">ГК МБ</div>
+        <div style="font-size:0.65rem;color:#6060a0;letter-spacing:0.1em;text-transform:uppercase;margin-top:2px;">партнёр</div>
+      </div>
+      <div style="width:1px;background:linear-gradient(180deg,transparent,rgba(6,182,212,0.5),transparent);"></div>
+      <div style="text-align:center;">
+        <div class="amber-glow" style="font-size:1.6rem;font-weight:900;color:#f59e0b;">Moex.com</div>
+        <div style="font-size:0.65rem;color:#6060a0;letter-spacing:0.1em;text-transform:uppercase;margin-top:2px;">данные B2C</div>
+      </div>
+    </div>
+  </div>
+  <!-- Ticker bottom -->
+  <div class="ticker-wrap">
+    <div class="ticker-inner">
+      <span class="ticker-item">ЦКИ | Центр Корпоративной Информации</span><span class="ticker-item ticker-sep">◆</span>
+      <span class="ticker-item">Накопленная выручка 1 732 000 ₽/мес</span><span class="ticker-item ticker-sep">◆</span>
+      <span class="ticker-item">17 внешних клиентов</span><span class="ticker-item ticker-sep">◆</span>
+      <span class="ticker-item">906K API запросов</span><span class="ticker-item ticker-sep">◆</span>
+      <span class="ticker-item">Churn Rate 0%</span><span class="ticker-item ticker-sep">◆</span>
+      <span class="ticker-item">Цель 2026: 60 млн ₽</span><span class="ticker-item ticker-sep">◆</span>
+      <span class="ticker-item">ЦКИ | Центр Корпоративной Информации</span><span class="ticker-item ticker-sep">◆</span>
+      <span class="ticker-item">Накопленная выручка 1 732 000 ₽/мес</span><span class="ticker-item ticker-sep">◆</span>
+      <span class="ticker-item">17 внешних клиентов</span><span class="ticker-item ticker-sep">◆</span>
+      <span class="ticker-item">906K API запросов</span><span class="ticker-item ticker-sep">◆</span>
+      <span class="ticker-item">Churn Rate 0%</span><span class="ticker-item ticker-sep">◆</span>
+      <span class="ticker-item">Цель 2026: 60 млн ₽</span><span class="ticker-item ticker-sep">◆</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SLIDE 2: PRODUCTS & VALUES (PREMIUM GRID) -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="slide slide-2" data-slide="2">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:500px;height:500px;top:-120px;right:-120px;background:#7c3aed;opacity:0.11;"></div>
+    <div class="blob" style="width:350px;height:350px;bottom:-80px;left:-80px;background:#06b6d4;opacity:0.09;"></div>
+  </div>
+  <div class="content">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;">
+      <div>
+        <h2 class="reveal" style="font-family:'Manrope',sans-serif;font-size:clamp(1.8rem,3.5vw,2.8rem);font-style:normal;font-weight:400;line-height:1.1;">ЦКИ — продукты и ценности</h2>
+        <p class="reveal" style="font-size:0.78rem;color:#6060a0;margin-top:4px;">что мы даём внешним клиентам, внутренним и Группе МБ</p>
+      </div>
+      <div class="reveal" style="margin-left:16px;flex-shrink:0;">
+        <span class="tag-purple">Слайд 2 / 7</span>
+      </div>
+    </div>
+    <!-- Products pill row -->
+    <div class="reveal" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:14px;padding:10px 14px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:12px;">
+      <span style="font-size:0.6rem;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#6060a0;width:100%;margin-bottom:4px;">10 продуктов</span>
+      <span style="background:rgba(124,58,237,0.12);border:1px solid rgba(124,58,237,0.2);border-radius:20px;padding:3px 10px;font-size:0.7rem;color:#c4b5fd;">Корп. действия</span>
+      <span style="background:rgba(124,58,237,0.12);border:1px solid rgba(124,58,237,0.2);border-radius:20px;padding:3px 10px;font-size:0.7rem;color:#c4b5fd;">IR-календарь</span>
+      <span style="background:rgba(124,58,237,0.12);border:1px solid rgba(124,58,237,0.2);border-radius:20px;padding:3px 10px;font-size:0.7rem;color:#c4b5fd;">Справочники компаний</span>
+      <span style="background:rgba(124,58,237,0.12);border:1px solid rgba(124,58,237,0.2);border-radius:20px;padding:3px 10px;font-size:0.7rem;color:#c4b5fd;">Excel Add-In</span>
+      <span style="background:rgba(124,58,237,0.12);border:1px solid rgba(124,58,237,0.2);border-radius:20px;padding:3px 10px;font-size:0.7rem;color:#c4b5fd;">МСФО</span>
+      <span style="background:rgba(124,58,237,0.12);border:1px solid rgba(124,58,237,0.2);border-radius:20px;padding:3px 10px;font-size:0.7rem;color:#c4b5fd;">РСБУ</span>
+      <span style="background:rgba(124,58,237,0.12);border:1px solid rgba(124,58,237,0.2);border-radius:20px;padding:3px 10px;font-size:0.7rem;color:#c4b5fd;">Рейтинги</span>
+      <span style="background:rgba(124,58,237,0.12);border:1px solid rgba(124,58,237,0.2);border-radius:20px;padding:3px 10px;font-size:0.7rem;color:#c4b5fd;">Корп. информация</span>
+      <span style="background:rgba(124,58,237,0.12);border:1px solid rgba(124,58,237,0.2);border-radius:20px;padding:3px 10px;font-size:0.7rem;color:#c4b5fd;">Справочники выпусков</span>
+      <span style="background:rgba(52,211,153,0.12);border:1px solid rgba(52,211,153,0.3);border-radius:20px;padding:3px 10px;font-size:0.7rem;color:#34d399;">✦ Календарь выплат — июль 2026</span>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+      <!-- External -->
+      <div class="reveal neon-card mag-card" style="padding:14px;">
+        <div class="tag-cyan" style="margin-bottom:10px;width:fit-content;">Внешним клиентам</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="border-left:2px solid #06b6d4;padding-left:10px;"><div style="font-size:0.78rem;font-weight:700;color:#22d3ee;margin-bottom:2px;">Чистые данные</div><div style="font-size:0.68rem;color:#6060a0;line-height:1.5;">Первоисточник. Лучшая скорость, покрытие и SLA.</div></div>
+          <div style="border-left:2px solid #06b6d4;padding-left:10px;"><div style="font-size:0.78rem;font-weight:700;color:#22d3ee;margin-bottom:2px;">Value-added services</div><div style="font-size:0.68rem;color:#6060a0;line-height:1.5;">Аналитические продукты. Комплаенс.</div></div>
+          <div style="border-left:2px solid #06b6d4;padding-left:10px;"><div style="font-size:0.78rem;font-weight:700;color:#22d3ee;margin-bottom:2px;">RegTech</div><div style="font-size:0.68rem;color:#6060a0;line-height:1.5;">Адаптируем продукты под регуляторику раньше клиентов.</div></div>
+        </div>
+      </div>
+      <!-- Internal -->
+      <div class="reveal neon-card mag-card" style="padding:14px;border-color:rgba(124,58,237,0.3);">
+        <div class="tag-purple" style="margin-bottom:10px;width:fit-content;">Внутренним клиентам</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="border-left:2px solid #7c3aed;padding-left:10px;"><div style="font-size:0.78rem;font-weight:700;color:#a78bfa;margin-bottom:2px;">Нет зависимости</div><div style="font-size:0.68rem;color:#6060a0;line-height:1.5;">Замещаем внешних поставщиков. Быстрее.</div></div>
+          <div style="border-left:2px solid #7c3aed;padding-left:10px;"><div style="font-size:0.78rem;font-weight:700;color:#a78bfa;margin-bottom:2px;">Экономия</div><div style="font-size:0.68rem;color:#6060a0;line-height:1.5;">Снижение расходов. Легальное право.</div></div>
+          <div style="border-left:2px solid #7c3aed;padding-left:10px;"><div style="font-size:0.78rem;font-weight:700;color:#a78bfa;margin-bottom:2px;">Данные moex.com</div><div style="font-size:0.68rem;color:#6060a0;line-height:1.5;">Привлекаем и конвертируем инвесторов B2C.</div></div>
+        </div>
+      </div>
+      <!-- Strategic -->
+      <div class="reveal neon-card mag-card" style="padding:14px;border-color:rgba(245,158,11,0.18);">
+        <div class="tag-amber" style="margin-bottom:10px;width:fit-content;">Стратегия ГК МБ</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="border-left:2px solid #f59e0b;padding-left:10px;"><div style="font-size:0.78rem;font-weight:700;color:#fbbf24;margin-bottom:2px;">Рост экосистемы МБ</div><div style="font-size:0.68rem;color:#6060a0;line-height:1.5;">Расширение услуг для эмитентов и профучастников.</div></div>
+          <div style="border-left:2px solid #f59e0b;padding-left:10px;"><div style="font-size:0.78rem;font-weight:700;color:#fbbf24;margin-bottom:2px;">Качество данных</div><div style="font-size:0.68rem;color:#6060a0;line-height:1.5;">= доверие инвесторов = ликвидность = доходы.</div></div>
+          <div style="border-left:2px solid #f59e0b;padding-left:10px;"><div style="font-size:0.78rem;font-weight:700;color:#fbbf24;margin-bottom:2px;">Регуляторное партнёрство</div><div style="font-size:0.68rem;color:#6060a0;line-height:1.5;">Биржа — ИнфоХаб.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SLIDE 3: METRICS (ULTRA-PREMIUM DASHBOARD) -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="slide slide-3" data-slide="3">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:600px;height:600px;top:-150px;right:-150px;background:#7c3aed;opacity:0.10;"></div>
+    <div class="blob" style="width:400px;height:400px;bottom:-100px;left:-80px;background:#06b6d4;opacity:0.08;"></div>
+  </div>
+  <div class="content">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+      <div>
+        <h2 class="reveal" style="font-family:'Manrope',sans-serif;font-size:clamp(1.6rem,3vw,2.4rem);font-style:normal;">Метрики продукта ЦКИ <span style="font-style:normal;font-size:0.7em;color:#a78bfa;font-family:'Inter',sans-serif;">(MoM)</span></h2>
+        <p class="reveal" style="font-size:0.72rem;color:#6060a0;margin-top:2px;">▲ рост &nbsp;&nbsp; ▼ снижение &nbsp;&nbsp; — без изменений</p>
+      </div>
+      <div class="reveal glass" style="padding:10px 16px;border-color:rgba(124,58,237,0.2);">
+        <div style="font-size:0.6rem;text-transform:uppercase;letter-spacing:0.1em;color:#6060a0;margin-bottom:6px;">Цели 2026</div>
+        <div style="display:flex;gap:12px;">
+          <div style="text-align:center;"><div style="font-size:0.72rem;font-weight:800;color:#f87171;">4,7M ₽/мес</div><div style="font-size:0.58rem;color:#6060a0;">выручка</div></div>
+          <div style="text-align:center;"><div style="font-size:0.72rem;font-weight:800;color:#a78bfa;">53</div><div style="font-size:0.58rem;color:#6060a0;">клиенты</div></div>
+          <div style="text-align:center;"><div style="font-size:0.72rem;font-weight:800;color:#22d3ee;">103</div><div style="font-size:0.58rem;color:#6060a0;">подписки</div></div>
+          <div style="text-align:center;"><div style="font-size:0.72rem;font-weight:800;color:#fbbf24;">90%</div><div style="font-size:0.58rem;color:#6060a0;">покрытие</div></div>
+        </div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
+      <!-- Row 1 -->
+      <div class="reveal neon-card corner-tl corner-br" style="padding:14px;">
+        <span class="tag-cyan" style="font-size:0.58rem;margin-bottom:8px;display:inline-block;">БАЗА</span>
+        <div style="font-size:0.72rem;color:#b8b8e0;margin-bottom:4px;">Клиенты (внешние)</div>
+        <div class="neon-number cyan-glow" style="color:#06b6d4;" data-count="17">17</div>
+        <div style="font-size:0.65rem;color:#6060a0;margin-top:2px;">шт &nbsp;·&nbsp; без изм.</div>
+        <div class="prog" style="margin-top:8px;"><div style="height:5px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;"><div style="height:100%;width:32%;background:linear-gradient(90deg,#06b6d4,#7c3aed);border-radius:3px;transition:width 1s;"></div></div></div>
+        <div style="font-size:0.6rem;color:#6060a0;margin-top:3px;">32% от цели 53</div>
+      </div>
+      <div class="reveal neon-card" style="padding:14px;">
+        <span class="tag-cyan" style="font-size:0.58rem;margin-bottom:8px;display:inline-block;">БАЗА</span>
+        <div style="font-size:0.72rem;color:#b8b8e0;margin-bottom:4px;">Клиенты (внутренние МБ)</div>
+        <div class="neon-number" style="color:#a78bfa;">13</div>
+        <div style="font-size:0.65rem;color:#6060a0;margin-top:2px;">шт внутри МБ &nbsp;·&nbsp; без изм.</div>
+      </div>
+      <div class="reveal neon-card" style="padding:14px;">
+        <span class="tag-cyan" style="font-size:0.58rem;margin-bottom:8px;display:inline-block;">БАЗА</span>
+        <div style="font-size:0.72rem;color:#b8b8e0;margin-bottom:4px;">Подписки (активные)</div>
+        <div class="neon-number" style="color:#a78bfa;" data-count="40">40</div>
+        <div style="font-size:0.65rem;color:#6060a0;margin-top:2px;">шт &nbsp;·&nbsp; без изм.</div>
+        <div style="height:5px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;margin-top:8px;"><div style="height:100%;width:48%;background:linear-gradient(90deg,#a78bfa,#7c3aed);border-radius:3px;transition:width 1s;"></div></div>
+        <div style="font-size:0.6rem;color:#6060a0;margin-top:3px;">48% от цели 103</div>
+      </div>
+      <!-- Row 2 -->
+      <div class="reveal neon-card" style="padding:14px;border-color:rgba(124,58,237,0.35);background:rgba(124,58,237,0.06);">
+        <span class="tag-purple" style="font-size:0.58rem;margin-bottom:8px;display:inline-block;">АКТИВНОСТЬ</span>
+        <div style="font-size:0.72rem;color:#b8b8e0;margin-bottom:4px;">Запросы к API за месяц</div>
+        <div style="display:flex;align-items:baseline;gap:10px;">
+          <div class="neon-number stat-glow" style="color:#a78bfa;" data-count="906">906</div>
+          <span style="font-size:0.85rem;font-weight:800;color:#34d399;">▲1</span>
+        </div>
+        <div style="font-size:0.65rem;color:#6060a0;margin-top:2px;">тыс. запросов</div>
+      </div>
+      <div class="reveal neon-card" style="padding:14px;">
+        <span class="tag-purple" style="font-size:0.58rem;margin-bottom:8px;display:inline-block;">АКТИВНОСТЬ</span>
+        <div style="font-size:0.72rem;color:#b8b8e0;margin-bottom:4px;">Клиенты с 2+ сервисами</div>
+        <div class="neon-number" style="color:#a78bfa;">76</div>
+        <div style="font-size:0.65rem;color:#6060a0;margin-top:2px;">% клиентов &nbsp;·&nbsp; без изм.</div>
+      </div>
+      <div class="reveal neon-card" style="padding:14px;border-color:rgba(52,211,153,0.3);background:rgba(52,211,153,0.04);">
+        <span class="tag-green" style="font-size:0.58rem;margin-bottom:8px;display:inline-block;">УДЕРЖАНИЕ</span>
+        <div style="font-size:0.72rem;color:#b8b8e0;margin-bottom:4px;">Churn Rate</div>
+        <div class="neon-number" style="color:#34d399;text-shadow:0 0 20px rgba(52,211,153,0.8);">0%</div>
+        <div style="font-size:0.65rem;color:#6060a0;margin-top:2px;">за период &nbsp;·&nbsp; без изм.</div>
+      </div>
+      <!-- Row 3 — monetization -->
+      <div class="reveal neon-card" style="padding:14px;border-color:rgba(245,158,11,0.18);background:rgba(245,158,11,0.04);">
+        <span class="tag-amber" style="font-size:0.58rem;margin-bottom:8px;display:inline-block;">МОНЕТИЗАЦИЯ</span>
+        <div style="font-size:0.72rem;color:#b8b8e0;margin-bottom:4px;">Накопленная выручка</div>
+        <div class="neon-number amber-glow" style="color:#f59e0b;font-size:clamp(1.4rem,2.5vw,2rem);" data-count="1732000">1 732 000</div>
+        <div style="font-size:0.65rem;color:#6060a0;margin-top:2px;">руб. / мес &nbsp;·&nbsp; без изм.</div>
+        <div style="height:5px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;margin-top:8px;"><div style="height:100%;width:37%;background:linear-gradient(90deg,#f59e0b,#f87171);border-radius:3px;transition:width 1s;"></div></div>
+        <div style="font-size:0.6rem;color:#6060a0;margin-top:3px;">37% от цели 4,7 млн ₽</div>
+      </div>
+      <div class="reveal neon-card" style="padding:14px;">
+        <span class="tag-amber" style="font-size:0.58rem;margin-bottom:8px;display:inline-block;">МОНЕТИЗАЦИЯ</span>
+        <div style="font-size:0.72rem;color:#b8b8e0;margin-bottom:4px;">LTV (c 01.01.2026)</div>
+        <div class="neon-number" style="color:#fbbf24;font-size:clamp(1.3rem,2vw,1.8rem);" data-count="547680">547 680</div>
+        <div style="font-size:0.65rem;color:#6060a0;margin-top:2px;">руб. / клиент накопл.</div>
+      </div>
+      <div class="reveal neon-card" style="padding:14px;">
+        <span class="tag-amber" style="font-size:0.58rem;margin-bottom:8px;display:inline-block;">МОНЕТИЗАЦИЯ</span>
+        <div style="font-size:0.72rem;color:#b8b8e0;margin-bottom:4px;">ARPU</div>
+        <div class="neon-number" style="color:#fbbf24;font-size:clamp(1.3rem,2vw,1.8rem);" data-count="103250">103 250</div>
+        <div style="font-size:0.65rem;color:#6060a0;margin-top:2px;">руб. / клиент / мес &nbsp;·&nbsp; без изм.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SLIDE 4: FUNNEL & ROADMAP -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="slide slide-4" data-slide="4">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:500px;height:500px;top:-120px;left:-120px;background:#7c3aed;opacity:0.10;"></div>
+    <div class="blob" style="width:350px;height:350px;bottom:-80px;right:-60px;background:#f59e0b;opacity:0.08;"></div>
+  </div>
+  <div class="content">
+    <h2 class="reveal" style="font-family:'Manrope',sans-serif;font-size:clamp(1.6rem,3vw,2.4rem);font-style:normal;margin-bottom:4px;">Воронка продаж</h2>
+    <p class="reveal" style="font-size:0.75rem;color:#6060a0;margin-bottom:14px;">недельная динамика и комментарии</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+      <!-- Funnel -->
+      <div class="reveal">
+        <div style="font-size:0.62rem;color:#6060a0;margin-bottom:8px;">Всего: <span style="color:#f0f0ff;font-weight:700;">109</span> <span style="color:#34d399;font-weight:700;">0</span> &nbsp;·&nbsp; Сумма: <span style="color:#fbbf24;font-weight:700;">32 658 тыс ₽</span></div>
+        <div style="display:flex;flex-direction:column;gap:5px;">
+          <div style="display:grid;grid-template-columns:165px 1fr 44px 96px;gap:8px;align-items:center;">
+            <div style="font-size:0.72rem;color:#b8b8e0;">Оценка потребности</div>
+            <div style="background:rgba(255,255,255,0.04);border-radius:4px;height:30px;overflow:hidden;position:relative;"><div class="bar-fill" data-width="100" style="height:100%;border-radius:4px;display:flex;align-items:center;padding-left:8px;font-size:0.78rem;font-weight:800;background:linear-gradient(90deg,rgba(124,58,237,0.5),rgba(6,182,212,0.3));">61</div></div>
+            <div style="font-size:0.75rem;font-weight:700;color:#34d399;text-align:right;">0</div>
+            <div style="font-size:0.68rem;color:#6060a0;text-align:right;">17 940 тыс ₽</div>
+          </div>
+          <div style="display:grid;grid-template-columns:165px 1fr 44px 96px;gap:8px;align-items:center;">
+            <div style="font-size:0.72rem;color:#b8b8e0;">Отправлено КП</div>
+            <div style="background:rgba(255,255,255,0.04);border-radius:4px;height:30px;overflow:hidden;"><div class="bar-fill" data-width="51" style="height:100%;border-radius:4px;display:flex;align-items:center;padding-left:8px;font-size:0.78rem;font-weight:800;background:linear-gradient(90deg,rgba(124,58,237,0.6),rgba(6,182,212,0.35));">31</div></div>
+            <div style="font-size:0.75rem;font-weight:700;color:#34d399;text-align:right;">0</div>
+            <div style="font-size:0.68rem;color:#6060a0;text-align:right;">8 100 тыс ₽</div>
+          </div>
+          <div style="display:grid;grid-template-columns:165px 1fr 44px 96px;gap:8px;align-items:center;">
+            <div style="font-size:0.72rem;color:#b8b8e0;">Согласование</div>
+            <div style="background:rgba(255,255,255,0.04);border-radius:4px;height:30px;overflow:hidden;"><div class="bar-fill" data-width="20" style="height:100%;border-radius:4px;display:flex;align-items:center;padding-left:8px;font-size:0.78rem;font-weight:800;background:linear-gradient(90deg,rgba(124,58,237,0.7),rgba(124,58,237,0.4));">12</div></div>
+            <div style="font-size:0.75rem;font-weight:700;color:#6060a0;text-align:right;">0</div>
+            <div style="font-size:0.68rem;color:#6060a0;text-align:right;">5 395 тыс ₽</div>
+          </div>
+          <div style="display:grid;grid-template-columns:165px 1fr 44px 96px;gap:8px;align-items:center;">
+            <div style="font-size:0.72rem;color:#fbbf24;font-weight:600;">Подписание</div>
+            <div style="background:rgba(255,255,255,0.04);border-radius:4px;height:30px;overflow:hidden;"><div class="bar-fill" data-width="8" style="height:100%;border-radius:4px;display:flex;align-items:center;padding-left:8px;font-size:0.78rem;font-weight:800;background:linear-gradient(90deg,#f59e0b,rgba(245,158,11,0.4));">5</div></div>
+            <div style="font-size:0.75rem;font-weight:700;color:#34d399;text-align:right;">0</div>
+            <div style="font-size:0.68rem;color:#6060a0;text-align:right;">1 223 тыс ₽</div>
+          </div>
+          <div style="display:grid;grid-template-columns:165px 1fr 44px 96px;gap:8px;align-items:center;">
+            <div style="font-size:0.72rem;color:#34d399;font-weight:600;">✓ Подписан</div>
+            <div style="background:rgba(255,255,255,0.04);border-radius:4px;height:30px;overflow:hidden;"><div class="bar-fill" data-width="14" style="height:100%;border-radius:4px;display:flex;align-items:center;padding-left:8px;font-size:0.78rem;font-weight:800;background:linear-gradient(90deg,#34d399,rgba(52,211,153,0.4));">9</div></div>
+            <div style="font-size:0.75rem;font-weight:700;color:#6060a0;text-align:right;">+1</div>
+            <div style="font-size:0.68rem;color:#6060a0;text-align:right;">2 847 тыс ₽</div>
+          </div>
+        </div>
+        <!-- Comments -->
+        <div class="glass" style="padding:12px;margin-top:10px;border-color:rgba(124,58,237,0.2);">
+          <div style="font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#a78bfa;margin-bottom:7px;">Комментарии</div>
+          <div style="display:flex;flex-direction:column;gap:4px;">
+            <div style="font-size:0.7rem;color:#b8b8e0;display:flex;gap:6px;"><span style="color:#34d399;flex-shrink:0;">→</span>Сбер - в процессе подписания, Альфа Капитал – заявление подано</div>
+            <div style="font-size:0.7rem;color:#b8b8e0;display:flex;gap:6px;"><span style="color:#22d3ee;flex-shrink:0;">→</span>Держава – заявление подписано, согласование старта</div>
+            <div style="font-size:0.7rem;color:#b8b8e0;display:flex;gap:6px;"><span style="color:#fbbf24;flex-shrink:0;">→</span>Озон, Интеррао – согласование пакета, онбординг по демо</div>
+            <div style="font-size:0.7rem;color:#b8b8e0;display:flex;gap:6px;"><span style="color:#a78bfa;flex-shrink:0;">→</span>ВЭБ — согласование на 500 тр в 2026 г.</div>
+            <div style="font-size:0.7rem;color:#b8b8e0;display:flex;gap:6px;"><span style="color:#c4b5fd;flex-shrink:0;">→</span>Биткоган — подписание запланировано на июль</div>
+          </div>
+        </div>
+      </div>
+      <!-- Roadmap timeline -->
+      <div class="reveal">
+        <div style="font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#6060a0;margin-bottom:10px;">Дорожная карта</div>
+        <div style="position:relative;padding-left:22px;">
+          <div style="position:absolute;left:6px;top:10px;bottom:4px;width:2px;background:linear-gradient(180deg,#7c3aed 0%,#06b6d4 40%,#f59e0b 70%,rgba(255,255,255,0.15) 100%);border-radius:2px;"></div>
+          <div style="margin-bottom:12px;position:relative;">
+            <div style="position:absolute;left:-18px;top:2px;width:13px;height:13px;border-radius:50%;background:#7c3aed;box-shadow:0 0 12px rgba(124,58,237,0.9);"></div>
+            <div style="font-size:0.7rem;font-weight:700;color:#a78bfa;margin-bottom:2px;">Q1 2026 ✓</div>
+            <div style="font-size:0.68rem;color:#6060a0;">Справочник выпусков, Excel Add-In</div>
+          </div>
+          <div style="margin-bottom:12px;position:relative;">
+            <div style="position:absolute;left:-18px;top:2px;width:13px;height:13px;border-radius:50%;background:#7c3aed;box-shadow:0 0 8px rgba(124,58,237,0.6);"></div>
+            <div style="font-size:0.7rem;font-weight:700;color:#a78bfa;margin-bottom:2px;">Апрель 2026 ✓</div>
+            <div style="font-size:0.68rem;color:#6060a0;">Справочник выпусков, Excel Add-In (расширение)</div>
+          </div>
+          <div style="margin-bottom:12px;position:relative;">
+            <div style="position:absolute;left:-18px;top:2px;width:13px;height:13px;border-radius:50%;background:#06b6d4;box-shadow:0 0 12px rgba(6,182,212,0.9);"></div>
+            <div style="font-size:0.7rem;font-weight:700;color:#22d3ee;margin-bottom:2px;">Июнь 2026 ✓</div>
+            <div style="font-size:0.68rem;color:#6060a0;">Индикаторы, бенчмарки. МСФО консолидация, итоги торгов в AddIn</div>
+          </div>
+          <div style="margin-bottom:12px;position:relative;">
+            <div style="position:absolute;left:-18px;top:2px;width:13px;height:13px;border-radius:50%;background:#f59e0b;box-shadow:0 0 12px rgba(245,158,11,0.8);animation:pulse-border 2s ease-in-out infinite;"></div>
+            <div style="font-size:0.7rem;font-weight:700;color:#fbbf24;margin-bottom:2px;">Q3 2026 ← СЕЙЧАС</div>
+            <div style="font-size:0.68rem;color:#b8b8e0;">Календарь выплат, оцифровка МСФО.<br>Клиентский вебинар и офлайн семинар</div>
+          </div>
+          <div style="margin-bottom:12px;position:relative;">
+            <div style="position:absolute;left:-18px;top:2px;width:13px;height:13px;border-radius:50%;background:rgba(255,255,255,0.15);border:2px solid rgba(255,255,255,0.2);"></div>
+            <div style="font-size:0.7rem;font-weight:700;color:#6060a0;margin-bottom:2px;">Q4 2026</div>
+            <div style="font-size:0.68rem;color:#6060a0;">Профиль эмитента. Excel AddIn под роли клиента</div>
+          </div>
+          <div style="position:relative;">
+            <div style="position:absolute;left:-18px;top:2px;width:13px;height:13px;border-radius:50%;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.1);"></div>
+            <div style="font-size:0.7rem;font-weight:700;color:#6060a0;margin-bottom:2px;">2027</div>
+            <div style="font-size:0.68rem;color:#6060a0;">ЦКИ — Golden Source</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SLIDE 5: ACTIVITIES MATRIX -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="slide slide-5" data-slide="5">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:400px;height:400px;top:-80px;right:-80px;background:#7c3aed;opacity:0.09;"></div>
+    <div class="blob" style="width:300px;height:300px;bottom:-60px;left:-50px;background:#06b6d4;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <h2 class="reveal" style="font-family:'Manrope',sans-serif;font-size:clamp(1.5rem,2.8vw,2.2rem);font-style:normal;margin-bottom:12px;">Ключевые активности</h2>
+    <div class="reveal" style="border:1px solid rgba(124,58,237,0.2);border-radius:14px;overflow:hidden;backdrop-filter:blur(10px);background:rgba(5,5,16,0.7);">
+      <table style="width:100%;border-collapse:collapse;">
+        <thead>
+          <tr>
+            <th style="width:80px;background:rgba(124,58,237,0.08);padding:8px 10px;border-right:1px solid rgba(255,255,255,0.05);border-bottom:1px solid rgba(124,58,237,0.3);"></th>
+            <th style="background:rgba(124,58,237,0.08);padding:8px;text-align:center;border-right:1px solid rgba(255,255,255,0.05);border-bottom:1px solid rgba(124,58,237,0.3);font-size:0.72rem;font-weight:700;color:#a78bfa;">20.07.2026</th>
+            <th style="background:rgba(124,58,237,0.08);padding:8px;text-align:center;border-right:1px solid rgba(255,255,255,0.05);border-bottom:1px solid rgba(124,58,237,0.3);font-size:0.72rem;font-weight:700;color:#fbbf24;">27.07.2026</th>
+            <th style="background:rgba(124,58,237,0.08);padding:8px;text-align:center;border-bottom:1px solid rgba(124,58,237,0.3);font-size:0.72rem;font-weight:700;color:#22d3ee;">03.08.2026</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="background:rgba(52,211,153,0.04);padding:8px 6px;border-right:1px solid rgba(255,255,255,0.05);border-bottom:1px solid rgba(255,255,255,0.04);text-align:center;vertical-align:middle;"><span style="font-size:0.58rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#34d399;writing-mode:vertical-lr;transform:rotate(180deg);">CLIENTS</span></td>
+            <td class="matrix-cell" style="border-right:1px solid rgba(255,255,255,0.04);">Обратная связь по отчетностям и Эксель аддину<br>Обсуждение КП с ТР</td>
+            <td class="matrix-cell" style="border-right:1px solid rgba(255,255,255,0.04);">Работа с интеграторами для интеграции данных ЦКИ<br>Кампания по индикаторам<br>Кампания по справочным данным и КД для клиентов НРД<br>Excel AddIn по ценовым данным</td>
+            <td class="matrix-cell">Наполнение воронки ЦКИ<br>Подготовка списка почт для дайджеста за месяц<br>Приглашения для вебинара<br>Онбординг АК Барс</td>
+          </tr>
+          <tr>
+            <td style="background:rgba(124,58,237,0.04);padding:8px 6px;border-right:1px solid rgba(255,255,255,0.05);border-bottom:1px solid rgba(255,255,255,0.04);text-align:center;vertical-align:middle;"><span style="font-size:0.58rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#a78bfa;writing-mode:vertical-lr;transform:rotate(180deg);">FRONT</span></td>
+            <td class="matrix-cell" style="border-right:1px solid rgba(255,255,255,0.04);">Справочник выпусков: Перевод связанных  методов на новый справочник (Рейтинги и IR-Календари)<br>Справочник компаний: CFI классификатор<br>Доработки в: рейтингах(сортировка), КД (secid), <br>Excel AddIn: Итоги торгов+доп параметры ЦЦ: прототипирование и клиентское исследование</td>
+            <td class="matrix-cell" style="border-right:1px solid rgba(255,255,255,0.04);">КД: статусы, перевод на новые методы V2<br>Справочник выпусков: Перевод связанных  методов на новый справочник (КД)<br>Справочник компаний: новая схема связей со справочниками<br>Справочник выпусков: добавляем параметры, метрики<br>Excel AddIn: Релиз внутри НРД</td>
+            <td class="matrix-cell">Справочник компаний: добавляем статусы компаний и отраслевые коды для бенчмарков<br>Справочник выпусков: доработка параметров<br>Индикаторы ПРО: добавление раздела<br>Календарь выплат: подготовка требований</td>
+          </tr>
+          <tr>
+            <td style="background:rgba(124,58,237,0.03);padding:8px 6px;border-right:1px solid rgba(255,255,255,0.05);border-bottom:1px solid rgba(255,255,255,0.04);text-align:center;vertical-align:middle;"><span style="font-size:0.58rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#c4b5fd;writing-mode:vertical-lr;transform:rotate(180deg);">BACK</span></td>
+            <td class="matrix-cell" style="border-right:1px solid rgba(255,255,255,0.04);">Справочник выпусков: Перевод всех связанных  методов на новый справочник <br>КД: статусы, новые методы V2<br>Справочник компаний: Новая схема связей компаний со справочниками<br>Отчётность МСФО: расчет  бенчмарки МСФО для всех типов отчетностей<br>РСБУ: добавление страховое, ОДДС, форма 135</td>
+            <td class="matrix-cell" style="border-right:1px solid rgba(255,255,255,0.04);">Календарь выплат: аналитика, подготовка БТ<br>Справочник выпусков: добавление параметров, метрики по облигациям с плавающим куп. Доходом, доработка CFI классификатора<br>РСБУ: квартальная из ГИРБО<br>Индикаторы ПРО: Расчет индикаторов, добавление раздела (аналитика)<br>Рейтинги: данные по ОСК из НРА<br>Афф. Лица: Учет группы владения 20%</td>
+            <td class="matrix-cell">Календарь выплат: подготовка хранилища для данных<br>Справочник компаний: добавляем статусы компаний и отраслевые коды (ОКВЭД, ОКОПФ) для построения бенчмарков<br>Справочник выпусков: метрики по облигациям с плавающим куп. оходом<br>РСБУ: квартальная из ГИРБО<br>Индикаторы ПРО: Расчет индикаторов, добавление раздела (разработка)<br>Афф. Лица: Учет группы владения 20%</td>
+          </tr>
+          <tr>
+            <td style="background:rgba(245,158,11,0.03);padding:8px 6px;border-right:1px solid rgba(255,255,255,0.05);text-align:center;vertical-align:middle;"><span style="font-size:0.58rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#fbbf24;writing-mode:vertical-lr;transform:rotate(180deg);">ADMIN</span></td>
+            <td class="matrix-cell" style="border-right:1px solid rgba(255,255,255,0.04);border-bottom:none;">Согласование тарифа на итоги торгов и доп параметры в AddIn. Подготовка к вебинару для клиентов. Рассылка дайджеста для клиентов</td>
+            <td class="matrix-cell" style="border-right:1px solid rgba(255,255,255,0.04);border-bottom:none;">Переоценка тарификации ЦКИ, согласование договоров</td>
+            <td class="matrix-cell" style="border-bottom:none;">Финальная подготовка к вебинару, подготовка к офлайн семинару ЦКИ в сентябре + подготовка к IR-форуму</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SLIDE 6: TEAM -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="slide slide-6" data-slide="6">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:450px;height:450px;top:-100px;right:-100px;background:#7c3aed;opacity:0.10;"></div>
+    <div class="blob" style="width:300px;height:300px;bottom:-60px;left:-60px;background:#06b6d4;opacity:0.08;"></div>
+  </div>
+  <canvas class="particle-canvas-ambient" style="position:absolute;inset:0;z-index:1;"></canvas>
+  <div class="content">
+    <h2 class="reveal" style="font-family:'Manrope',sans-serif;font-size:clamp(1.6rem,3vw,2.4rem);font-style:normal;margin-bottom:14px;">Команда продукта ЦКИ</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start;">
+      <div>
+        <!-- Hero stats -->
+        <div class="reveal" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px;">
+          <div class="neon-card" style="padding:14px;text-align:center;border-color:rgba(52,211,153,0.3);">
+            <div class="neon-number cyan-glow" style="color:#34d399;font-size:2.8rem;" data-count="18">18</div>
+            <div style="font-size:0.65rem;color:#6060a0;">всего FTE</div>
+          </div>
+          <div class="neon-card" style="padding:14px;text-align:center;">
+            <div class="neon-number stat-glow" style="color:#a78bfa;font-size:2.8rem;">14</div>
+            <div style="font-size:0.65rem;color:#6060a0;">штатных (78%)</div>
+          </div>
+          <div class="neon-card" style="padding:14px;text-align:center;border-color:rgba(245,158,11,0.18);">
+            <div class="neon-number amber-glow" style="color:#f59e0b;font-size:2.8rem;">4</div>
+            <div style="font-size:0.65rem;color:#6060a0;">внештатных (22%)</div>
+          </div>
+        </div>
+        <!-- Change table -->
+        <div class="reveal neon-card" style="padding:14px;">
+          <div style="font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#6060a0;margin-bottom:8px;">Динамика изменений</div>
+          <table style="width:100%;border-collapse:collapse;">
+            <thead><tr>
+              <th style="font-size:0.68rem;color:#6060a0;font-weight:600;padding:6px 8px;text-align:left;border-bottom:1px solid rgba(255,255,255,0.06);">Показатель</th>
+              <th style="font-size:0.68rem;color:#6060a0;font-weight:600;padding:6px;text-align:center;border-bottom:1px solid rgba(255,255,255,0.06);">FTE</th>
+              <th style="font-size:0.68rem;color:#6060a0;font-weight:600;padding:6px;text-align:center;border-bottom:1px solid rgba(255,255,255,0.06);">Стоимость тыс ₽</th>
+            </tr></thead>
+            <tbody>
+              <tr><td style="font-size:0.78rem;color:#b8b8e0;padding:7px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">Было</td><td style="font-size:0.78rem;color:#b8b8e0;text-align:center;border-bottom:1px solid rgba(255,255,255,0.04);">22,3</td><td style="font-size:0.78rem;color:#b8b8e0;text-align:center;border-bottom:1px solid rgba(255,255,255,0.04);">8 469,1</td></tr>
+              <tr><td style="font-size:0.78rem;color:#34d399;font-weight:700;padding:7px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">Стало</td><td style="font-size:0.78rem;color:#34d399;font-weight:800;text-align:center;border-bottom:1px solid rgba(255,255,255,0.04);">18</td><td style="font-size:0.78rem;color:#34d399;font-weight:800;text-align:center;border-bottom:1px solid rgba(255,255,255,0.04);">6 543,1</td></tr>
+              <tr><td style="font-size:0.78rem;color:#f87171;padding:7px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">Δ Изменение</td><td style="font-size:0.78rem;color:#f87171;text-align:center;border-bottom:1px solid rgba(255,255,255,0.04);">-4,3</td><td style="font-size:0.78rem;color:#f87171;text-align:center;border-bottom:1px solid rgba(255,255,255,0.04);">-1 926,1</td></tr>
+              <tr><td style="font-size:0.78rem;color:#f87171;padding:7px 8px;">Δ %</td><td style="font-size:0.78rem;color:#f87171;text-align:center;">-19,3%</td><td style="font-size:0.78rem;color:#f87171;text-align:center;">-22,7%</td></tr>
+            </tbody>
+          </table>
+          <div style="margin-top:10px;font-size:0.7rem;color:#6060a0;">Общая стоимость в мес.: <span style="color:#fbbf24;font-weight:800;">6,54 млн руб.</span> &nbsp;·&nbsp; НРД: 14 FTE &nbsp;·&nbsp; МБ: 4 FTE</div>
+        </div>
+      </div>
+      <!-- Org structure -->
+      <div class="reveal">
+        <div style="font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#6060a0;margin-bottom:10px;">Структура (18 FTE)</div>
+        <div style="display:flex;flex-direction:column;gap:7px;">
+          <div class="neon-card" style="padding:12px;border-color:rgba(52,211,153,0.25);">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+              <div style="width:8px;height:8px;border-radius:50%;background:#34d399;box-shadow:0 0 8px rgba(52,211,153,0.8);"></div>
+              <div style="font-size:0.68rem;font-weight:700;color:#34d399;">Обработка данных — 5 FTE</div>
+            </div>
+            <div style="font-size:0.63rem;color:#6060a0;line-height:1.7;">Методолог · Аналитик МСФО · Аналитик Отчётность · Марин Тюмавина · Колганова Светлана · Быков Александр</div>
+          </div>
+          <div class="neon-card" style="padding:12px;border-color:rgba(124,58,237,0.3);">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+              <div style="width:8px;height:8px;border-radius:50%;background:#a78bfa;box-shadow:0 0 8px rgba(124,58,237,0.8);"></div>
+              <div style="font-size:0.68rem;font-weight:700;color:#a78bfa;">Product Discovery, БД, интерфейсы — 10 FTE</div>
+            </div>
+            <div style="font-size:0.63rem;color:#6060a0;line-height:1.7;">Product Manager (Савёлов В.) · Architect/DM (Кошелев С.) · System Analyst ×2 · Business Analyst ×2 · Dev Lead · Developer C# · Analyst · Developer Postgres</div>
+          </div>
+          <div class="neon-card" style="padding:12px;border-color:rgba(245,158,11,0.25);">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+              <div style="width:8px;height:8px;border-radius:50%;background:#fbbf24;box-shadow:0 0 8px rgba(245,158,11,0.8);"></div>
+              <div style="font-size:0.68rem;font-weight:700;color:#fbbf24;">Онбординг и клиентская поддержка — 3 FTE</div>
+            </div>
+            <div style="font-size:0.63rem;color:#6060a0;line-height:1.7;">Manager (Щербель М.) · IT-лидер (Бугаев С.) · Client/service support (Онищук Ю.)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SLIDE 7: KEY METRICS 2026 -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="slide slide-7" data-slide="7">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:600px;height:600px;top:-150px;right:-150px;background:#7c3aed;opacity:0.12;"></div>
+    <div class="blob" style="width:400px;height:400px;bottom:-100px;left:-100px;background:#06b6d4;opacity:0.09;"></div>
+    <div class="blob" style="width:250px;height:250px;top:30%;left:20%;background:#f59e0b;opacity:0.06;"></div>
+  </div>
+  <canvas class="particle-canvas" style="position:absolute;inset:0;z-index:1;"></canvas>
+  <div class="orbital" style="width:500px;height:500px;border-color:#7c3aed;top:50%;left:50%;transform:translate(-50%,-50%);animation-duration:25s;opacity:0.08;"></div>
+  <div class="content">
+    <div style="display:grid;grid-template-columns:1fr 200px;gap:16px;align-items:start;">
+      <div>
+        <h2 class="reveal" style="font-family:'Manrope',sans-serif;font-size:clamp(1.6rem,3vw,2.4rem);font-style:normal;margin-bottom:6px;">Ключевые метрики 2026</h2>
+        <p class="reveal" style="font-size:0.72rem;color:#6060a0;margin-bottom:14px;">Помесячная динамика: факт и целевая траектория &nbsp;·&nbsp; *старт монетизации 01.01.2026</p>
+        <div class="reveal glass" style="padding:14px;border-color:rgba(124,58,237,0.2);">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div>
+              <div style="font-size:0.68rem;color:#6060a0;text-align:center;margin-bottom:6px;">Накопленная выручка, млн ₽*</div>
+              <svg width="100%" height="118" viewBox="0 0 240 118">
+                <line x1="28" y1="10" x2="228" y2="10" stroke="rgba(140,140,190,0.18)" stroke-width="1"/><line x1="28" y1="30.5" x2="228" y2="30.5" stroke="rgba(140,140,190,0.18)" stroke-width="1"/><line x1="28" y1="51" x2="228" y2="51" stroke="rgba(140,140,190,0.18)" stroke-width="1"/><line x1="28" y1="71.5" x2="228" y2="71.5" stroke="rgba(140,140,190,0.18)" stroke-width="1"/><line x1="28" y1="92" x2="228" y2="92" stroke="rgba(140,140,190,0.18)" stroke-width="1"/>
+                <line x1="28" y1="10" x2="28" y2="92" stroke="rgba(140,140,190,0.28)" stroke-width="1"/>
+                <text x="24" y="94" text-anchor="end" font-size="6.5" fill="#7b7bb5">0</text><text x="24" y="73.5" text-anchor="end" font-size="6.5" fill="#7b7bb5">15</text><text x="24" y="53" text-anchor="end" font-size="6.5" fill="#7b7bb5">30</text><text x="24" y="32.5" text-anchor="end" font-size="6.5" fill="#7b7bb5">45</text><text x="24" y="12" text-anchor="end" font-size="6.5" fill="#7b7bb5">60</text>
+                <polyline points="28.0,88.9 46.2,86.1 64.4,82.5 82.5,77.0 100.7,57.8 118.9,51.0 137.1,44.2 155.3,37.3 173.5,30.5 191.6,23.7 209.8,16.8 228.0,10.0" fill="none" stroke="#8b5cf6" stroke-width="1.35" stroke-dasharray="3,3" opacity="0.32"/>
+                <polyline points="28.0,88.9 46.2,86.1 64.4,83.9 82.5,81.6 100.7,79.3 118.9,76.9" fill="none" stroke="#5eead4" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="28.0" cy="88.9" r="2.6" fill="#5eead4"/><circle cx="46.2" cy="86.1" r="2.6" fill="#5eead4"/><circle cx="64.4" cy="83.9" r="2.6" fill="#5eead4"/><circle cx="82.5" cy="81.6" r="2.6" fill="#5eead4"/><circle cx="100.7" cy="79.3" r="2.6" fill="#5eead4"/><circle cx="118.9" cy="76.9" r="2.6" fill="#5eead4" style="filter:drop-shadow(0 0 4px #5eead4)"/>
+                <text x="28.0" y="110" text-anchor="middle" font-size="7" fill="#6060a0">Янв</text><text x="82.5" y="110" text-anchor="middle" font-size="7" fill="#6060a0">Апр</text><text x="137.1" y="110" text-anchor="middle" font-size="7" fill="#6060a0">Июл</text><text x="191.6" y="110" text-anchor="middle" font-size="7" fill="#6060a0">Окт</text>
+                <text x="122" y="69" font-size="8" fill="#5eead4" font-weight="700">11,04</text>
+                <text x="121" y="88" font-size="6.5" fill="#91fff4">11,04</text>
+              </svg>
+              <div style="display:flex;gap:8px;justify-content:center;font-size:0.62rem;"><span style="color:rgba(139,92,246,0.72);">┄ план</span><span style="color:#5eead4;">━━ факт</span></div>
+            </div>
+            <div>
+              <div style="font-size:0.68rem;color:#6060a0;text-align:center;margin-bottom:6px;">Кол-во клиентов, шт.</div>
+              <svg width="100%" height="118" viewBox="0 0 240 118">
+                <line x1="28" y1="10" x2="228" y2="10" stroke="rgba(140,140,190,0.18)" stroke-width="1"/><line x1="28" y1="30.5" x2="228" y2="30.5" stroke="rgba(140,140,190,0.18)" stroke-width="1"/><line x1="28" y1="51" x2="228" y2="51" stroke="rgba(140,140,190,0.18)" stroke-width="1"/><line x1="28" y1="71.5" x2="228" y2="71.5" stroke="rgba(140,140,190,0.18)" stroke-width="1"/><line x1="28" y1="92" x2="228" y2="92" stroke="rgba(140,140,190,0.18)" stroke-width="1"/>
+                <line x1="28" y1="10" x2="28" y2="92" stroke="rgba(140,140,190,0.28)" stroke-width="1"/>
+                <text x="24" y="94" text-anchor="end" font-size="6.5" fill="#7b7bb5">0</text><text x="24" y="73.5" text-anchor="end" font-size="6.5" fill="#7b7bb5">15</text><text x="24" y="53" text-anchor="end" font-size="6.5" fill="#7b7bb5">30</text><text x="24" y="32.5" text-anchor="end" font-size="6.5" fill="#7b7bb5">45</text><text x="24" y="12" text-anchor="end" font-size="6.5" fill="#7b7bb5">60</text>
+                <polyline points="28.0,66.7 46.2,60.7 64.4,57.7 82.5,53.2 100.7,48.8 118.9,44.3 137.1,39.8 155.3,35.3 173.5,30.9 191.6,26.4 209.8,18.9 228.0,13.0" fill="none" stroke="#8b5cf6" stroke-width="1.35" stroke-dasharray="3,3" opacity="0.32"/>
+                <polyline points="28.0,68.8 46.2,66.1 64.4,71.5 82.5,71.5 100.7,70.1 118.9,68.8" fill="none" stroke="#a78bfa" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="28.0" cy="68.8" r="2.6" fill="#a78bfa"/><circle cx="46.2" cy="66.1" r="2.6" fill="#a78bfa"/><circle cx="64.4" cy="71.5" r="2.6" fill="#a78bfa"/><circle cx="82.5" cy="71.5" r="2.6" fill="#a78bfa"/><circle cx="100.7" cy="70.1" r="2.6" fill="#a78bfa"/><circle cx="118.9" cy="68.8" r="2.6" fill="#a78bfa" style="filter:drop-shadow(0 0 4px #a78bfa)"/>
+                <text x="28.0" y="110" text-anchor="middle" font-size="7" fill="#6060a0">Янв</text><text x="82.5" y="110" text-anchor="middle" font-size="7" fill="#6060a0">Апр</text><text x="137.1" y="110" text-anchor="middle" font-size="7" fill="#6060a0">Июл</text><text x="191.6" y="110" text-anchor="middle" font-size="7" fill="#6060a0">Окт</text>
+                <text x="122" y="57" font-size="8" fill="#a78bfa" font-weight="700">17</text>
+                <text x="25" y="61" font-size="6.2" fill="#d8ccff">17</text><text x="43" y="58" font-size="6.2" fill="#d8ccff">19</text><text x="61" y="79" font-size="6.2" fill="#d8ccff">15</text><text x="79" y="79" font-size="6.2" fill="#d8ccff">15</text><text x="98" y="78" font-size="6.2" fill="#d8ccff">16</text><text x="116" y="61" font-size="6.2" fill="#d8ccff">17</text>
+              </svg>
+              <div style="display:flex;gap:8px;justify-content:center;font-size:0.62rem;"><span style="color:rgba(139,92,246,0.72);">┄ план</span><span style="color:#a78bfa;">━━ факт</span></div>
+            </div>
+            <div>
+              <div style="font-size:0.68rem;color:#6060a0;text-align:center;margin-bottom:6px;">Подписки, шт.</div>
+              <svg width="100%" height="98" viewBox="0 0 240 98">
+                <line x1="28" y1="10" x2="228" y2="10" stroke="rgba(140,140,190,0.18)" stroke-width="1"/><line x1="28" y1="25.5" x2="228" y2="25.5" stroke="rgba(140,140,190,0.18)" stroke-width="1"/><line x1="28" y1="41" x2="228" y2="41" stroke="rgba(140,140,190,0.18)" stroke-width="1"/><line x1="28" y1="56.5" x2="228" y2="56.5" stroke="rgba(140,140,190,0.18)" stroke-width="1"/><line x1="28" y1="72" x2="228" y2="72" stroke="rgba(140,140,190,0.18)" stroke-width="1"/>
+                <line x1="28" y1="10" x2="28" y2="72" stroke="rgba(140,140,190,0.28)" stroke-width="1"/>
+                <text x="24" y="74" text-anchor="end" font-size="6.5" fill="#7b7bb5">0</text><text x="24" y="58.5" text-anchor="end" font-size="6.5" fill="#7b7bb5">25</text><text x="24" y="43" text-anchor="end" font-size="6.5" fill="#7b7bb5">50</text><text x="24" y="27.5" text-anchor="end" font-size="6.5" fill="#7b7bb5">75</text><text x="24" y="12" text-anchor="end" font-size="6.5" fill="#7b7bb5">100</text>
+                <polyline points="28.0,60.2 46.2,56.1 64.4,51.9 82.5,47.8 100.7,43.7 118.9,39.5 137.1,35.4 155.3,31.3 173.5,27.1 191.6,21.8 209.8,16.5 228.0,11.2" fill="none" stroke="#8b5cf6" stroke-width="1.35" stroke-dasharray="3,3" opacity="0.32"/>
+                <polyline points="28.0,36.7 46.2,34.2 64.4,55.6 82.5,54.9 100.7,55.6 118.9,57.4 137.1,58.0" fill="none" stroke="#22d3ee" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="28.0" cy="36.7" r="2.6" fill="#22d3ee"/><circle cx="46.2" cy="34.2" r="2.6" fill="#22d3ee"/><circle cx="64.4" cy="55.6" r="2.6" fill="#22d3ee"/><circle cx="82.5" cy="54.9" r="2.6" fill="#22d3ee"/><circle cx="100.7" cy="55.6" r="2.6" fill="#22d3ee"/><circle cx="118.9" cy="57.4" r="2.6" fill="#22d3ee"/><circle cx="137.1" cy="58.0" r="2.6" fill="#22d3ee" style="filter:drop-shadow(0 0 4px #22d3ee)"/>
+                <text x="28.0" y="90" text-anchor="middle" font-size="7" fill="#6060a0">Янв</text><text x="82.5" y="90" text-anchor="middle" font-size="7" fill="#6060a0">Апр</text><text x="137.1" y="90" text-anchor="middle" font-size="7" fill="#6060a0">Июл</text><text x="191.6" y="90" text-anchor="middle" font-size="7" fill="#6060a0">Окт</text>
+                <text x="141" y="49" font-size="8" fill="#22d3ee" font-weight="700">40</text>
+                <text x="24" y="31" font-size="6.2" fill="#97f3ff">57</text><text x="42" y="28" font-size="6.2" fill="#97f3ff">61</text><text x="60" y="66" font-size="6.2" fill="#97f3ff">44</text><text x="78" y="65" font-size="6.2" fill="#97f3ff">45</text><text x="97" y="66" font-size="6.2" fill="#97f3ff">44</text><text x="115" y="68" font-size="6.2" fill="#97f3ff">41</text><text x="134" y="69" font-size="6.2" fill="#97f3ff">40</text>
+              </svg>
+              <div style="display:flex;gap:8px;justify-content:center;font-size:0.62rem;"><span style="color:rgba(139,92,246,0.72);">┄ план</span><span style="color:#22d3ee;">━━ факт</span></div>
+            </div>
+            <div>
+              <div style="font-size:0.68rem;color:#6060a0;text-align:center;margin-bottom:6px;">Покрытие сервисами, %</div>
+              <svg width="100%" height="98" viewBox="0 0 240 98">
+                <line x1="28" y1="10" x2="228" y2="10" stroke="rgba(140,140,190,0.18)" stroke-width="1"/><line x1="28" y1="25.5" x2="228" y2="25.5" stroke="rgba(140,140,190,0.18)" stroke-width="1"/><line x1="28" y1="41" x2="228" y2="41" stroke="rgba(140,140,190,0.18)" stroke-width="1"/><line x1="28" y1="56.5" x2="228" y2="56.5" stroke="rgba(140,140,190,0.18)" stroke-width="1"/><line x1="28" y1="72" x2="228" y2="72" stroke="rgba(140,140,190,0.18)" stroke-width="1"/>
+                <line x1="28" y1="10" x2="28" y2="72" stroke="rgba(140,140,190,0.28)" stroke-width="1"/>
+                <text x="24" y="74" text-anchor="end" font-size="6.5" fill="#7b7bb5">0</text><text x="24" y="58.5" text-anchor="end" font-size="6.5" fill="#7b7bb5">25</text><text x="24" y="43" text-anchor="end" font-size="6.5" fill="#7b7bb5">50</text><text x="24" y="27.5" text-anchor="end" font-size="6.5" fill="#7b7bb5">75</text><text x="24" y="12" text-anchor="end" font-size="6.5" fill="#7b7bb5">100</text>
+                <polyline points="28.0,37.9 46.2,36.0 64.4,34.2 82.5,32.3 100.7,30.5 118.9,28.6 137.1,26.7 155.3,24.9 173.5,22.4 191.6,19.9 209.8,18.1 228.0,16.2" fill="none" stroke="#8b5cf6" stroke-width="1.35" stroke-dasharray="3,3" opacity="0.32"/>
+                <polyline points="28.0,30.5 46.2,29.8 64.4,26.1 82.5,24.3 100.7,19.9 118.9,16.8" fill="none" stroke="#fbbf24" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="28.0" cy="30.5" r="2.6" fill="#fbbf24"/><circle cx="46.2" cy="29.8" r="2.6" fill="#fbbf24"/><circle cx="64.4" cy="26.1" r="2.6" fill="#fbbf24"/><circle cx="82.5" cy="24.3" r="2.6" fill="#fbbf24"/><circle cx="100.7" cy="19.9" r="2.6" fill="#fbbf24"/><circle cx="118.9" cy="16.8" r="2.6" fill="#fbbf24" style="filter:drop-shadow(0 0 4px #fbbf24)"/>
+                <text x="28.0" y="90" text-anchor="middle" font-size="7" fill="#6060a0">Янв</text><text x="82.5" y="90" text-anchor="middle" font-size="7" fill="#6060a0">Апр</text><text x="137.1" y="90" text-anchor="middle" font-size="7" fill="#6060a0">Июл</text><text x="191.6" y="90" text-anchor="middle" font-size="7" fill="#6060a0">Окт</text>
+                <text x="122" y="12" font-size="8" fill="#fbbf24" font-weight="700">89%</text>
+                <text x="121" y="22" font-size="6.5" fill="#ffe083">89</text>
+              </svg>
+              <div style="display:flex;gap:8px;justify-content:center;font-size:0.62rem;"><span style="color:rgba(139,92,246,0.72);">┄ план</span><span style="color:#fbbf24;">━━ факт</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Goals sidebar -->
+      <div class="reveal" style="display:flex;flex-direction:column;gap:8px;">
+        <div style="font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#6060a0;margin-bottom:4px;">Цели 2026</div>
+        <div class="neon-card" style="padding:12px;border-color:rgba(139,92,246,0.18);background:rgba(255,255,255,0.035);text-align:center;">
+          <div style="font-size:0.65rem;color:#6060a0;margin-bottom:4px;">Накопленная выручка</div>
+          <div style="font-size:1.6rem;font-weight:900;color:#e9d5ff;text-shadow:0 0 14px rgba(139,92,246,0.28);">60M</div>
+          <div style="font-size:0.65rem;color:#6060a0;">₽ / год</div>
+        </div>
+        <div class="neon-card" style="padding:12px;text-align:center;">
+          <div style="font-size:0.65rem;color:#6060a0;margin-bottom:4px;">Клиентов</div>
+          <div style="font-size:1.6rem;font-weight:900;" class="stat-glow" style="color:#a78bfa;">53</div>
+          <div style="font-size:0.65rem;color:#6060a0;">организации</div>
+        </div>
+        <div class="neon-card" style="padding:12px;text-align:center;border-color:rgba(6,182,212,0.18);">
+          <div style="font-size:0.65rem;color:#6060a0;margin-bottom:4px;">Подписки</div>
+          <div style="font-size:1.6rem;font-weight:900;color:#22d3ee;text-shadow:0 0 20px rgba(6,182,212,0.6);">103</div>
+          <div style="font-size:0.65rem;color:#6060a0;">активных</div>
+        </div>
+        <div class="neon-card" style="padding:12px;text-align:center;border-color:rgba(245,158,11,0.18);">
+          <div style="font-size:0.65rem;color:#6060a0;margin-bottom:4px;">Покрытие</div>
+          <div style="font-size:1.6rem;font-weight:900;color:#fbbf24;text-shadow:0 0 20px rgba(245,158,11,0.6);">90%</div>
+          <div style="font-size:0.65rem;color:#6060a0;">сервисами</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Bottom ticker -->
+  <div class="ticker-wrap">
+    <div class="ticker-inner">
+      <span class="ticker-item">ЦКИ — Golden Source корпоративных данных</span><span class="ticker-item ticker-sep">◆</span>
+      <span class="ticker-item">17 внешних клиентов</span><span class="ticker-item ticker-sep">◆</span>
+      <span class="ticker-item">Churn Rate 0% — удержание на максимуме</span><span class="ticker-item ticker-sep">◆</span>
+      <span class="ticker-item">18 FTE · 6,54 млн руб/мес</span><span class="ticker-item ticker-sep">◆</span>
+      <span class="ticker-item">Сбер и Альфа Капитал — подача заявлений</span><span class="ticker-item ticker-sep">◆</span>
+      <span class="ticker-item">ЦКИ — Golden Source корпоративных данных</span><span class="ticker-item ticker-sep">◆</span>
+      <span class="ticker-item">17 внешних клиентов</span><span class="ticker-item ticker-sep">◆</span>
+      <span class="ticker-item">Churn Rate 0% — удержание на максимуме</span><span class="ticker-item ticker-sep">◆</span>
+      <span class="ticker-item">18 FTE · 6,54 млн руб/мес</span><span class="ticker-item ticker-sep">◆</span>
+      <span class="ticker-item">Сбер и Альфа Капитал — подача заявлений</span><span class="ticker-item ticker-sep">◆</span>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<div class="nav-controls">
+  <button class="nav-btn" onclick="changeSlide(-1)">&#8249;</button>
+  <div class="slide-dots" id="dots"></div>
+  <button class="nav-btn" onclick="changeSlide(1)">&#8250;</button>
+  <span class="slide-counter" id="counter">1 / 7</span>
+</div>
+
+<script>
+// === Deck Navigation ===
+let current=1;
+const total=document.querySelectorAll(".slide").length;
+const dotsContainer=document.getElementById("dots");
+const counter=document.getElementById("counter");
+for(let i=1;i<=total;i++){const dot=document.createElement("div");dot.className="dot"+(i===1?" active":"");dot.onclick=()=>goToSlide(i);dotsContainer.appendChild(dot);}
+function goToSlide(n){const prev=document.querySelector(".slide.active");const next=document.querySelector(`.slide[data-slide="${n}"]`);if(prev)prev.classList.remove("active");if(next){next.classList.add("active");animateSlide(next);}current=n;updateNav();}
+function changeSlide(dir){let next=current+dir;if(next<1)next=total;if(next>total)next=1;goToSlide(next);}
+function updateNav(){document.querySelectorAll(".dot").forEach((d,i)=>{d.classList.toggle("active",i+1===current);});counter.textContent=current+" / "+total;}
+document.addEventListener("keydown",(e)=>{if(e.key==="ArrowRight"||e.key===" "){e.preventDefault();changeSlide(1);}if(e.key==="ArrowLeft"){e.preventDefault();changeSlide(-1);}});
+let touchStartX=0;
+document.addEventListener("touchstart",(e)=>{touchStartX=e.touches[0].clientX;});
+document.addEventListener("touchend",(e)=>{const diff=touchStartX-e.changedTouches[0].clientX;if(Math.abs(diff)>50)changeSlide(diff>0?1:-1);});
+
+// === Slide animations ===
+function animateSlide(slide){
+  slide.querySelectorAll(".reveal").forEach((el,i)=>{
+    el.style.transition="none";el.style.opacity="0";el.style.transform="translateY(24px)";
+    el.offsetHeight;
+    const delay=i*0.07;
+    el.style.transition=`opacity 0.45s cubic-bezier(0.16,1,0.3,1) ${delay}s, transform 0.45s cubic-bezier(0.16,1,0.3,1) ${delay}s`;
+    el.style.opacity="1";el.style.transform="translateY(0px)";
+  });
+  animateSlideEffects(slide);
+}
+function animateSlideEffects(slide){
+  slide.querySelectorAll("[data-count]:not(.counted)").forEach(el=>{
+    el.classList.add("counted");
+    const target=parseInt(el.dataset.count);
+    let cur=0;const step=target/50;
+    const timer=setInterval(()=>{cur+=step;if(cur>=target){cur=target;clearInterval(timer);}
+    el.textContent=Math.round(cur).toLocaleString("ru-RU");},25);
+  });
+  slide.querySelectorAll(".bar-fill:not(.fill-init)").forEach((bar,i)=>{
+    bar.classList.add("fill-init");bar.style.width="0%";
+    bar.style.transition=`width 0.7s cubic-bezier(0.16,1,0.3,1) ${i*0.1}s`;
+    bar.offsetHeight;bar.style.width=bar.dataset.width+"%";
+  });
+}
+
+// === Text Scramble (for title) ===
+function scrambleText(element,finalText,duration){
+  const chars="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
+  let frame=0;const totalFrames=duration/30;
+  const interval=setInterval(()=>{frame++;const progress=frame/totalFrames;let result="";
+  for(let i=0;i<finalText.length;i++){if(finalText[i]===" ")result+=" ";else if(i<finalText.length*progress)result+=finalText[i];else result+=chars[Math.floor(Math.random()*chars.length)];}
+  element.textContent=result;if(frame>=totalFrames){clearInterval(interval);element.textContent=finalText;}},30);
+}
+
+// === Mouse Spotlight ===
+document.addEventListener("mousemove",(e)=>{
+  const s=document.querySelector(".mouse-spotlight");
+  if(s)s.style.background=`radial-gradient(600px circle at ${e.clientX}px ${e.clientY}px,rgba(124,58,237,0.07),transparent 40%)`;
+});
+
+// === Parallax deco-shapes ===
+(function(){
+  let mx=window.innerWidth/2,my=window.innerHeight/2;
+  const cx=window.innerWidth/2,cy=window.innerHeight/2;
+  document.addEventListener("mousemove",(e)=>{mx=e.clientX;my=e.clientY;});
+  (function tick(){
+    const ox=(mx-cx)/cx,oy=(my-cy)/cy;
+    document.querySelectorAll(".deco-shape").forEach(s=>{
+      const sp=parseFloat(s.dataset.speed)||0.03;
+      s.style.transform=`translate(${ox*sp*100}px,${oy*sp*100}px)`;
+    });
+    requestAnimationFrame(tick);
+  })();
+})();
+
+// === Enhanced Particles with connection lines ===
+function initEnhancedParticles(canvas,options){
+  if(!canvas)return;
+  const ctx=canvas.getContext("2d");
+  canvas.width=canvas.offsetWidth;canvas.height=canvas.offsetHeight;
+  const count=options.count||55;
+  const connDist=options.connectionDistance||110;
+  let mx=-1000,my=-1000;
+  const interactive=options.interactive!==false;
+  const particles=Array.from({length:count},()=>({x:Math.random()*canvas.width,y:Math.random()*canvas.height,vx:(Math.random()-0.5)*0.3,vy:(Math.random()-0.5)*0.3,size:Math.random()*2.5+0.8,alpha:Math.random()*0.3+0.1}));
+  if(interactive){
+    canvas.addEventListener("mousemove",(e)=>{const r=canvas.getBoundingClientRect();mx=e.clientX-r.left;my=e.clientY-r.top;});
+    canvas.addEventListener("mouseleave",()=>{mx=-1000;my=-1000;});
+  }
+  function animate(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    particles.forEach(p=>{
+      const dx=p.x-mx,dy=p.y-my,dist=Math.sqrt(dx*dx+dy*dy);
+      if(interactive&&dist<130){const force=(130-dist)/130*2;p.vx+=(dx/dist)*force*0.1;p.vy+=(dy/dist)*force*0.1;}
+      p.vx*=0.98;p.vy*=0.98;p.x+=p.vx;p.y+=p.vy;
+      if(p.x<0)p.x=canvas.width;if(p.x>canvas.width)p.x=0;
+      if(p.y<0)p.y=canvas.height;if(p.y>canvas.height)p.y=0;
+      ctx.beginPath();ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+      ctx.fillStyle=`rgba(124,58,237,${p.alpha})`;ctx.fill();
+    });
+    for(let i=0;i<particles.length;i++){
+      for(let j=i+1;j<particles.length;j++){
+        const dx=particles[i].x-particles[j].x,dy=particles[i].y-particles[j].y;
+        const d=Math.sqrt(dx*dx+dy*dy);
+        if(d<connDist){
+          ctx.beginPath();ctx.moveTo(particles[i].x,particles[i].y);ctx.lineTo(particles[j].x,particles[j].y);
+          ctx.strokeStyle=`rgba(124,58,237,${(1-d/connDist)*0.18})`;ctx.lineWidth=0.6;ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(animate);
+  }
+  requestAnimationFrame(animate);
+}
+document.querySelectorAll(".particle-canvas").forEach(c=>initEnhancedParticles(c,{interactive:true,count:55,connectionDistance:110}));
+document.querySelectorAll(".particle-canvas-ambient").forEach(c=>initEnhancedParticles(c,{interactive:false,count:18,connectionDistance:80}));
+
+// === Magnetic cards ===
+document.querySelectorAll(".mag-card").forEach(card=>{
+  card.addEventListener("mousemove",(e)=>{
+    const rect=card.getBoundingClientRect();
+    const x=e.clientX-rect.left-rect.width/2;
+    const y=e.clientY-rect.top-rect.height/2;
+    card.style.transform=`translate(${x*0.08}px,${y*0.08}px) scale(1.02)`;
+  });
+  card.addEventListener("mouseleave",()=>{card.style.transform="translate(0,0) scale(1)";});
+});
+
+// Animate first slide on load
+try{animateSlide(document.querySelector(".slide.active"));}catch(e){console.warn(e);}
+</script>
+</body>
+</html>
