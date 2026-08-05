@@ -10,16 +10,6 @@ export function QuarterPage() {
   )
 }
 
-export function SprintPage() {
-  return (
-    <PlaceholderPage
-      title="Sprint"
-      description="Commitment, role load, зависимости и риски текущего спринта."
-      stageHint="Stage 10+"
-    />
-  )
-}
-
 export function BoardPage() {
   return (
     <PlaceholderPage

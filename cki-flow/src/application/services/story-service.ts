@@ -1,4 +1,5 @@
 import type { UnitOfWork } from '@/application/ports/unit-of-work'
+import { scheduleWorkItems } from '@/domain/engines/planning/schedule'
 import {
   applyWorkflowTemplate,
   selectWorkflowTemplateId,
@@ -116,8 +117,17 @@ export class StoryService {
         actor,
       })
 
+      const activeSprint = db.sprints.find(
+        (item) => item.productId === product.id && item.status === 'active',
+      )
+      const scheduled = scheduleWorkItems({
+        workItems: applied.workItems,
+        dependencies: applied.dependencies,
+        projectStart: activeSprint?.startDate ?? new Date().toISOString().slice(0, 10),
+      })
+
       db.userStories.push(applied.story)
-      db.workItems.push(...applied.workItems)
+      db.workItems.push(...scheduled)
       db.dependencies.push(...applied.dependencies)
 
       db.events.push({

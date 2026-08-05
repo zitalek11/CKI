@@ -13,9 +13,9 @@
 | **5** | Автогенерация WorkItems из User Story | **done** |
 | **6** | Workflow Engine (templates/versions/apply) | **done** |
 | **7** | Dependency Engine (cycle + ready/blocked) | **done (core)** |
-| **8** | Planning Engine | next |
-| **9** | Capacity Engine | **done (demand)** / supply next |
-| **10** | Основные экраны по UX | partial (Today/Backlog/Templates/Load) |
+| **8** | Planning Engine | **done (calendar + FS schedule + sprint commit)** |
+| **9** | Capacity Engine | **done (demand + supply)** |
+| **10** | Основные экраны по UX | partial (Today/Backlog/Templates/Load/Sprint) |
 | **11** | Analytics | pending |
 | **12** | Import / Export | pending |
 | **13** | UI polish | pending |

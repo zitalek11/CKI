@@ -10,8 +10,8 @@ import {
   RisksPage,
   RoadmapPage,
   SettingsPage,
-  SprintPage,
 } from '@/pages/placeholders'
+import { SprintPage } from '@/pages/sprint/ui/SprintPage'
 import { TemplatesPage } from '@/pages/templates/ui/TemplatesPage'
 import { TodayPage } from '@/pages/today/ui/TodayPage'
 

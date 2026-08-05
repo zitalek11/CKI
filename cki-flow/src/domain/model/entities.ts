@@ -161,6 +161,8 @@ export type WorkItem = SystemFields & {
   assigneeEmployeeId?: UUID
   estimateHours: number
   sprintId?: UUID
+  forecastStart?: IsoDate
+  forecastEnd?: IsoDate
 }
 
 export type WorkflowTemplate = SystemFields & {
