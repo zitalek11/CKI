@@ -52,6 +52,7 @@ describe('calculateReleaseReadiness', () => {
         workflowStageKey: 'QA',
         isMandatory: true,
         estimateHours: 4,
+        spentHours: 0,
         createdAt: now,
         updatedAt: now,
         createdBy: 't',

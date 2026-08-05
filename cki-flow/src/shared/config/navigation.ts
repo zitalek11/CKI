@@ -12,6 +12,7 @@ import {
   Settings,
   ShieldAlert,
   Timer,
+  Users,
   Workflow,
 } from 'lucide-react'
 
@@ -65,6 +66,7 @@ export const NAV_GROUPS: NavGroup[] = [
     id: 'system',
     label: 'Система',
     items: [
+      { id: 'team', label: 'Команда', path: '/system/team', icon: Users },
       { id: 'templates', label: 'Шаблоны', path: '/system/templates', icon: Workflow },
       { id: 'migration', label: 'Миграция', path: '/system/migration', icon: FileInput },
       { id: 'settings', label: 'Настройки', path: '/system/settings', icon: Settings },
@@ -73,4 +75,4 @@ export const NAV_GROUPS: NavGroup[] = [
 ]
 
 export const APP_NAME = 'CKI Flow'
-export const APP_VERSION = '0.1.0'
+export const APP_VERSION = '1.1.0'

@@ -1,4 +1,5 @@
 import type { UnitOfWork } from '@/application/ports/unit-of-work'
+import { scheduleWorkItems } from '@/domain/engines/planning/schedule'
 import type { UserStory } from '@/domain/model/entities'
 import type { StoryStatus } from '@/domain/model/enums'
 import { DomainError } from '@/domain/model/errors'
@@ -63,6 +64,34 @@ export class BoardService {
       story.status = params.toStatus
       story.updatedAt = new Date().toISOString()
       story.updatedBy = actor
+
+      const storyWork = db.workItems.filter((item) => item.userStoryId === story.id)
+      if (storyWork.length > 0) {
+        const storyDeps = db.dependencies.filter(
+          (dep) =>
+            storyWork.some((item) => item.id === dep.fromId) ||
+            storyWork.some((item) => item.id === dep.toId),
+        )
+        const assignedSprintId = storyWork.find((item) => item.sprintId)?.sprintId
+        const sprint = assignedSprintId ? db.sprints.find((item) => item.id === assignedSprintId) : undefined
+        const projectStart = sprint?.startDate ?? new Date().toISOString().slice(0, 10)
+
+        const scheduled = scheduleWorkItems({
+          workItems: storyWork,
+          dependencies: storyDeps,
+          projectStart,
+        })
+
+        for (const scheduledItem of scheduled) {
+          const target = db.workItems.find((item) => item.id === scheduledItem.id)
+          if (!target) continue
+          target.forecastStart = scheduledItem.forecastStart
+          target.forecastEnd = scheduledItem.forecastEnd
+          target.updatedAt = new Date().toISOString()
+          target.updatedBy = actor
+        }
+      }
+
       db.events.push({
         id: createId(),
         productId: story.productId,

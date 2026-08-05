@@ -11,6 +11,7 @@ import { RisksPage } from '@/pages/risks/ui/RisksPage'
 import { RoadmapPage } from '@/pages/roadmap/ui/RoadmapPage'
 import { SettingsPage } from '@/pages/settings/ui/SettingsPage'
 import { SprintPage } from '@/pages/sprint/ui/SprintPage'
+import { TeamPage } from '@/pages/team/ui/TeamPage'
 import { TemplatesPage } from '@/pages/templates/ui/TemplatesPage'
 import { TodayPage } from '@/pages/today/ui/TodayPage'
 
@@ -28,6 +29,7 @@ export function App() {
         <Route path="insights/load" element={<LoadPage />} />
         <Route path="insights/risks" element={<RisksPage />} />
         <Route path="insights/analytics" element={<AnalyticsPage />} />
+        <Route path="system/team" element={<TeamPage />} />
         <Route path="system/templates" element={<TemplatesPage />} />
         <Route path="system/migration" element={<MigrationPage />} />
         <Route path="system/settings" element={<SettingsPage />} />

@@ -6,7 +6,8 @@ export type AbsenceRecord = {
   employeeId: string
   startDate: IsoDate
   endDate: IsoDate
-  status: 'planned' | 'approved' | 'cancelled'
+  /** Optional; cancelled absences are ignored when present. */
+  status?: 'planned' | 'approved' | 'cancelled'
 }
 
 export type RoleSupply = {
@@ -47,19 +48,23 @@ export function calculateRoleSupply(params: {
   absences?: AbsenceRecord[]
 }): RoleSupply[] {
   const focusFactor = params.focusFactor ?? 0.75
-  const hoursPerDay = params.hoursPerDay ?? 8
+  const defaultHoursPerDay = params.hoursPerDay ?? 8
   const periodDays = workingDaysBetween(params.periodStart, params.periodEnd)
   const map = new Map<string, number>()
 
   for (const employee of params.employees) {
     if (employee.status !== 'active') continue
     const absent = absenceDays(params.absences ?? [], employee.id, periodDays)
-    const availableDays = periodDays.length - absent.size
+    const weekFactor = Math.min(1, Math.max(0, (employee.workDaysPerWeek || 5) / 5))
+    const availableDays = Math.max(0, (periodDays.length - absent.size) * weekFactor)
+    const hoursPerDay = employee.hoursPerDay || defaultHoursPerDay
+    const loadFactor = (employee.maxLoadPercent ?? 100) / 100
     const base =
       availableDays *
       hoursPerDay *
       (employee.productAllocationPercent / 100) *
-      focusFactor
+      focusFactor *
+      loadFactor
 
     const skills = params.employeeSkills.filter((skill) => skill.employeeId === employee.id)
     for (const skill of skills) {

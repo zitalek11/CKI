@@ -107,6 +107,20 @@ const THEME: Record<string, string> = {
   system: 'Системная',
 }
 
+const STORY_PRIORITY: Record<string, string> = {
+  critical: 'Критичный',
+  high: 'Высокий',
+  medium: 'Средний',
+  low: 'Низкий',
+}
+
+const ABSENCE_KIND: Record<string, string> = {
+  vacation: 'Отпуск',
+  sick: 'Больничный',
+  holiday: 'Праздник',
+  other: 'Другое',
+}
+
 export function labelStoryStatus(value: string): string {
   return STORY_STATUS[value] ?? value
 }
@@ -145,6 +159,14 @@ export function labelHealth(value: string): string {
 
 export function labelTheme(value: string): string {
   return THEME[value] ?? value
+}
+
+export function labelStoryPriority(value: string): string {
+  return STORY_PRIORITY[value] ?? value
+}
+
+export function labelAbsenceKind(value: string): string {
+  return ABSENCE_KIND[value] ?? value
 }
 
 export function labelOrRaw(value: string): string {

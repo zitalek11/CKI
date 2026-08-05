@@ -5,11 +5,13 @@ import { BoardService } from '@/application/services/board-service'
 import { BootstrapService } from '@/application/services/bootstrap-service'
 import { CatalogService } from '@/application/services/catalog-service'
 import { IoService } from '@/application/services/io-service'
+import { NavigationService } from '@/application/services/navigation-service'
 import { QuarterService } from '@/application/services/quarter-service'
 import { ReleaseService } from '@/application/services/release-service'
 import { RoadmapService } from '@/application/services/roadmap-service'
 import { SprintService } from '@/application/services/sprint-service'
 import { StoryService } from '@/application/services/story-service'
+import { TeamService } from '@/application/services/team-service'
 import { createMigrationAdapters } from '@/infrastructure/migration/adapters'
 import { LocalStorageAdapter } from '@/infrastructure/storage/local-storage-adapter'
 import { LocalUnitOfWork } from '@/infrastructure/repositories/local-unit-of-work'
@@ -25,9 +27,11 @@ export const appServices = {
   sprints: new SprintService(uow),
   quarters: new QuarterService(uow),
   board: new BoardService(uow),
+  team: new TeamService(uow),
   releases: new ReleaseService(uow),
   roadmap: new RoadmapService(uow),
   analytics: new AnalyticsService(uow),
+  navigation: new NavigationService(uow),
   io: new IoService(uow),
   migration: new MigrationEngine(createMigrationAdapters()),
   migrationApply: new MigrationApplyService(uow),

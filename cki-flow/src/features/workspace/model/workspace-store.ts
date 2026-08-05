@@ -1,8 +1,8 @@
 import { create } from 'zustand'
 import { appServices } from '@/application/composition'
-import type { StoryListItem } from '@/application/services/story-service'
+import type { CreateStoryInput, StoryListItem } from '@/application/services/story-service'
+import type { EstimationTemplate } from '@/domain/model/entities'
 import { DomainError } from '@/domain/model/errors'
-import type { StoryType } from '@/domain/model/enums'
 import { logger } from '@/shared/lib/logger'
 
 type WorkspaceSummary = Awaited<ReturnType<typeof appServices.catalog.getWorkspaceSummary>>
@@ -15,9 +15,10 @@ type WorkspaceState = {
   summary: WorkspaceSummary | null
   stories: StoryListItem[]
   templates: TemplateListItem[]
+  estimationTemplates: EstimationTemplate[]
   bootstrap: () => Promise<void>
   refresh: () => Promise<void>
-  createStory: (input: { title: string; storyType?: StoryType }) => Promise<void>
+  createStory: (input: Omit<CreateStoryInput, 'productId' | 'actor'>) => Promise<void>
   resetDemoData: () => Promise<void>
 }
 
@@ -34,6 +35,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
   summary: null,
   stories: [],
   templates: [],
+  estimationTemplates: [],
 
   bootstrap: async () => {
     set({ loading: true, error: null })
@@ -54,21 +56,21 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
     const summary = await appServices.catalog.getWorkspaceSummary()
     const stories = await appServices.stories.listByProduct(summary.product.id)
     const templates = await appServices.catalog.listTemplates(summary.product.id)
-    set({ summary, stories, templates, error: null })
+    const estimationTemplates = await appServices.catalog.listEstimationTemplates(summary.product.id)
+    set({ summary, stories, templates, estimationTemplates, error: null })
   },
 
-  createStory: async ({ title, storyType }) => {
+  createStory: async (input) => {
     const summary = get().summary
     if (!summary) throw new DomainError('PRECONDITION', 'Рабочее пространство ещё не готово')
     set({ loading: true, error: null })
     try {
       await appServices.stories.create({
         productId: summary.product.id,
-        title,
-        storyType,
         epicId: summary.epic?.id,
         initiativeId: summary.initiative?.id,
         actor: 'pm',
+        ...input,
       })
       await get().refresh()
     } catch (error) {

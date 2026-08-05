@@ -27,7 +27,10 @@ export type Product = SystemFields & {
   name: string
   description?: string
   defaultWorkflowTemplateId?: UUID
+  defaultEstimationTemplateId?: UUID
   storySequence: number
+  activeQuarterId?: UUID
+  activeSprintId?: UUID
 }
 
 export type Team = SystemFields & {
@@ -35,6 +38,7 @@ export type Team = SystemFields & {
   productId: UUID
   name: string
   code: string
+  status?: 'active' | 'inactive'
 }
 
 export type RoleSkill = SystemFields & {
@@ -59,9 +63,18 @@ export type Employee = SystemFields & {
   productId: UUID
   displayName: string
   email?: string
+  jobTitle?: string
   defaultTeamId?: UUID
+  color?: string
+  /** Hours per working day (default 8). */
+  hoursPerDay: number
+  /** Working days per week (default 5). */
+  workDaysPerWeek: number
+  /** Legacy / derived weekly capacity. */
   weeklyHours: number
   productAllocationPercent: number
+  maxLoadPercent: number
+  notes?: string
   status: 'active' | 'inactive'
 }
 
@@ -70,6 +83,18 @@ export type EmployeeSkill = {
   employeeId: UUID
   roleSkillId: UUID
   weight: number
+}
+
+export type AbsenceKind = 'vacation' | 'sick' | 'holiday' | 'other'
+
+export type Absence = SystemFields & {
+  id: UUID
+  productId: UUID
+  employeeId: UUID
+  kind: AbsenceKind
+  startDate: IsoDate
+  endDate: IsoDate
+  note?: string
 }
 
 export type Quarter = SystemFields & {
@@ -118,21 +143,35 @@ export type Epic = SystemFields & {
   status: EpicStatus
 }
 
+export type StoryPriority = 'critical' | 'high' | 'medium' | 'low'
+
 export type UserStory = SystemFields & {
   id: UUID
   productId: UUID
   key: string
   title: string
   description?: string
+  /** Classic card: Как <роль> */
+  asA?: string
+  /** Я хочу <действие> */
+  iWant?: string
+  /** Чтобы <ценность> */
+  soThat?: string
   storyType: StoryType
   status: StoryStatus
+  priority?: StoryPriority
   epicId?: UUID
   initiativeId?: UUID
   teamId?: UUID
   ownerEmployeeId?: UUID
   workflowTemplateVersionId?: UUID
+  estimationTemplateId?: UUID
+  targetSprintId?: UUID
+  targetQuarterId?: UUID
+  targetReleaseId?: UUID
   storyPoints?: number
   businessValue?: number
+  estimateHours?: number
   interruptFlag: boolean
   templateDeviation: boolean
   backlogRank: string
@@ -146,12 +185,23 @@ export type AcceptanceCriterion = SystemFields & {
   isSatisfied: boolean
 }
 
+export type DefinitionOfDoneItem = SystemFields & {
+  id: UUID
+  userStoryId: UUID
+  text: string
+  sortOrder: number
+  isSatisfied: boolean
+}
+
 export type WorkItem = SystemFields & {
   id: UUID
   productId: UUID
   userStoryId: UUID
   key: string
   title: string
+  description?: string
+  goal?: string
+  expectedResult?: string
   workTypeId: UUID
   requiredRoleSkillId: UUID
   status: WorkItemStatus
@@ -160,6 +210,7 @@ export type WorkItem = SystemFields & {
   isMandatory: boolean
   assigneeEmployeeId?: UUID
   estimateHours: number
+  spentHours: number
   sprintId?: UUID
   forecastStart?: IsoDate
   forecastEnd?: IsoDate
@@ -187,6 +238,10 @@ export type WorkflowStage = {
   creationPolicy?: CreationPolicy
   assigneeRule: AssigneeRule
   sortHint: number
+  /** Markdown/plain description template applied to generated WorkItems. */
+  descriptionTemplate?: string
+  goalTemplate?: string
+  expectedResultTemplate?: string
 }
 
 export type StageDependencyRule = {
@@ -207,6 +262,25 @@ export type WorkflowTemplateVersion = SystemFields & {
   stages: WorkflowStage[]
   dependencyRules: StageDependencyRule[]
   publishedAt?: string
+}
+
+export type EstimationTemplateLine = {
+  id: UUID
+  stageKey: string
+  stageName: string
+  roleSkillCode: string
+  estimateHours: number
+  sortHint: number
+}
+
+export type EstimationTemplate = SystemFields & {
+  id: UUID
+  productId: UUID
+  code: string
+  name: string
+  description?: string
+  isDefault: boolean
+  lines: EstimationTemplateLine[]
 }
 
 export type Dependency = SystemFields & {
@@ -233,6 +307,7 @@ export type Sprint = SystemFields & {
   endDate: IsoDate
   status: SprintStatus
   interruptBufferPercent: number
+  goal?: string
 }
 
 export type SprintAssignment = {
@@ -263,6 +338,34 @@ export type ReleaseMembership = {
   waivedReason?: string
 }
 
+export type Comment = SystemFields & {
+  id: UUID
+  productId: UUID
+  targetType: 'user_story' | 'work_item'
+  targetId: UUID
+  body: string
+  author: string
+}
+
+export type Attachment = SystemFields & {
+  id: UUID
+  productId: UUID
+  targetType: 'user_story' | 'work_item'
+  targetId: UUID
+  name: string
+  url: string
+  mimeType?: string
+}
+
+export type ObjectLink = SystemFields & {
+  id: UUID
+  productId: UUID
+  targetType: 'user_story' | 'work_item'
+  targetId: UUID
+  title: string
+  url: string
+}
+
 export type DomainEvent = {
   id: UUID
   productId: UUID
@@ -272,4 +375,14 @@ export type DomainEvent = {
   occurredAt: string
   actor: string
   payload: Record<string, unknown>
+}
+
+export type RecentObject = {
+  id: string
+  productId: UUID
+  objectType: 'user_story' | 'work_item' | 'sprint' | 'quarter' | 'release' | 'employee'
+  objectId: UUID
+  label: string
+  path: string
+  openedAt: string
 }

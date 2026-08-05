@@ -1,6 +1,5 @@
 import type { StoragePort } from '@/application/ports/storage-port'
-import type { DomainDatabase } from '@/domain/model/database'
-import { DomainError } from '@/domain/model/errors'
+import { migrateDatabase, type DomainDatabase } from '@/domain/model/database'
 import { logger } from '@/shared/lib/logger'
 
 const STORAGE_KEY = 'cki-flow.domain.db.v1'
@@ -16,11 +15,9 @@ export class LocalStorageAdapter implements StoragePort {
     try {
       const raw = localStorage.getItem(this.key)
       if (!raw) return null
-      const parsed = JSON.parse(raw) as DomainDatabase
-      if (parsed.version !== 1) {
-        throw new DomainError('VALIDATION', `Unsupported database version: ${String(parsed.version)}`)
-      }
-      return parsed
+      const parsed = JSON.parse(raw) as unknown
+      const migrated = migrateDatabase(parsed)
+      return migrated
     } catch (error) {
       logger.error('Failed to load local database', error, 'storage')
       throw error
@@ -28,8 +25,13 @@ export class LocalStorageAdapter implements StoragePort {
   }
 
   async save(db: DomainDatabase): Promise<void> {
-    localStorage.setItem(this.key, JSON.stringify(db))
-    logger.debug('Database saved', { version: db.version, stories: db.userStories.length }, 'storage')
+    const normalized = migrateDatabase(db)
+    localStorage.setItem(this.key, JSON.stringify(normalized))
+    logger.debug(
+      'Database saved',
+      { version: normalized.version, stories: normalized.userStories.length },
+      'storage',
+    )
   }
 
   async clear(): Promise<void> {

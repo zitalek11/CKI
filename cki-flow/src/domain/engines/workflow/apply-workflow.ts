@@ -97,6 +97,9 @@ export function applyWorkflowTemplate(input: ApplyWorkflowInput): ApplyWorkflowR
       userStoryId: story.id,
       key: formatWorkItemKey(storyKey, stage.key),
       title: `${stage.name}: ${story.title}`,
+      description: fillTemplate(stage.descriptionTemplate, story),
+      goal: fillTemplate(stage.goalTemplate, story),
+      expectedResult: fillTemplate(stage.expectedResultTemplate, story),
       workTypeId: stage.workTypeId,
       requiredRoleSkillId: stage.requiredRoleSkillId,
       status: WorkItemStatus.Planned,
@@ -104,6 +107,7 @@ export function applyWorkflowTemplate(input: ApplyWorkflowInput): ApplyWorkflowR
       workflowStageKey: stage.key,
       isMandatory: stage.isMandatory,
       estimateHours: stage.defaultEstimateHours,
+      spentHours: 0,
       ...system,
     }
   })
@@ -168,4 +172,14 @@ export function selectWorkflowTemplateId(params: {
   const anyPublished = params.templates.find((template) => template.currentPublishedVersionId)
   if (anyPublished) return anyPublished.id
   throw new DomainError('NOT_FOUND', 'Нет доступного опубликованного шаблона процесса')
+}
+
+function fillTemplate(template: string | undefined, story: UserStory): string | undefined {
+  if (!template?.trim()) return undefined
+  return template
+    .replaceAll('{{title}}', story.title)
+    .replaceAll('{{key}}', story.key)
+    .replaceAll('{{asA}}', story.asA ?? '')
+    .replaceAll('{{iWant}}', story.iWant ?? '')
+    .replaceAll('{{soThat}}', story.soThat ?? '')
 }

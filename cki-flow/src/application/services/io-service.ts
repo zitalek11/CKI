@@ -1,11 +1,11 @@
 import type { UnitOfWork } from '@/application/ports/unit-of-work'
-import type { DomainDatabase } from '@/domain/model/database'
+import { migrateDatabase, type DomainDatabase } from '@/domain/model/database'
 import { DomainError } from '@/domain/model/errors'
 import { logger } from '@/shared/lib/logger'
 
 export type ExportEnvelope = {
   format: 'cki-flow-db'
-  formatVersion: 1
+  formatVersion: 2
   exportedAt: string
   database: DomainDatabase
 }
@@ -21,7 +21,7 @@ export class IoService {
     const database = await this.uow.read()
     const envelope: ExportEnvelope = {
       format: 'cki-flow-db',
-      formatVersion: 1,
+      formatVersion: 2,
       exportedAt: new Date().toISOString(),
       database,
     }
@@ -38,8 +38,9 @@ export class IoService {
     }
 
     const envelope = parsed as Partial<ExportEnvelope>
-    const db = (envelope.database ?? parsed) as DomainDatabase
-    if (!db || db.version !== 1 || !Array.isArray(db.userStories) || !Array.isArray(db.products)) {
+    const candidate = envelope.database ?? parsed
+    const db = migrateDatabase(candidate)
+    if (!Array.isArray(db.userStories) || !Array.isArray(db.products)) {
       throw new DomainError('VALIDATION', 'Неподдерживаемый или некорректный экспорт CKI Flow')
     }
 

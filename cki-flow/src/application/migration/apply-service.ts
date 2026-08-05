@@ -188,8 +188,11 @@ function applyFullMigration(
       displayName: person.displayName,
       email: person.email,
       defaultTeamId: team?.id,
+      hoursPerDay: 8,
+      workDaysPerWeek: 5,
       weeklyHours: 40,
       productAllocationPercent: 100,
+      maxLoadPercent: 100,
       status: 'active',
       ...now,
     }
@@ -556,8 +559,11 @@ function applyUpdateMigration(
       displayName: person.displayName,
       email: person.email,
       defaultTeamId: team?.id,
+      hoursPerDay: 8,
+      workDaysPerWeek: 5,
       weeklyHours: 40,
       productAllocationPercent: 100,
+      maxLoadPercent: 100,
       status: 'active',
       ...now,
     })

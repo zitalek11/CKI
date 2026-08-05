@@ -18,6 +18,7 @@ function wi(role: string, hours: number, status: WorkItemStatus = WorkItemStatus
     origin: WorkItemOrigin.Template,
     isMandatory: true,
     estimateHours: hours,
+    spentHours: 0,
     createdAt: now,
     updatedAt: now,
     createdBy: 't',

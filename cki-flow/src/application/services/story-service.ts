@@ -4,7 +4,13 @@ import {
   applyWorkflowTemplate,
   selectWorkflowTemplateId,
 } from '@/domain/engines/workflow/apply-workflow'
-import type { UserStory } from '@/domain/model/entities'
+import type {
+  AcceptanceCriterion,
+  Comment,
+  DefinitionOfDoneItem,
+  StoryPriority,
+  UserStory,
+} from '@/domain/model/entities'
 import { StoryStatus, StoryType } from '@/domain/model/enums'
 import { DomainError } from '@/domain/model/errors'
 import { createId } from '@/domain/model/ids'
@@ -20,6 +26,15 @@ export type CreateStoryInput = {
   epicId?: string
   initiativeId?: string
   description?: string
+  asA?: string
+  iWant?: string
+  soThat?: string
+  priority?: StoryPriority
+  workflowTemplateId?: string
+  estimationTemplateId?: string
+  targetSprintId?: string
+  targetQuarterId?: string
+  targetReleaseId?: string
   actor?: string
 }
 
@@ -70,11 +85,13 @@ export class StoryService {
       }
 
       const storyType = input.storyType ?? StoryType.Feature
-      const templateId = selectWorkflowTemplateId({
-        storyType,
-        templates: db.workflowTemplates.filter((template) => template.productId === product.id),
-        defaultTemplateId: product.defaultWorkflowTemplateId,
-      })
+      const templateId =
+        input.workflowTemplateId ??
+        selectWorkflowTemplateId({
+          storyType,
+          templates: db.workflowTemplates.filter((template) => template.productId === product.id),
+          defaultTemplateId: product.defaultWorkflowTemplateId,
+        })
       const template = db.workflowTemplates.find((item) => item.id === templateId)
       const version = db.workflowTemplateVersions.find(
         (item) => item.id === template?.currentPublishedVersionId,
@@ -82,6 +99,11 @@ export class StoryService {
       if (!template || !version) {
         throw new DomainError('NOT_FOUND', 'Не найдена опубликованная версия шаблона процесса')
       }
+
+      const estimationTemplateId = input.estimationTemplateId ?? product.defaultEstimationTemplateId
+      const estimationTemplate = estimationTemplateId
+        ? db.estimationTemplates.find((item) => item.id === estimationTemplateId)
+        : undefined
 
       product.storySequence += 1
       product.updatedAt = new Date().toISOString()
@@ -100,10 +122,18 @@ export class StoryService {
         key: formatStoryKey(product.key, product.storySequence),
         title,
         description: input.description,
+        asA: input.asA,
+        iWant: input.iWant,
+        soThat: input.soThat,
         storyType,
         status: StoryStatus.Draft,
+        priority: input.priority ?? 'medium',
         epicId: input.epicId as UserStory['epicId'],
         initiativeId: input.initiativeId as UserStory['initiativeId'],
+        estimationTemplateId: estimationTemplateId as UserStory['estimationTemplateId'],
+        targetSprintId: input.targetSprintId as UserStory['targetSprintId'],
+        targetQuarterId: input.targetQuarterId as UserStory['targetQuarterId'],
+        targetReleaseId: input.targetReleaseId as UserStory['targetReleaseId'],
         interruptFlag: false,
         templateDeviation: false,
         backlogRank: nextFractionalRank(lastRank),
@@ -117,13 +147,22 @@ export class StoryService {
         actor,
       })
 
-      const activeSprint = db.sprints.find(
-        (item) => item.productId === product.id && item.status === 'active',
-      )
+      if (estimationTemplate) {
+        for (const workItem of applied.workItems) {
+          const line = estimationTemplate.lines.find(
+            (item) => item.stageKey === workItem.workflowStageKey,
+          )
+          if (line) workItem.estimateHours = line.estimateHours
+        }
+      }
+
+      const targetSprint = input.targetSprintId
+        ? db.sprints.find((item) => item.id === input.targetSprintId)
+        : db.sprints.find((item) => item.productId === product.id && item.status === 'active')
       const scheduled = scheduleWorkItems({
         workItems: applied.workItems,
         dependencies: applied.dependencies,
-        projectStart: activeSprint?.startDate ?? new Date().toISOString().slice(0, 10),
+        projectStart: targetSprint?.startDate ?? new Date().toISOString().slice(0, 10),
       })
 
       db.userStories.push(applied.story)
@@ -178,6 +217,135 @@ export class StoryService {
         (dep.fromType === 'work_item' && workItems.some((item) => item.id === dep.fromId)) ||
         (dep.toType === 'work_item' && workItems.some((item) => item.id === dep.toId)),
     )
-    return { story, workItems, dependencies, progress: calculateStoryProgress(workItems) }
+    const acceptanceCriteria = db.acceptanceCriteria
+      .filter((item) => item.userStoryId === story.id)
+      .sort((a, b) => a.sortOrder - b.sortOrder)
+    const definitionOfDoneItems = db.definitionOfDoneItems
+      .filter((item) => item.userStoryId === story.id)
+      .sort((a, b) => a.sortOrder - b.sortOrder)
+    const comments = db.comments
+      .filter((item) => item.targetType === 'user_story' && item.targetId === story.id)
+      .sort((a, b) => a.createdAt.localeCompare(b.createdAt))
+
+    return {
+      story,
+      workItems,
+      dependencies,
+      acceptanceCriteria,
+      definitionOfDoneItems,
+      comments,
+      progress: calculateStoryProgress(workItems),
+    }
+  }
+
+  async addAcceptanceCriterion(params: {
+    storyId: string
+    text: string
+    actor?: string
+  }): Promise<AcceptanceCriterion> {
+    const actor = params.actor ?? 'pm'
+    const text = params.text.trim()
+    if (!text) throw new DomainError('VALIDATION', 'Текст критерия приёмки обязателен')
+
+    let created: AcceptanceCriterion | undefined
+    await this.uow.write((db) => {
+      const story = db.userStories.find((item) => item.id === params.storyId)
+      if (!story) throw new DomainError('NOT_FOUND', 'User Story не найдена')
+      const sortOrder = db.acceptanceCriteria.filter((item) => item.userStoryId === story.id).length
+      const criterion: AcceptanceCriterion = {
+        id: createId(),
+        userStoryId: story.id,
+        text,
+        sortOrder,
+        isSatisfied: false,
+        ...touchSystemFields(undefined, actor),
+      }
+      db.acceptanceCriteria.push(criterion)
+      created = criterion
+    })
+
+    if (!created) throw new DomainError('CONFLICT', 'Критерий приёмки не был добавлен')
+    return created
+  }
+
+  async toggleAcceptanceCriterion(params: { criterionId: string; actor?: string }): Promise<void> {
+    const actor = params.actor ?? 'pm'
+    await this.uow.write((db) => {
+      const criterion = db.acceptanceCriteria.find((item) => item.id === params.criterionId)
+      if (!criterion) throw new DomainError('NOT_FOUND', 'Критерий приёмки не найден')
+      criterion.isSatisfied = !criterion.isSatisfied
+      Object.assign(criterion, touchSystemFields(criterion, actor))
+    })
+  }
+
+  async addDefinitionOfDoneItem(params: {
+    storyId: string
+    text: string
+    actor?: string
+  }): Promise<DefinitionOfDoneItem> {
+    const actor = params.actor ?? 'pm'
+    const text = params.text.trim()
+    if (!text) throw new DomainError('VALIDATION', 'Текст пункта Definition of Done обязателен')
+
+    let created: DefinitionOfDoneItem | undefined
+    await this.uow.write((db) => {
+      const story = db.userStories.find((item) => item.id === params.storyId)
+      if (!story) throw new DomainError('NOT_FOUND', 'User Story не найдена')
+      const sortOrder = db.definitionOfDoneItems.filter((item) => item.userStoryId === story.id).length
+      const item: DefinitionOfDoneItem = {
+        id: createId(),
+        userStoryId: story.id,
+        text,
+        sortOrder,
+        isSatisfied: false,
+        ...touchSystemFields(undefined, actor),
+      }
+      db.definitionOfDoneItems.push(item)
+      created = item
+    })
+
+    if (!created) throw new DomainError('CONFLICT', 'Пункт Definition of Done не был добавлен')
+    return created
+  }
+
+  async toggleDefinitionOfDoneItem(params: { itemId: string; actor?: string }): Promise<void> {
+    const actor = params.actor ?? 'pm'
+    await this.uow.write((db) => {
+      const item = db.definitionOfDoneItems.find((entry) => entry.id === params.itemId)
+      if (!item) throw new DomainError('NOT_FOUND', 'Пункт Definition of Done не найден')
+      item.isSatisfied = !item.isSatisfied
+      Object.assign(item, touchSystemFields(item, actor))
+    })
+  }
+
+  async addComment(params: {
+    productId: string
+    storyId: string
+    body: string
+    author?: string
+  }): Promise<Comment> {
+    const author = params.author ?? 'pm'
+    const body = params.body.trim()
+    if (!body) throw new DomainError('VALIDATION', 'Текст комментария обязателен')
+
+    let created: Comment | undefined
+    await this.uow.write((db) => {
+      const story = db.userStories.find((item) => item.id === params.storyId)
+      if (!story) throw new DomainError('NOT_FOUND', 'User Story не найдена')
+      const comment: Comment = {
+        id: createId(),
+        productId: params.productId as Comment['productId'],
+        targetType: 'user_story',
+        targetId: story.id,
+        body,
+        author,
+        ...touchSystemFields(undefined, author),
+      }
+      db.comments.push(comment)
+      created = comment
+    })
+
+    if (!created) throw new DomainError('CONFLICT', 'Комментарий не был добавлен')
+    return created
   }
 }
