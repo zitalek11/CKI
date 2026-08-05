@@ -99,11 +99,11 @@ export class SprintService {
         (item) => item.productId === params.productId && item.status === 'active',
       )
       if (!sprint) {
-        throw new DomainError('PRECONDITION', 'No active sprint to commit into')
+        throw new DomainError('PRECONDITION', 'Нет активного спринта для добавления')
       }
 
       const story = db.userStories.find((item) => item.id === params.storyId)
-      if (!story) throw new DomainError('NOT_FOUND', 'Story not found')
+      if (!story) throw new DomainError('NOT_FOUND', 'User Story не найдена')
 
       const already = db.sprintAssignments.some(
         (assignment) =>
@@ -119,7 +119,7 @@ export class SprintService {
         return assignedSprint?.status === 'active' && assignedSprint.id !== sprint.id
       })
       if (otherActive) {
-        throw new DomainError('INVARIANT', 'Story already committed to another active sprint')
+        throw new DomainError('INVARIANT', 'User Story уже включена в другой активный спринт')
       }
 
       const assignment: SprintAssignment = {

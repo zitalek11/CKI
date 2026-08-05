@@ -51,7 +51,7 @@ export function LoadPage() {
         const demandHours = demandRow?.hours ?? 0
         return {
           code: role?.code ?? '?',
-          name: role?.name ?? 'Unknown',
+          name: role?.name ?? 'Неизвестно',
           demandHours,
           supplyHours,
           utilization: calculateUtilization(demandHours, supplyHours),
@@ -73,12 +73,12 @@ export function LoadPage() {
     <section className="flex h-full flex-col gap-4 p-6">
       <header className="flex flex-wrap items-start justify-between gap-3">
         <div className="space-y-1">
-          <h1 className="text-lg font-semibold tracking-tight">Load</h1>
+          <h1 className="text-lg font-semibold tracking-tight">Загрузка</h1>
           <p className="text-[var(--color-text-secondary)]">
-            Demand vs Supply по ролям (focus factor 0.75, working calendar).
+            Спрос и предложение по ролям (focus factor 0.75, рабочий календарь).
           </p>
         </div>
-        <Badge tone="accent">{totalDemand}h demand</Badge>
+        <Badge tone="accent">{totalDemand} ч спроса</Badge>
       </header>
 
       <div className="space-y-3 rounded-[var(--radius-md)] border border-[var(--color-border-subtle)] bg-[var(--color-bg-surface)] p-4">
@@ -98,7 +98,7 @@ export function LoadPage() {
                   </span>
                   <div className="flex items-center gap-2 text-[var(--color-text-secondary)]">
                     <span>
-                      {row.demandHours}h / {row.supplyHours}h
+                      {row.demandHours} ч / {row.supplyHours} ч
                     </span>
                     <Badge tone={tone}>{pct}%</Badge>
                   </div>

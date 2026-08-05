@@ -4,6 +4,7 @@ import type { BoardCard } from '@/application/services/board-service'
 import type { StoryStatus } from '@/domain/model/enums'
 import { BOARD_COLUMNS, canTransitionStory } from '@/domain/rules/story-status'
 import { useWorkspaceStore } from '@/features/workspace/model/workspace-store'
+import { labelStoryStatus } from '@/shared/lib/labels'
 import { Badge } from '@/shared/ui/badge'
 import { Button } from '@/shared/ui/button'
 
@@ -34,21 +35,21 @@ export function BoardPage() {
       await refresh()
       await reload()
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Move failed')
+      setError(err instanceof Error ? err.message : 'Не удалось переместить')
     }
   }
 
   if (!columns) {
-    return <div className="p-6 text-[var(--color-text-tertiary)]">Loading board…</div>
+    return <div className="p-6 text-[var(--color-text-tertiary)]">Загрузка доски…</div>
   }
 
   return (
     <section className="flex h-full flex-col gap-3 p-4">
       <header className="flex items-center justify-between px-2">
         <div>
-          <h1 className="text-lg font-semibold">Board</h1>
+          <h1 className="text-lg font-semibold">Доска</h1>
           <p className="text-[12px] text-[var(--color-text-secondary)]">
-            Проекция статусов Story. Переход — кнопки (DnD добавим на polish).
+            Проекция статусов User Story. Переход — кнопки (перетаскивание добавим позже).
           </p>
         </div>
       </header>
@@ -60,7 +61,7 @@ export function BoardPage() {
             className="flex w-[240px] shrink-0 flex-col rounded-[var(--radius-md)] border border-[var(--color-border-subtle)] bg-[var(--color-bg-subtle)]"
           >
             <div className="flex items-center justify-between px-3 py-2">
-              <span className="text-[12px] font-semibold capitalize">{status.replace('_', ' ')}</span>
+              <span className="text-[12px] font-semibold">{labelStoryStatus(status)}</span>
               <Badge>{columns[status]?.length ?? 0}</Badge>
             </div>
             <div className="flex-1 space-y-2 overflow-y-auto px-2 pb-2">
@@ -74,7 +75,7 @@ export function BoardPage() {
                   </div>
                   <div className="text-[13px] font-medium">{card.story.title}</div>
                   <div className="mt-1 text-[11px] text-[var(--color-text-secondary)]">
-                    {card.workItemCount} works · {card.remainingHours}h · {card.progress}%
+                    {card.workItemCount} задач · {card.remainingHours} ч · {card.progress}%
                   </div>
                   <div className="mt-2 flex flex-wrap gap-1">
                     {BOARD_COLUMNS.filter(
@@ -89,7 +90,7 @@ export function BoardPage() {
                           className="h-6 px-1.5 text-[10px]"
                           onClick={() => void move(card.story.id, target)}
                         >
-                          → {target.replace('_', ' ')}
+                          → {labelStoryStatus(target)}
                         </Button>
                       ))}
                   </div>

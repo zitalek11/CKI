@@ -14,7 +14,7 @@ export class QuarterService {
   async getOverview(productId: string) {
     const db = await this.uow.read()
     const quarter = db.quarters.find((item) => item.productId === productId && item.status === 'active')
-    if (!quarter) throw new DomainError('NOT_FOUND', 'Active quarter not found')
+    if (!quarter) throw new DomainError('NOT_FOUND', 'Активный квартал не найден')
 
     const goals = db.quarterGoals.filter((item) => item.quarterId === quarter.id)
     const initiatives = db.initiatives.filter((item) => item.quarterId === quarter.id)

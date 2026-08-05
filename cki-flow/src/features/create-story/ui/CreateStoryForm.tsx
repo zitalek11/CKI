@@ -4,11 +4,11 @@ import { useWorkspaceStore } from '@/features/workspace/model/workspace-store'
 import { Button } from '@/shared/ui/button'
 
 const STORY_TYPES: Array<{ value: StoryType; label: string }> = [
-  { value: StoryType.Feature, label: 'Feature / API' },
-  { value: StoryType.Documentation, label: 'Documentation' },
-  { value: StoryType.Integration, label: 'Integration' },
-  { value: StoryType.Spike, label: 'Spike' },
-  { value: StoryType.Infrastructure, label: 'Infra' },
+  { value: StoryType.Feature, label: 'Функция / API' },
+  { value: StoryType.Documentation, label: 'Документация' },
+  { value: StoryType.Integration, label: 'Интеграция' },
+  { value: StoryType.Spike, label: 'Исследование' },
+  { value: StoryType.Infrastructure, label: 'Инфраструктура' },
 ]
 
 type CreateStoryFormProps = {

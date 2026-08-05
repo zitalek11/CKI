@@ -1,5 +1,6 @@
 import { CreateStoryForm } from '@/features/create-story/ui/CreateStoryForm'
 import { useWorkspaceStore } from '@/features/workspace/model/workspace-store'
+import { labelStoryStatus, labelStoryType } from '@/shared/lib/labels'
 import { Badge } from '@/shared/ui/badge'
 
 export function BacklogPage() {
@@ -9,12 +10,12 @@ export function BacklogPage() {
     <section className="flex h-full flex-col gap-4 p-6">
       <header className="flex flex-wrap items-start justify-between gap-3">
         <div className="space-y-1">
-          <h1 className="text-lg font-semibold tracking-tight">Backlog</h1>
+          <h1 className="text-lg font-semibold tracking-tight">Бэклог</h1>
           <p className="text-[var(--color-text-secondary)]">
-            Product Backlog — данные из Domain Model, не из колонок доски.
+            Product Backlog — данные из доменной модели, не из колонок доски.
           </p>
         </div>
-        <Badge tone="accent">{stories.length} stories</Badge>
+        <Badge tone="accent">{stories.length} User Story</Badge>
       </header>
 
       <div className="grid gap-4 xl:grid-cols-[320px_1fr]">
@@ -24,19 +25,22 @@ export function BacklogPage() {
           <table className="w-full border-collapse text-left">
             <thead className="bg-[var(--color-bg-subtle)] text-[11px] tracking-wide text-[var(--color-text-tertiary)] uppercase">
               <tr>
-                <th className="px-3 py-2 font-semibold">Key</th>
-                <th className="px-3 py-2 font-semibold">Title</th>
-                <th className="px-3 py-2 font-semibold">Type</th>
-                <th className="px-3 py-2 font-semibold">Status</th>
-                <th className="px-3 py-2 font-semibold">Works</th>
-                <th className="px-3 py-2 font-semibold">Hours</th>
-                <th className="px-3 py-2 font-semibold">Progress</th>
+                <th className="px-3 py-2 font-semibold">Ключ</th>
+                <th className="px-3 py-2 font-semibold">Название</th>
+                <th className="px-3 py-2 font-semibold">Тип</th>
+                <th className="px-3 py-2 font-semibold">Статус</th>
+                <th className="px-3 py-2 font-semibold">Задачи</th>
+                <th className="px-3 py-2 font-semibold">Часы</th>
+                <th className="px-3 py-2 font-semibold">Прогресс</th>
               </tr>
             </thead>
             <tbody>
               {stories.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-3 py-8 text-center text-[var(--color-text-tertiary)]">
+                  <td
+                    colSpan={7}
+                    className="px-3 py-8 text-center text-[var(--color-text-tertiary)]"
+                  >
                     Бэклог пуст — создайте первую User Story.
                   </td>
                 </tr>
@@ -50,12 +54,14 @@ export function BacklogPage() {
                       {story.key}
                     </td>
                     <td className="px-3 py-2 font-medium">{story.title}</td>
-                    <td className="px-3 py-2 text-[var(--color-text-secondary)]">{story.storyType}</td>
+                    <td className="px-3 py-2 text-[var(--color-text-secondary)]">
+                      {labelStoryType(story.storyType)}
+                    </td>
                     <td className="px-3 py-2">
-                      <Badge>{story.status}</Badge>
+                      <Badge>{labelStoryStatus(story.status)}</Badge>
                     </td>
                     <td className="px-3 py-2">{story.workItemCount}</td>
-                    <td className="px-3 py-2">{story.remainingHours}h</td>
+                    <td className="px-3 py-2">{story.remainingHours} ч</td>
                     <td className="px-3 py-2">{story.progress}%</td>
                   </tr>
                 ))

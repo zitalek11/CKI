@@ -50,7 +50,7 @@ export function SprintPage() {
       await refreshWorkspace()
       await reload()
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Commit failed')
+      setError(err instanceof Error ? err.message : 'Не удалось добавить в спринт')
     } finally {
       setBusyId(null)
     }
@@ -65,7 +65,7 @@ export function SprintPage() {
       await refreshWorkspace()
       await reload()
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Uncommit failed')
+      setError(err instanceof Error ? err.message : 'Не удалось убрать из спринта')
     } finally {
       setBusyId(null)
     }
@@ -75,16 +75,16 @@ export function SprintPage() {
     <section className="flex h-full flex-col gap-4 p-6">
       <header className="flex flex-wrap items-start justify-between gap-3">
         <div className="space-y-1">
-          <h1 className="text-lg font-semibold tracking-tight">Sprint</h1>
+          <h1 className="text-lg font-semibold tracking-tight">Спринт</h1>
           <p className="text-[var(--color-text-secondary)]">
-            {summary?.sprint?.name ?? 'No active sprint'} · {summary?.sprint?.startDate} →{' '}
+            {summary?.sprint?.name ?? 'Нет активного спринта'} · {summary?.sprint?.startDate} →{' '}
             {summary?.sprint?.endDate}
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
           {loadByRole.map((row) => (
             <Badge key={row.code} tone="accent">
-              {row.code} {row.hours}h
+              {row.code} {row.hours} ч
             </Badge>
           ))}
         </div>
@@ -97,23 +97,24 @@ export function SprintPage() {
       )}
 
       <div className="grid min-h-0 flex-1 gap-4 lg:grid-cols-2">
-        <Pane title="Ready backlog" count={ready.length}>
+        <Pane title="Готовый бэклог" count={ready.length}>
           {ready.map((item) => (
             <StoryRow
               key={item.story.id}
               item={item}
-              actionLabel="Commit"
+              actionLabel="В спринт"
+              primary
               busy={busyId === item.story.id}
               onAction={() => void commit(item.story.id)}
             />
           ))}
         </Pane>
-        <Pane title="Sprint commitment" count={committed.length}>
+        <Pane title="Объём спринта" count={committed.length}>
           {committed.map((item) => (
             <StoryRow
               key={item.story.id}
               item={item}
-              actionLabel="Remove"
+              actionLabel="Убрать"
               busy={busyId === item.story.id}
               onAction={() => void uncommit(item.story.id)}
               showForecast
@@ -142,7 +143,9 @@ function Pane({
       </div>
       <div className="flex-1 space-y-2 overflow-auto p-3">
         {count === 0 ? (
-          <p className="px-1 py-6 text-center text-[12px] text-[var(--color-text-tertiary)]">Пусто</p>
+          <p className="px-1 py-6 text-center text-[12px] text-[var(--color-text-tertiary)]">
+            Пусто
+          </p>
         ) : (
           children
         )}
@@ -157,27 +160,36 @@ function StoryRow({
   onAction,
   busy,
   showForecast,
+  primary,
 }: {
   item: SprintBoardItem
   actionLabel: string
   onAction: () => void
   busy: boolean
   showForecast?: boolean
+  primary?: boolean
 }) {
   return (
     <div className="rounded-[var(--radius-sm)] border border-[var(--color-border-subtle)] bg-[var(--color-bg-app)] px-3 py-2">
       <div className="flex items-start justify-between gap-2">
         <div>
-          <div className="font-mono text-[11px] text-[var(--color-text-tertiary)]">{item.story.key}</div>
+          <div className="font-mono text-[11px] text-[var(--color-text-tertiary)]">
+            {item.story.key}
+          </div>
           <div className="font-medium">{item.story.title}</div>
           <div className="mt-1 text-[12px] text-[var(--color-text-secondary)]">
-            {item.workItemCount} works · {item.remainingHours}h
+            {item.workItemCount} задач · {item.remainingHours} ч
             {showForecast && item.forecastStart && item.forecastEnd
               ? ` · ${item.forecastStart} → ${item.forecastEnd}`
               : ''}
           </div>
         </div>
-        <Button size="sm" variant={actionLabel === 'Commit' ? 'primary' : 'ghost'} disabled={busy} onClick={onAction}>
+        <Button
+          size="sm"
+          variant={primary ? 'primary' : 'ghost'}
+          disabled={busy}
+          onClick={onAction}
+        >
           {actionLabel}
         </Button>
       </div>

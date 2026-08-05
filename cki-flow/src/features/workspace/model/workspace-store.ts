@@ -59,7 +59,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
 
   createStory: async ({ title, storyType }) => {
     const summary = get().summary
-    if (!summary) throw new DomainError('PRECONDITION', 'Workspace is not ready')
+    if (!summary) throw new DomainError('PRECONDITION', 'Рабочее пространство ещё не готово')
     set({ loading: true, error: null })
     try {
       await appServices.stories.create({

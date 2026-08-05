@@ -12,7 +12,7 @@ export class CatalogService {
     const db = await this.uow.read()
     const product = db.products[0]
     if (!product) {
-      throw new DomainError('NOT_FOUND', 'No product in workspace')
+      throw new DomainError('NOT_FOUND', 'В рабочем пространстве нет продукта')
     }
 
     const quarter = db.quarters.find((item) => item.productId === product.id && item.status === 'active')

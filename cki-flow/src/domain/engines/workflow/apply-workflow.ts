@@ -60,7 +60,7 @@ export function applyWorkflowTemplate(input: ApplyWorkflowInput): ApplyWorkflowR
   const { story, storyKey, templateVersion, actor } = input
 
   if (templateVersion.state !== 'published') {
-    throw new DomainError('PRECONDITION', 'Only published workflow versions can be applied')
+    throw new DomainError('PRECONDITION', 'Можно применять только опубликованные версии шаблона')
   }
 
   if (story.status !== 'draft' && story.status !== 'refining') {
@@ -75,7 +75,7 @@ export function applyWorkflowTemplate(input: ApplyWorkflowInput): ApplyWorkflowR
     (item) => item.status === WorkItemStatus.InProgress || item.status === WorkItemStatus.InReview,
   )
   if (inProgress) {
-    throw new DomainError('PRECONDITION', 'Cannot re-apply workflow while work is in progress')
+    throw new DomainError('PRECONDITION', 'Нельзя переприменить шаблон, пока есть работа в процессе')
   }
 
   const stagesToCreate = templateVersion.stages
@@ -86,7 +86,7 @@ export function applyWorkflowTemplate(input: ApplyWorkflowInput): ApplyWorkflowR
     )
 
   if (stagesToCreate.length === 0) {
-    throw new DomainError('VALIDATION', 'Workflow version produced no work items')
+    throw new DomainError('VALIDATION', 'Версия шаблона не создала ни одной задачи')
   }
 
   const workItems: WorkItem[] = stagesToCreate.map((stage) => {
@@ -167,5 +167,5 @@ export function selectWorkflowTemplateId(params: {
   if (params.defaultTemplateId) return params.defaultTemplateId
   const anyPublished = params.templates.find((template) => template.currentPublishedVersionId)
   if (anyPublished) return anyPublished.id
-  throw new DomainError('NOT_FOUND', 'No published workflow template available')
+  throw new DomainError('NOT_FOUND', 'Нет доступного опубликованного шаблона процесса')
 }

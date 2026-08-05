@@ -19,29 +19,29 @@ export function TodayPage() {
     <section className="flex h-full flex-col gap-4 p-6">
       <header className="flex flex-wrap items-start justify-between gap-3">
         <div className="space-y-1">
-          <h1 className="text-lg font-semibold tracking-tight">Today</h1>
+          <h1 className="text-lg font-semibold tracking-tight">Сегодня</h1>
           <p className="text-[var(--color-text-secondary)]">
             {summary?.product.name} · {summary?.quarter?.key ?? '—'} ·{' '}
-            {summary?.sprint?.name ?? 'No active sprint'}
+            {summary?.sprint?.name ?? 'Нет активного спринта'}
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Badge tone="accent">Stages 1–13 MVP</Badge>
+          <Badge tone="accent">MVP этапы 1–14</Badge>
           <Button variant="ghost" size="sm" onClick={() => void resetDemoData()}>
-            Reset demo
+            Сбросить демо
           </Button>
         </div>
       </header>
 
       <div className="grid gap-4 lg:grid-cols-[1.2fr_1fr]">
         <div className="rounded-[var(--radius-md)] border border-[var(--color-border-subtle)] bg-[var(--color-bg-surface)] p-4">
-          <h2 className="mb-3 text-[13px] font-semibold">Workspace pulse</h2>
+          <h2 className="mb-3 text-[13px] font-semibold">Пульс рабочего пространства</h2>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
             {[
-              ['Stories', summary?.counts.stories ?? 0],
-              ['Work items', summary?.counts.workItems ?? 0],
-              ['Dependencies', summary?.counts.dependencies ?? 0],
-              ['Templates', summary?.counts.templates ?? 0],
+              ['User Story', summary?.counts.stories ?? 0],
+              ['Задачи', summary?.counts.workItems ?? 0],
+              ['Зависимости', summary?.counts.dependencies ?? 0],
+              ['Шаблоны', summary?.counts.templates ?? 0],
             ].map(([label, value]) => (
               <div
                 key={String(label)}
@@ -53,10 +53,10 @@ export function TodayPage() {
             ))}
           </div>
 
-          <h2 className="mt-5 mb-2 text-[13px] font-semibold">Recent stories</h2>
+          <h2 className="mt-5 mb-2 text-[13px] font-semibold">Недавние User Story</h2>
           {recent.length === 0 ? (
             <p className="text-[var(--color-text-tertiary)]">
-              Пока нет Story — создайте первую справа.
+              Пока нет User Story — создайте первую справа.
             </p>
           ) : (
             <ul className="space-y-1.5">
@@ -72,8 +72,8 @@ export function TodayPage() {
                     <div className="font-medium">{story.title}</div>
                   </div>
                   <div className="text-right text-[12px] text-[var(--color-text-secondary)]">
-                    <div>{story.workItemCount} works</div>
-                    <div>{story.remainingHours}h</div>
+                    <div>{story.workItemCount} задач</div>
+                    <div>{story.remainingHours} ч</div>
                   </div>
                 </li>
               ))}
@@ -84,16 +84,16 @@ export function TodayPage() {
         <div className="space-y-4">
           <CreateStoryForm />
           <div className="rounded-[var(--radius-md)] border border-[var(--color-border-subtle)] bg-[var(--color-bg-surface)] p-4">
-            <h2 className="mb-2 text-[13px] font-semibold">Continue</h2>
+            <h2 className="mb-2 text-[13px] font-semibold">Продолжить</h2>
             <div className="flex flex-col gap-2">
               <Link className={cn(linkButtonClass)} to="/deliver/backlog">
-                Open Backlog
+                Открыть бэклог
               </Link>
               <Link className={cn(linkButtonClass)} to="/system/templates">
-                Workflow Templates
+                Шаблоны процессов
               </Link>
               <Link className={cn(linkButtonClass)} to="/plan/sprint">
-                Sprint Planning
+                Планирование спринта
               </Link>
             </div>
           </div>

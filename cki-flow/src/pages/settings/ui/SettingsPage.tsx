@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { appServices } from '@/application/composition'
 import { useThemeStore } from '@/features/theme/model/theme-store'
 import { useWorkspaceStore } from '@/features/workspace/model/workspace-store'
+import { labelTheme } from '@/shared/lib/labels'
 import { Button } from '@/shared/ui/button'
 
 export function SettingsPage() {
@@ -24,7 +25,7 @@ export function SettingsPage() {
     anchor.download = `cki-flow-export-${new Date().toISOString().slice(0, 10)}.json`
     anchor.click()
     URL.revokeObjectURL(url)
-    setMessage('Export downloaded')
+    setMessage('Экспорт скачан')
   }
 
   const onImportFile = async (file: File) => {
@@ -34,22 +35,24 @@ export function SettingsPage() {
       const text = await file.text()
       await appServices.io.importJson(text)
       await refresh()
-      setMessage(`Imported ${file.name}`)
+      setMessage(`Импортировано: ${file.name}`)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Import failed')
+      setError(err instanceof Error ? err.message : 'Ошибка импорта')
     }
   }
 
   return (
     <section className="flex h-full flex-col gap-4 p-6">
       <header>
-        <h1 className="text-lg font-semibold">Settings</h1>
-        <p className="text-[var(--color-text-secondary)]">Тема, demo data, import/export.</p>
+        <h1 className="text-lg font-semibold">Настройки</h1>
+        <p className="text-[var(--color-text-secondary)]">
+          Тема, демо-данные, импорт/экспорт и сборка desktop.
+        </p>
       </header>
 
       <div className="grid max-w-2xl gap-4">
         <section className="rounded-[var(--radius-md)] border border-[var(--color-border-subtle)] bg-[var(--color-bg-surface)] p-4">
-          <h2 className="text-[13px] font-semibold">Desktop build</h2>
+          <h2 className="text-[13px] font-semibold">Сборка desktop</h2>
           <p className="mt-1 text-[12px] text-[var(--color-text-secondary)]">
             macOS <code className="text-[11px]">.dmg</code>: локально{' '}
             <code className="text-[11px]">npm run build:dmg</code>, либо GitHub Actions → «CKI Flow —
@@ -58,7 +61,7 @@ export function SettingsPage() {
         </section>
 
         <section className="rounded-[var(--radius-md)] border border-[var(--color-border-subtle)] bg-[var(--color-bg-surface)] p-4">
-          <h2 className="text-[13px] font-semibold">Theme</h2>
+          <h2 className="text-[13px] font-semibold">Тема</h2>
           <div className="mt-2 flex gap-2">
             {(['light', 'dark', 'system'] as const).map((value) => (
               <Button
@@ -67,14 +70,14 @@ export function SettingsPage() {
                 variant={mode === value ? 'primary' : 'secondary'}
                 onClick={() => setMode(value)}
               >
-                {value}
+                {labelTheme(value)}
               </Button>
             ))}
           </div>
         </section>
 
         <section className="rounded-[var(--radius-md)] border border-[var(--color-border-subtle)] bg-[var(--color-bg-surface)] p-4">
-          <h2 className="text-[13px] font-semibold">Migration</h2>
+          <h2 className="text-[13px] font-semibold">Миграция</h2>
           <p className="mt-1 text-[12px] text-[var(--color-text-secondary)]">
             Перенос существующей доски ЦКИ (PDF / JSON) через пошаговый мастер.
           </p>
@@ -83,22 +86,22 @@ export function SettingsPage() {
               to="/system/migration"
               className="inline-flex h-8 items-center rounded-[var(--radius-sm)] bg-[var(--color-accent)] px-3 text-[13px] font-medium text-white hover:brightness-105"
             >
-              Open Migration Wizard
+              Открыть мастер миграции
             </Link>
           </div>
         </section>
 
         <section className="rounded-[var(--radius-md)] border border-[var(--color-border-subtle)] bg-[var(--color-bg-surface)] p-4">
-          <h2 className="text-[13px] font-semibold">Data</h2>
+          <h2 className="text-[13px] font-semibold">Данные</h2>
           <div className="mt-2 flex flex-wrap gap-2">
             <Button variant="secondary" onClick={() => void onExport()}>
-              Export JSON
+              Экспорт JSON
             </Button>
             <Button variant="secondary" onClick={() => fileRef.current?.click()}>
-              Import JSON
+              Импорт JSON
             </Button>
             <Button variant="ghost" onClick={() => void resetDemoData()}>
-              Reset demo data
+              Сбросить демо-данные
             </Button>
             <input
               ref={fileRef}

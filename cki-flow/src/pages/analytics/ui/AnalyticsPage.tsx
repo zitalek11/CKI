@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { appServices } from '@/application/composition'
 import { useWorkspaceStore } from '@/features/workspace/model/workspace-store'
+import { labelHealth } from '@/shared/lib/labels'
 import { Badge } from '@/shared/ui/badge'
 
 type Pulse = Awaited<ReturnType<typeof appServices.analytics.getPulse>>
@@ -15,7 +16,7 @@ export function AnalyticsPage() {
   }, [summary, summary?.counts.stories, summary?.counts.workItems])
 
   if (!pulse) {
-    return <div className="p-6 text-[var(--color-text-tertiary)]">Loading analytics…</div>
+    return <div className="p-6 text-[var(--color-text-tertiary)]">Загрузка аналитики…</div>
   }
 
   const healthTone =
@@ -25,19 +26,19 @@ export function AnalyticsPage() {
     <section className="flex h-full flex-col gap-4 p-6">
       <header className="flex items-start justify-between gap-3">
         <div>
-          <h1 className="text-lg font-semibold">Analytics</h1>
+          <h1 className="text-lg font-semibold">Пульс</h1>
           <p className="text-[var(--color-text-secondary)]">
-            One-minute pulse · {pulse.quarterKey} · {pulse.sprintName}
+            Сводка за минуту · {pulse.quarterKey} · {pulse.sprintName}
           </p>
         </div>
-        <Badge tone={healthTone}>{pulse.health}</Badge>
+        <Badge tone={healthTone}>{labelHealth(pulse.health)}</Badge>
       </header>
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <PulseCard label="Avg progress" value={`${pulse.avgProgress}%`} />
-        <PulseCard label="Stories done" value={`${pulse.doneStories}/${pulse.totalStories}`} />
+        <PulseCard label="Средний прогресс" value={`${pulse.avgProgress}%`} />
+        <PulseCard label="Готовых Story" value={`${pulse.doneStories}/${pulse.totalStories}`} />
         <PulseCard
-          label="Bottleneck"
+          label="Узкое место"
           value={
             pulse.bottleneck
               ? `${pulse.bottleneck.code} ${Math.round(pulse.bottleneck.utilization * 100)}%`
@@ -45,16 +46,18 @@ export function AnalyticsPage() {
           }
         />
         <PulseCard
-          label="Release readiness"
+          label="Готовность релиза"
           value={
-            pulse.releaseReadiness ? `${pulse.releaseReadiness.readinessPercent}%` : 'No release'
+            pulse.releaseReadiness
+              ? `${pulse.releaseReadiness.readinessPercent}%`
+              : 'Нет релиза'
           }
         />
       </div>
 
       <div className="grid gap-4 xl:grid-cols-2">
         <div className="rounded-[var(--radius-md)] border border-[var(--color-border-subtle)] bg-[var(--color-bg-surface)] p-4">
-          <h2 className="mb-3 text-[13px] font-semibold">Role utilization</h2>
+          <h2 className="mb-3 text-[13px] font-semibold">Утилизация ролей</h2>
           <div className="space-y-2">
             {pulse.roleBars.map((row) => {
               const pct = Math.min(Math.round(row.utilization * 100), 100)
@@ -63,7 +66,7 @@ export function AnalyticsPage() {
                   <div className="mb-1 flex justify-between text-[12px]">
                     <span>{row.code}</span>
                     <span className="text-[var(--color-text-secondary)]">
-                      {row.demandHours}h / {Math.round(row.supplyHours)}h
+                      {row.demandHours} ч / {Math.round(row.supplyHours)} ч
                     </span>
                   </div>
                   <div className="h-2 rounded-full bg-[var(--color-bg-subtle)]">
@@ -79,23 +82,23 @@ export function AnalyticsPage() {
         </div>
 
         <div className="rounded-[var(--radius-md)] border border-[var(--color-border-subtle)] bg-[var(--color-bg-surface)] p-4">
-          <h2 className="mb-3 text-[13px] font-semibold">Recent events</h2>
+          <h2 className="mb-3 text-[13px] font-semibold">Недавние события</h2>
           <ul className="space-y-2">
             {pulse.events.length === 0 && (
-              <li className="text-[12px] text-[var(--color-text-tertiary)]">No events yet</li>
+              <li className="text-[12px] text-[var(--color-text-tertiary)]">Событий пока нет</li>
             )}
             {pulse.events.map((event) => (
               <li key={event.id} className="text-[12px]">
                 <span className="font-medium">{event.type}</span>
                 <span className="text-[var(--color-text-tertiary)]">
                   {' '}
-                  · {new Date(event.occurredAt).toLocaleString()}
+                  · {new Date(event.occurredAt).toLocaleString('ru-RU')}
                 </span>
               </li>
             ))}
           </ul>
           <div className="mt-4 text-[12px] text-[var(--color-text-secondary)]">
-            Blocked work items: {pulse.blocked}
+            Заблокированных задач: {pulse.blocked}
           </div>
         </div>
       </div>

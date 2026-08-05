@@ -84,7 +84,7 @@ export function assertAcyclicHardDependencies(
 
   for (const node of nodes) {
     if (dfs(node)) {
-      throw new DomainError('INVARIANT', 'Hard dependency graph contains a cycle')
+      throw new DomainError('INVARIANT', 'В графе жёстких зависимостей есть цикл')
     }
   }
 }

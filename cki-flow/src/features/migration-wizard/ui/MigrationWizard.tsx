@@ -5,6 +5,7 @@ import { useWorkspaceStore } from '@/features/workspace/model/workspace-store'
 import { StoryStatus, StoryType } from '@/domain/model/enums'
 import { validateImportDraft } from '@/domain/migration/validate-draft'
 import { summarizeDraft } from '@/domain/migration/summary'
+import { labelStoryStatus, labelStoryType } from '@/shared/lib/labels'
 import { Badge } from '@/shared/ui/badge'
 import { Button } from '@/shared/ui/button'
 import { cn } from '@/shared/lib/cn'
@@ -78,7 +79,7 @@ export function MigrationWizard() {
     <section className="flex h-full flex-col gap-4 p-6">
       <header className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h1 className="text-lg font-semibold">Migration Wizard</h1>
+          <h1 className="text-lg font-semibold">Мастер миграции</h1>
           <p className="text-[var(--color-text-secondary)]">
             Импорт существующего бэклога ЦКИ в готовую модель планирования.
           </p>
@@ -158,7 +159,7 @@ export function MigrationWizard() {
                 </span>
               </label>
               <Button variant="secondary" onClick={() => void loadSample()}>
-                Загрузить sample JSON
+                Загрузить пример JSON
               </Button>
             </div>
           </section>
@@ -215,7 +216,7 @@ export function MigrationWizard() {
                     onChange={(event) => updateStoryTitle(story.tempId, event.target.value)}
                     className="min-w-[220px] flex-1 rounded-[var(--radius-sm)] border border-[var(--color-border-subtle)] bg-transparent px-2 py-1 text-[13px] outline-none"
                   />
-                  {story.needsReview && <Badge tone="warning">review</Badge>}
+                  {story.needsReview && <Badge tone="warning">проверка</Badge>}
                   <Button size="sm" variant="ghost" onClick={() => removeStory(story.tempId)}>
                     Удалить
                   </Button>
@@ -273,7 +274,7 @@ export function MigrationWizard() {
                       </option>
                       {Object.values(StoryStatus).map((value) => (
                         <option key={value} value={value}>
-                          {value}
+                          {labelStoryStatus(value)}
                         </option>
                       ))}
                     </select>
@@ -290,7 +291,7 @@ export function MigrationWizard() {
                       </option>
                       {Object.values(StoryType).map((value) => (
                         <option key={value} value={value}>
-                          {value}
+                          {labelStoryType(value)}
                         </option>
                       ))}
                     </select>
@@ -349,12 +350,15 @@ export function MigrationWizard() {
             </p>
             <div className="mt-4 grid gap-3 md:grid-cols-3">
               {[
-                ['Roadmap', `${liveSummary.initiatives} инициатив · ${liveSummary.epics} epic`],
-                ['Sprint Planning', `${liveSummary.sprints} спринтов`],
-                ['Backlog', `${liveSummary.stories} User Story`],
-                ['Capacity', `${liveSummary.people} участников`],
-                ['Timeline', `${liveSummary.quarters} квартала`],
-                ['Release', `${liveSummary.releases} релизов`],
+                [
+                  'Дорожная карта',
+                  `${liveSummary.initiatives} инициатив · ${liveSummary.epics} Epic`,
+                ],
+                ['Планирование спринта', `${liveSummary.sprints} спринтов`],
+                ['Бэклог', `${liveSummary.stories} User Story`],
+                ['Загрузка', `${liveSummary.people} участников`],
+                ['Таймлайн', `${liveSummary.quarters} квартала`],
+                ['Релиз', `${liveSummary.releases} релизов`],
               ].map(([title, detail]) => (
                 <article
                   key={title}
@@ -457,7 +461,7 @@ export function MigrationWizard() {
             Файл: {fileName}
             <br />
             Будет создано / обновлено объектов по модели предпросмотра. Отменить массово можно
-            через Reset demo data в Settings.
+            через «Сбросить демо-данные» в Настройках.
           </p>
           <div className="mt-4 flex gap-2">
             <Button variant="ghost" onClick={() => setStep('preview')}>
@@ -511,13 +515,13 @@ export function MigrationWizard() {
               to="/deliver/backlog"
               className="inline-flex h-8 items-center rounded-[var(--radius-sm)] bg-[var(--color-bg-subtle)] px-3 text-[13px] font-medium"
             >
-              Открыть Backlog
+              Открыть бэклог
             </Link>
             <Link
               to="/plan/quarter"
               className="inline-flex h-8 items-center rounded-[var(--radius-sm)] bg-[var(--color-bg-subtle)] px-3 text-[13px] font-medium"
             >
-              Открыть Quarter
+              Открыть квартал
             </Link>
           </div>
         </div>

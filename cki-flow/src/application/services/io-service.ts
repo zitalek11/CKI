@@ -34,13 +34,13 @@ export class IoService {
     try {
       parsed = JSON.parse(raw)
     } catch {
-      throw new DomainError('VALIDATION', 'Invalid JSON')
+      throw new DomainError('VALIDATION', 'Некорректный JSON')
     }
 
     const envelope = parsed as Partial<ExportEnvelope>
     const db = (envelope.database ?? parsed) as DomainDatabase
     if (!db || db.version !== 1 || !Array.isArray(db.userStories) || !Array.isArray(db.products)) {
-      throw new DomainError('VALIDATION', 'Unsupported or invalid CKI Flow export')
+      throw new DomainError('VALIDATION', 'Неподдерживаемый или некорректный экспорт CKI Flow')
     }
 
     await this.uow.replace(db)

@@ -2,7 +2,7 @@ import { DomainError } from '@/domain/model/errors'
 
 export function formatStoryKey(productKey: string, sequence: number): string {
   if (sequence < 1) {
-    throw new DomainError('VALIDATION', 'Story sequence must be >= 1')
+    throw new DomainError('VALIDATION', 'Номер User Story должен быть >= 1')
   }
   return `${productKey}-${sequence}`
 }

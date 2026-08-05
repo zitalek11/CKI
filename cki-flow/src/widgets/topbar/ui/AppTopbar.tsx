@@ -5,6 +5,7 @@ import { usePaletteStore } from '@/features/command-palette/model/palette-store'
 import { useShellStore } from '@/features/shell/model/shell-store'
 import { useThemeStore } from '@/features/theme/model/theme-store'
 import { useWorkspaceStore } from '@/features/workspace/model/workspace-store'
+import { labelTheme } from '@/shared/lib/labels'
 
 export function AppTopbar() {
   const toggleSidebar = useShellStore((s) => s.toggleSidebar)
@@ -15,7 +16,12 @@ export function AppTopbar() {
 
   return (
     <header className="flex h-12 shrink-0 items-center gap-2 border-b border-[var(--color-border-subtle)] bg-[var(--color-bg-surface)] px-3">
-      <Button variant="ghost" size="icon" aria-label="Toggle sidebar" onClick={toggleSidebar}>
+      <Button
+        variant="ghost"
+        size="icon"
+        aria-label="Переключить боковую панель"
+        onClick={toggleSidebar}
+      >
         <PanelLeft className="h-4 w-4" />
       </Button>
 
@@ -26,14 +32,21 @@ export function AppTopbar() {
         <span>·</span>
         <span>{summary?.quarter?.key ?? '—'}</span>
         <span>·</span>
-        <span>{summary?.sprint?.name ?? 'No sprint'}</span>
+        <span>{summary?.sprint?.name ?? 'Нет спринта'}</span>
       </div>
 
       <div className="ml-auto flex items-center gap-1.5">
-        <Button variant="ghost" size="sm" className="gap-1.5 text-[var(--color-text-secondary)]" disabled>
+        <Button
+          variant="ghost"
+          size="sm"
+          className="gap-1.5 text-[var(--color-text-secondary)]"
+          disabled
+        >
           <Search className="h-3.5 w-3.5" />
-          Search
-          <kbd className="rounded border border-[var(--color-border-subtle)] px-1 text-[10px]">⌘P</kbd>
+          Поиск
+          <kbd className="rounded border border-[var(--color-border-subtle)] px-1 text-[10px]">
+            ⌘P
+          </kbd>
         </Button>
         <Button
           variant="ghost"
@@ -42,17 +55,19 @@ export function AppTopbar() {
           onClick={() => togglePalette()}
         >
           <Command className="h-3.5 w-3.5" />
-          Commands
-          <kbd className="rounded border border-[var(--color-border-subtle)] px-1 text-[10px]">⌘K</kbd>
+          Команды
+          <kbd className="rounded border border-[var(--color-border-subtle)] px-1 text-[10px]">
+            ⌘K
+          </kbd>
         </Button>
-        <Button variant="ghost" size="icon" aria-label="Notifications" disabled>
+        <Button variant="ghost" size="icon" aria-label="Уведомления" disabled>
           <Bell className="h-4 w-4" />
         </Button>
         <Button
           variant="ghost"
           size="icon"
-          aria-label={`Theme: ${mode}`}
-          title={`Theme: ${mode}`}
+          aria-label={`Тема: ${labelTheme(mode)}`}
+          title={`Тема: ${labelTheme(mode)}`}
           onClick={cycleMode}
         >
           {mode === 'light' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}

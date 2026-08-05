@@ -79,7 +79,7 @@ export class MigrationApplyService {
     await this.uow.write((db) => {
       const product = db.products.find((item) => item.id === input.productId)
       if (!product) {
-        throw new DomainError('NOT_FOUND', 'Product not found', {
+        throw new DomainError('NOT_FOUND', 'Продукт не найден', {
           productId: input.productId,
         })
       }
@@ -92,7 +92,7 @@ export class MigrationApplyService {
     })
 
     if (!journal) {
-      throw new DomainError('CONFLICT', 'Migration did not produce a journal')
+      throw new DomainError('CONFLICT', 'Миграция не сформировала журнал')
     }
 
     logger.info(
@@ -347,7 +347,7 @@ function applyFullMigration(
       (item) => item.id === template?.currentPublishedVersionId,
     )
     if (!template || !version) {
-      throw new DomainError('NOT_FOUND', 'Published workflow template version not found')
+      throw new DomainError('NOT_FOUND', 'Не найдена опубликованная версия шаблона процесса')
     }
 
     const owner =
@@ -656,7 +656,7 @@ function applyUpdateMigration(
         (item) => item.id === template?.currentPublishedVersionId,
       )
       if (!template || !version) {
-        throw new DomainError('NOT_FOUND', 'Published workflow template version not found')
+        throw new DomainError('NOT_FOUND', 'Не найдена опубликованная версия шаблона процесса')
       }
 
       const lastRank = db.userStories

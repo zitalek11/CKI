@@ -57,7 +57,7 @@ export class BoardService {
       const story = db.userStories.find(
         (item) => item.id === params.storyId && item.productId === params.productId,
       )
-      if (!story) throw new DomainError('NOT_FOUND', 'Story not found')
+      if (!story) throw new DomainError('NOT_FOUND', 'User Story не найдена')
       assertStoryTransition(story.status, params.toStatus)
       const from = story.status
       story.status = params.toStatus

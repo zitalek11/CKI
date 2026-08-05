@@ -36,21 +36,29 @@ export function CommandPalette() {
 
   const commands = useMemo<Command[]>(
     () => [
-      { id: 'today', label: 'Go to Today', hint: 'g t', run: () => navigate('/') },
-      { id: 'sprint', label: 'Go to Sprint', run: () => navigate('/plan/sprint') },
-      { id: 'quarter', label: 'Go to Quarter', run: () => navigate('/plan/quarter') },
-      { id: 'backlog', label: 'Go to Backlog', run: () => navigate('/deliver/backlog') },
-      { id: 'board', label: 'Go to Board', run: () => navigate('/deliver/board') },
-      { id: 'roadmap', label: 'Go to Roadmap', run: () => navigate('/deliver/roadmap') },
-      { id: 'releases', label: 'Go to Releases', run: () => navigate('/deliver/releases') },
-      { id: 'load', label: 'Go to Load', run: () => navigate('/insights/load') },
-      { id: 'risks', label: 'Go to Risks', run: () => navigate('/insights/risks') },
-      { id: 'analytics', label: 'Go to Analytics', run: () => navigate('/insights/analytics') },
-      { id: 'templates', label: 'Go to Templates', run: () => navigate('/system/templates') },
-      { id: 'migration', label: 'Open Migration Wizard', run: () => navigate('/system/migration') },
-      { id: 'settings', label: 'Go to Settings', run: () => navigate('/system/settings') },
-      { id: 'theme', label: 'Cycle theme', run: () => cycleMode() },
-      { id: 'reset', label: 'Reset demo data', run: () => void resetDemoData() },
+      { id: 'today', label: 'Перейти: Сегодня', hint: 'g t', run: () => navigate('/') },
+      { id: 'sprint', label: 'Перейти: Спринт', run: () => navigate('/plan/sprint') },
+      { id: 'quarter', label: 'Перейти: Квартал', run: () => navigate('/plan/quarter') },
+      { id: 'backlog', label: 'Перейти: Бэклог', run: () => navigate('/deliver/backlog') },
+      { id: 'board', label: 'Перейти: Доска', run: () => navigate('/deliver/board') },
+      {
+        id: 'roadmap',
+        label: 'Перейти: Дорожная карта',
+        run: () => navigate('/deliver/roadmap'),
+      },
+      { id: 'releases', label: 'Перейти: Релизы', run: () => navigate('/deliver/releases') },
+      { id: 'load', label: 'Перейти: Загрузка', run: () => navigate('/insights/load') },
+      { id: 'risks', label: 'Перейти: Риски', run: () => navigate('/insights/risks') },
+      { id: 'analytics', label: 'Перейти: Пульс', run: () => navigate('/insights/analytics') },
+      { id: 'templates', label: 'Перейти: Шаблоны', run: () => navigate('/system/templates') },
+      {
+        id: 'migration',
+        label: 'Открыть мастер миграции',
+        run: () => navigate('/system/migration'),
+      },
+      { id: 'settings', label: 'Перейти: Настройки', run: () => navigate('/system/settings') },
+      { id: 'theme', label: 'Сменить тему', run: () => cycleMode() },
+      { id: 'reset', label: 'Сбросить демо-данные', run: () => void resetDemoData() },
     ],
     [navigate, cycleMode, resetDemoData],
   )
@@ -70,14 +78,14 @@ export function CommandPalette() {
         className="w-full max-w-xl overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)] bg-[var(--color-bg-elevated)] shadow-xl"
         role="dialog"
         aria-modal="true"
-        aria-label="Command palette"
+        aria-label="Палитра команд"
         onClick={(event) => event.stopPropagation()}
       >
         <input
           autoFocus
           value={query}
           onChange={(event) => setQuery(event.target.value)}
-          placeholder="Type a command…"
+          placeholder="Введите команду…"
           className="h-12 w-full border-b border-[var(--color-border-subtle)] bg-transparent px-4 outline-none"
           onKeyDown={(event) => {
             if (event.key === 'Enter' && filtered[0]) {
@@ -88,7 +96,9 @@ export function CommandPalette() {
         />
         <ul className="max-h-80 overflow-auto p-2">
           {filtered.length === 0 && (
-            <li className="px-2 py-3 text-[12px] text-[var(--color-text-tertiary)]">No commands</li>
+            <li className="px-2 py-3 text-[12px] text-[var(--color-text-tertiary)]">
+              Команды не найдены
+            </li>
           )}
           {filtered.map((command, index) => (
             <li key={command.id}>

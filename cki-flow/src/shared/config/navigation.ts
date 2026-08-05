@@ -31,43 +31,43 @@ export type NavGroup = {
 export const NAV_GROUPS: NavGroup[] = [
   {
     id: 'today',
-    label: 'Today',
-    items: [{ id: 'today', label: 'Today', path: '/', icon: Inbox }],
+    label: 'Сегодня',
+    items: [{ id: 'today', label: 'Сегодня', path: '/', icon: Inbox }],
   },
   {
     id: 'plan',
-    label: 'Plan',
+    label: 'План',
     items: [
-      { id: 'quarter', label: 'Quarter', path: '/plan/quarter', icon: CalendarRange },
-      { id: 'sprint', label: 'Sprint', path: '/plan/sprint', icon: Timer },
+      { id: 'quarter', label: 'Квартал', path: '/plan/quarter', icon: CalendarRange },
+      { id: 'sprint', label: 'Спринт', path: '/plan/sprint', icon: Timer },
     ],
   },
   {
     id: 'deliver',
-    label: 'Deliver',
+    label: 'Поставка',
     items: [
-      { id: 'backlog', label: 'Backlog', path: '/deliver/backlog', icon: LayoutGrid },
-      { id: 'board', label: 'Board', path: '/deliver/board', icon: GitBranch },
-      { id: 'roadmap', label: 'Roadmap', path: '/deliver/roadmap', icon: Map },
-      { id: 'releases', label: 'Releases', path: '/deliver/releases', icon: Package },
+      { id: 'backlog', label: 'Бэклог', path: '/deliver/backlog', icon: LayoutGrid },
+      { id: 'board', label: 'Доска', path: '/deliver/board', icon: GitBranch },
+      { id: 'roadmap', label: 'Дорожная карта', path: '/deliver/roadmap', icon: Map },
+      { id: 'releases', label: 'Релизы', path: '/deliver/releases', icon: Package },
     ],
   },
   {
     id: 'insights',
-    label: 'Insights',
+    label: 'Аналитика',
     items: [
-      { id: 'load', label: 'Load', path: '/insights/load', icon: Gauge },
-      { id: 'risks', label: 'Risks', path: '/insights/risks', icon: ShieldAlert },
-      { id: 'analytics', label: 'Analytics', path: '/insights/analytics', icon: Activity },
+      { id: 'load', label: 'Загрузка', path: '/insights/load', icon: Gauge },
+      { id: 'risks', label: 'Риски', path: '/insights/risks', icon: ShieldAlert },
+      { id: 'analytics', label: 'Пульс', path: '/insights/analytics', icon: Activity },
     ],
   },
   {
     id: 'system',
-    label: 'System',
+    label: 'Система',
     items: [
-      { id: 'templates', label: 'Templates', path: '/system/templates', icon: Workflow },
-      { id: 'migration', label: 'Migration', path: '/system/migration', icon: FileInput },
-      { id: 'settings', label: 'Settings', path: '/system/settings', icon: Settings },
+      { id: 'templates', label: 'Шаблоны', path: '/system/templates', icon: Workflow },
+      { id: 'migration', label: 'Миграция', path: '/system/migration', icon: FileInput },
+      { id: 'settings', label: 'Настройки', path: '/system/settings', icon: Settings },
     ],
   },
 ]

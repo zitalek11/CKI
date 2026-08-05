@@ -58,7 +58,7 @@ export class StoryService {
     const actor = input.actor ?? 'pm'
     const title = input.title.trim()
     if (!title) {
-      throw new DomainError('VALIDATION', 'Story title is required')
+      throw new DomainError('VALIDATION', 'Название User Story обязательно')
     }
 
     let createdStory: UserStory | undefined
@@ -66,7 +66,7 @@ export class StoryService {
     await this.uow.write((db) => {
       const product = db.products.find((item) => item.id === input.productId)
       if (!product) {
-        throw new DomainError('NOT_FOUND', 'Product not found', { productId: input.productId })
+        throw new DomainError('NOT_FOUND', 'Продукт не найден', { productId: input.productId })
       }
 
       const storyType = input.storyType ?? StoryType.Feature
@@ -80,7 +80,7 @@ export class StoryService {
         (item) => item.id === template?.currentPublishedVersionId,
       )
       if (!template || !version) {
-        throw new DomainError('NOT_FOUND', 'Published workflow template version not found')
+        throw new DomainError('NOT_FOUND', 'Не найдена опубликованная версия шаблона процесса')
       }
 
       product.storySequence += 1
@@ -151,7 +151,7 @@ export class StoryService {
     })
 
     if (!createdStory) {
-      throw new DomainError('CONFLICT', 'Story was not created')
+      throw new DomainError('CONFLICT', 'User Story не была создана')
     }
 
     logger.info(
@@ -171,7 +171,7 @@ export class StoryService {
   async getById(storyId: string) {
     const db = await this.uow.read()
     const story = db.userStories.find((item) => item.id === storyId)
-    if (!story) throw new DomainError('NOT_FOUND', 'User Story not found', { storyId })
+    if (!story) throw new DomainError('NOT_FOUND', 'User Story не найдена', { storyId })
     const workItems = db.workItems.filter((item) => item.userStoryId === story.id)
     const dependencies = db.dependencies.filter(
       (dep) =>

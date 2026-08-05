@@ -14,6 +14,18 @@ function spanDays(start: string, end: string): number {
   return Math.max(1, dayOffset(start, end) + 1)
 }
 
+const LEVEL_LABELS = {
+  all: 'Все',
+  initiative: 'Инициативы',
+  story: 'User Story',
+} as const
+
+const KIND_LABELS: Record<string, string> = {
+  initiative: 'Инициатива',
+  story: 'User Story',
+  epic: 'Epic',
+}
+
 export function RoadmapPage() {
   const summary = useWorkspaceStore((s) => s.summary)
   const [bars, setBars] = useState<RoadmapBar[]>([])
@@ -37,9 +49,9 @@ export function RoadmapPage() {
     <section className="flex h-full flex-col gap-4 p-6">
       <header className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h1 className="text-lg font-semibold">Roadmap</h1>
+          <h1 className="text-lg font-semibold">Дорожная карта</h1>
           <p className="text-[var(--color-text-secondary)]">
-            Автоматически из forecast WorkItems · {rangeStart} → {rangeEnd}
+            Автоматически из прогноза WorkItems · {rangeStart} → {rangeEnd}
           </p>
         </div>
         <div className="flex gap-1">
@@ -54,7 +66,7 @@ export function RoadmapPage() {
                   : 'text-[var(--color-text-secondary)]'
               }`}
             >
-              {value}
+              {LEVEL_LABELS[value]}
             </button>
           ))}
         </div>
@@ -63,7 +75,7 @@ export function RoadmapPage() {
       <div className="overflow-auto rounded-[var(--radius-md)] border border-[var(--color-border-subtle)] bg-[var(--color-bg-surface)] p-4">
         {visible.length === 0 ? (
           <p className="text-[var(--color-text-tertiary)]">
-            Нет forecast-дат. Создайте Story и/или commit в Sprint.
+            Нет прогнозных дат. Создайте User Story и/или добавьте её в спринт.
           </p>
         ) : (
           <div className="space-y-3">
@@ -71,11 +83,16 @@ export function RoadmapPage() {
               const left = (dayOffset(rangeStart, bar.start) / totalDays) * 100
               const width = (spanDays(bar.start, bar.end) / totalDays) * 100
               return (
-                <div key={`${bar.kind}-${bar.id}`} className="grid grid-cols-[180px_1fr] items-center gap-3">
+                <div
+                  key={`${bar.kind}-${bar.id}`}
+                  className="grid grid-cols-[180px_1fr] items-center gap-3"
+                >
                   <div className="min-w-0">
                     <div className="truncate text-[12px] font-medium">{bar.label}</div>
                     <div className="flex items-center gap-1 text-[10px] text-[var(--color-text-tertiary)]">
-                      <Badge tone={bar.kind === 'initiative' ? 'accent' : 'neutral'}>{bar.kind}</Badge>
+                      <Badge tone={bar.kind === 'initiative' ? 'accent' : 'neutral'}>
+                        {KIND_LABELS[bar.kind] ?? bar.kind}
+                      </Badge>
                       <span>{bar.subtitle}</span>
                     </div>
                   </div>

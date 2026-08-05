@@ -1,10 +1,24 @@
 import { useCallback, useEffect, useState } from 'react'
 import { appServices } from '@/application/composition'
 import { useWorkspaceStore } from '@/features/workspace/model/workspace-store'
+import { labelReleaseStatus, labelStoryStatus } from '@/shared/lib/labels'
 import { Badge } from '@/shared/ui/badge'
 import { Button } from '@/shared/ui/button'
 
 type Details = Awaited<ReturnType<typeof appServices.releases.getDetails>>
+
+const RISK_LABELS: Record<string, string> = {
+  low: 'низкий',
+  medium: 'средний',
+  high: 'высокий',
+  critical: 'критический',
+}
+
+const INCLUSION_LABELS: Record<string, string> = {
+  must: 'обязательно',
+  should: 'желательно',
+  stretch: 'по возможности',
+}
 
 export function ReleasesPage() {
   const summary = useWorkspaceStore((s) => s.summary)
@@ -27,7 +41,7 @@ export function ReleasesPage() {
       await appServices.releases.addStory({ releaseId: details.release.id, storyId })
       await reload()
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Add failed')
+      setError(err instanceof Error ? err.message : 'Не удалось добавить')
     }
   }
 
@@ -37,12 +51,12 @@ export function ReleasesPage() {
       await appServices.releases.removeStory({ releaseId: details.release.id, storyId })
       await reload()
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Remove failed')
+      setError(err instanceof Error ? err.message : 'Не удалось удалить')
     }
   }
 
   if (!details) {
-    return <div className="p-6 text-[var(--color-text-tertiary)]">Loading release…</div>
+    return <div className="p-6 text-[var(--color-text-tertiary)]">Загрузка релиза…</div>
   }
 
   const { release, readiness, stories, candidates, memberships } = details
@@ -61,13 +75,13 @@ export function ReleasesPage() {
             {release.name} · {release.versionName}
           </h1>
           <p className="text-[var(--color-text-secondary)]">
-            {release.status} · plan {release.plannedDate ?? '—'}
+            {labelReleaseStatus(release.status)} · план {release.plannedDate ?? '—'}
           </p>
         </div>
         <div className="flex gap-2">
-          <Badge tone="accent">Readiness {readiness.readinessPercent}%</Badge>
+          <Badge tone="accent">Готовность {readiness.readinessPercent}%</Badge>
           <Badge tone="accent">Scope {readiness.completionPercent}%</Badge>
-          <Badge tone={riskTone}>Risk {readiness.riskLevel}</Badge>
+          <Badge tone={riskTone}>Риск: {RISK_LABELS[readiness.riskLevel] ?? readiness.riskLevel}</Badge>
         </div>
       </header>
 
@@ -75,7 +89,7 @@ export function ReleasesPage() {
 
       <div className="grid gap-4 xl:grid-cols-[1fr_1fr]">
         <div className="rounded-[var(--radius-md)] border border-[var(--color-border-subtle)] bg-[var(--color-bg-surface)] p-4">
-          <h2 className="mb-3 text-[13px] font-semibold">Gates</h2>
+          <h2 className="mb-3 text-[13px] font-semibold">Критерии готовности</h2>
           <ul className="space-y-2">
             {readiness.gates.map((gate) => (
               <li
@@ -87,7 +101,7 @@ export function ReleasesPage() {
                   <div className="text-[12px] text-[var(--color-text-secondary)]">{gate.detail}</div>
                 </div>
                 <Badge tone={gate.passed ? 'success' : 'danger'}>
-                  {gate.passed ? 'pass' : 'fail'}
+                  {gate.passed ? 'ок' : 'нет'}
                 </Badge>
               </li>
             ))}
@@ -95,10 +109,12 @@ export function ReleasesPage() {
         </div>
 
         <div className="rounded-[var(--radius-md)] border border-[var(--color-border-subtle)] bg-[var(--color-bg-surface)] p-4">
-          <h2 className="mb-3 text-[13px] font-semibold">Membership</h2>
+          <h2 className="mb-3 text-[13px] font-semibold">Состав релиза</h2>
           <div className="space-y-2">
             {stories.length === 0 && (
-              <p className="text-[12px] text-[var(--color-text-tertiary)]">Пока пусто — добавьте Story.</p>
+              <p className="text-[12px] text-[var(--color-text-tertiary)]">
+                Пока пусто — добавьте User Story.
+              </p>
             )}
             {stories.map((story) => {
               const membership = memberships.find((item) => item.userStoryId === story.id)
@@ -113,11 +129,14 @@ export function ReleasesPage() {
                     </div>
                     <div className="text-[13px] font-medium">{story.title}</div>
                     <div className="text-[11px] text-[var(--color-text-secondary)]">
-                      {membership?.inclusion} · {story.status}
+                      {membership
+                        ? (INCLUSION_LABELS[membership.inclusion] ?? membership.inclusion)
+                        : '—'}{' '}
+                      · {labelStoryStatus(story.status)}
                     </div>
                   </div>
                   <Button size="sm" variant="ghost" onClick={() => void remove(story.id)}>
-                    Remove
+                    Убрать
                   </Button>
                 </div>
               )
@@ -125,7 +144,7 @@ export function ReleasesPage() {
           </div>
 
           <h3 className="mt-4 mb-2 text-[12px] font-semibold text-[var(--color-text-secondary)]">
-            Candidates
+            Кандидаты
           </h3>
           <div className="space-y-1">
             {candidates.slice(0, 8).map((story) => (
@@ -134,7 +153,7 @@ export function ReleasesPage() {
                   {story.key} · {story.title}
                 </span>
                 <Button size="sm" variant="secondary" onClick={() => void add(story.id)}>
-                  Add must
+                  Добавить (must)
                 </Button>
               </div>
             ))}

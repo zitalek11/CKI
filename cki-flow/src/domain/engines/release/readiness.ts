@@ -63,24 +63,30 @@ export function calculateReleaseReadiness(params: {
   const gates: ReleaseGateResult[] = [
     {
       key: 'G_SCOPE',
-      label: 'Must scope complete',
+      label: 'Обязательный scope закрыт',
       hard: true,
       passed: mustIncomplete === 0,
-      detail: mustIncomplete === 0 ? 'All must stories done or waived' : `${mustIncomplete} must stories open`,
+      detail:
+        mustIncomplete === 0
+          ? 'Все must-Story завершены или исключены'
+          : `Открыто must-Story: ${mustIncomplete}`,
     },
     {
       key: 'G_QUALITY',
-      label: 'QA stages closed',
+      label: 'Этапы QA закрыты',
       hard: true,
       passed: openQa === 0,
-      detail: openQa === 0 ? 'No open QA work' : `${openQa} open QA work items`,
+      detail: openQa === 0 ? 'Нет открытых QA-задач' : `Открытых QA-задач: ${openQa}`,
     },
     {
       key: 'G_DEPS',
-      label: 'No blocked work',
+      label: 'Нет заблокированных работ',
       hard: true,
       passed: openBlockers === 0,
-      detail: openBlockers === 0 ? 'No blockers' : `${openBlockers} blocked work items`,
+      detail:
+        openBlockers === 0
+          ? 'Блокеров нет'
+          : `Заблокированных задач: ${openBlockers}`,
     },
   ]
 

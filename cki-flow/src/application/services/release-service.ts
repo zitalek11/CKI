@@ -36,7 +36,7 @@ export class ReleaseService {
       db.releases.find((item) => item.productId === productId && item.status !== ReleaseStatus.Cancelled)
 
     if (!release) {
-      throw new DomainError('NOT_FOUND', 'Release not found')
+      throw new DomainError('NOT_FOUND', 'Релиз не найден')
     }
 
     const memberships = db.releaseMemberships.filter((item) => item.releaseId === release.id)
@@ -67,9 +67,9 @@ export class ReleaseService {
     const actor = params.actor ?? 'pm'
     await this.uow.write((db) => {
       const release = db.releases.find((item) => item.id === params.releaseId)
-      if (!release) throw new DomainError('NOT_FOUND', 'Release not found')
+      if (!release) throw new DomainError('NOT_FOUND', 'Релиз не найден')
       if (release.status === ReleaseStatus.CodeFreeze || release.status === ReleaseStatus.Ready) {
-        throw new DomainError('PRECONDITION', 'Release is frozen — override not implemented in MVP')
+        throw new DomainError('PRECONDITION', 'Релиз заморожен — переопределение в MVP не реализовано')
       }
       const exists = db.releaseMemberships.some(
         (item) => item.releaseId === params.releaseId && item.userStoryId === params.storyId,
@@ -93,9 +93,9 @@ export class ReleaseService {
   async removeStory(params: { releaseId: string; storyId: string }): Promise<void> {
     await this.uow.write((db) => {
       const release = db.releases.find((item) => item.id === params.releaseId)
-      if (!release) throw new DomainError('NOT_FOUND', 'Release not found')
+      if (!release) throw new DomainError('NOT_FOUND', 'Релиз не найден')
       if (release.status === ReleaseStatus.CodeFreeze || release.status === ReleaseStatus.Released) {
-        throw new DomainError('PRECONDITION', 'Cannot remove story from frozen/released release')
+        throw new DomainError('PRECONDITION', 'Нельзя удалить Story из замороженного или выпущенного релиза')
       }
       db.releaseMemberships = db.releaseMemberships.filter(
         (item) => !(item.releaseId === params.releaseId && item.userStoryId === params.storyId),
@@ -124,7 +124,7 @@ export class ReleaseService {
       }
       db.releases.push(created)
     })
-    if (!created) throw new DomainError('CONFLICT', 'Failed to ensure release')
+    if (!created) throw new DomainError('CONFLICT', 'Не удалось подготовить релиз')
     return created
   }
 }

@@ -15,7 +15,7 @@ export class AnalyticsService {
   async getPulse(productId: string) {
     const db = await this.uow.read()
     const product = db.products.find((item) => item.id === productId)
-    if (!product) throw new DomainError('NOT_FOUND', 'Product not found')
+    if (!product) throw new DomainError('NOT_FOUND', 'Продукт не найден')
 
     const stories = db.userStories.filter((item) => item.productId === productId)
     const workItems = db.workItems.filter((item) => item.productId === productId)

@@ -11,6 +11,19 @@ type RiskRow = {
   detail: string
 }
 
+const SEVERITY_LABELS = {
+  high: 'высокий',
+  medium: 'средний',
+  low: 'низкий',
+} as const
+
+const RISK_LEVEL_LABELS: Record<string, string> = {
+  low: 'низкий',
+  medium: 'средний',
+  high: 'высокий',
+  critical: 'критический',
+}
+
 export function RisksPage() {
   const summary = useWorkspaceStore((s) => s.summary)
   const [rows, setRows] = useState<RiskRow[]>([])
@@ -30,7 +43,7 @@ export function RisksPage() {
           next.push({
             id: item.id,
             severity: 'high',
-            title: `Blocked: ${item.key}`,
+            title: `Заблокировано: ${item.key}`,
             detail: `${story?.key ?? '?'} · ${item.title}`,
           })
         }
@@ -41,16 +54,16 @@ export function RisksPage() {
         next.push({
           id: 'bottleneck',
           severity: pulse.bottleneck.utilization > 1.2 ? 'high' : 'medium',
-          title: `Capacity overload: ${pulse.bottleneck.code}`,
-          detail: `${Math.round(pulse.bottleneck.utilization * 100)}% utilization`,
+          title: `Перегруз capacity: ${pulse.bottleneck.code}`,
+          detail: `Утилизация ${Math.round(pulse.bottleneck.utilization * 100)}%`,
         })
       }
       if (pulse.releaseReadiness && pulse.releaseReadiness.riskLevel !== 'low') {
         next.push({
           id: 'release',
           severity: pulse.releaseReadiness.riskLevel === 'critical' ? 'high' : 'medium',
-          title: `Release risk: ${pulse.releaseReadiness.release.name}`,
-          detail: `Readiness ${pulse.releaseReadiness.readinessPercent}% · ${pulse.releaseReadiness.riskLevel}`,
+          title: `Риск релиза: ${pulse.releaseReadiness.release.name}`,
+          detail: `Готовность ${pulse.releaseReadiness.readinessPercent}% · ${RISK_LEVEL_LABELS[pulse.releaseReadiness.riskLevel] ?? pulse.releaseReadiness.riskLevel}`,
         })
       }
 
@@ -61,9 +74,9 @@ export function RisksPage() {
   return (
     <section className="flex h-full flex-col gap-4 p-6">
       <header>
-        <h1 className="text-lg font-semibold">Risks</h1>
+        <h1 className="text-lg font-semibold">Риски</h1>
         <p className="text-[var(--color-text-secondary)]">
-          Блокеры, перегруз ролей и риск релиза — из Domain engines.
+          Блокеры, перегруз ролей и риск релиза — из доменных движков.
         </p>
       </header>
       <div className="space-y-2">
@@ -79,8 +92,12 @@ export function RisksPage() {
                 <div className="font-medium">{row.title}</div>
                 <div className="text-[12px] text-[var(--color-text-secondary)]">{row.detail}</div>
               </div>
-              <Badge tone={row.severity === 'high' ? 'danger' : row.severity === 'medium' ? 'warning' : 'neutral'}>
-                {row.severity}
+              <Badge
+                tone={
+                  row.severity === 'high' ? 'danger' : row.severity === 'medium' ? 'warning' : 'neutral'
+                }
+              >
+                {SEVERITY_LABELS[row.severity]}
               </Badge>
             </article>
           ))
