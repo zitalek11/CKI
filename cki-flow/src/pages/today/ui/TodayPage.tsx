@@ -26,7 +26,7 @@ export function TodayPage() {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Badge tone="accent">Stages 2–6 live</Badge>
+          <Badge tone="accent">Stages 1–13 MVP</Badge>
           <Button variant="ghost" size="sm" onClick={() => void resetDemoData()}>
             Reset demo
           </Button>

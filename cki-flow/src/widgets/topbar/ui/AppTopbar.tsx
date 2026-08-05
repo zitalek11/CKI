@@ -1,6 +1,7 @@
 import { Bell, Command, Moon, PanelLeft, Search, Sun } from 'lucide-react'
 import { APP_VERSION } from '@/shared/config/navigation'
 import { Button } from '@/shared/ui/button'
+import { usePaletteStore } from '@/features/command-palette/model/palette-store'
 import { useShellStore } from '@/features/shell/model/shell-store'
 import { useThemeStore } from '@/features/theme/model/theme-store'
 import { useWorkspaceStore } from '@/features/workspace/model/workspace-store'
@@ -10,6 +11,7 @@ export function AppTopbar() {
   const mode = useThemeStore((s) => s.mode)
   const cycleMode = useThemeStore((s) => s.cycleMode)
   const summary = useWorkspaceStore((s) => s.summary)
+  const togglePalette = usePaletteStore((s) => s.toggle)
 
   return (
     <header className="flex h-12 shrink-0 items-center gap-2 border-b border-[var(--color-border-subtle)] bg-[var(--color-bg-surface)] px-3">
@@ -33,7 +35,12 @@ export function AppTopbar() {
           Search
           <kbd className="rounded border border-[var(--color-border-subtle)] px-1 text-[10px]">⌘P</kbd>
         </Button>
-        <Button variant="ghost" size="sm" className="gap-1.5 text-[var(--color-text-secondary)]" disabled>
+        <Button
+          variant="ghost"
+          size="sm"
+          className="gap-1.5 text-[var(--color-text-secondary)]"
+          onClick={() => togglePalette()}
+        >
           <Command className="h-3.5 w-3.5" />
           Commands
           <kbd className="rounded border border-[var(--color-border-subtle)] px-1 text-[10px]">⌘K</kbd>

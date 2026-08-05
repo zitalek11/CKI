@@ -12,16 +12,20 @@
 | **4** | Основные сущности + demo seed | **done** |
 | **5** | Автогенерация WorkItems из User Story | **done** |
 | **6** | Workflow Engine (templates/versions/apply) | **done** |
-| **7** | Dependency Engine (cycle + ready/blocked) | **done (core)** |
-| **8** | Planning Engine | **done (calendar + FS schedule + sprint commit)** |
-| **9** | Capacity Engine | **done (demand + supply)** |
-| **10** | Основные экраны по UX | partial (Today/Backlog/Templates/Load/Sprint) |
-| **11** | Analytics | pending |
-| **12** | Import / Export | pending |
-| **13** | UI polish | pending |
-| **14** | macOS `.dmg` сборка | pending |
+| **7** | Dependency Engine (cycle + ready/blocked) | **done** |
+| **8** | Planning Engine | **done** |
+| **9** | Capacity Engine (demand + supply) | **done** |
+| **10** | Основные экраны по UX | **done** |
+| **11** | Analytics | **done** |
+| **12** | Import / Export | **done** |
+| **13** | UI polish (Command Palette, settings) | **done (core)** |
+| **14** | macOS `.dmg` сборка | pending (requires macOS builder) |
 
-## Архитектура слоёв (после этапа 2–3)
+## Рабочие экраны
+
+Today · Quarter · Sprint · Backlog · Board · Roadmap · Releases · Load · Risks · Analytics · Templates · Settings
+
+## Архитектура слоёв
 
 ```
 Presentation (React / FSD pages-widgets-features)
@@ -33,24 +37,10 @@ Domain (entities, rules, engines — pure)
 Infrastructure (storage adapters, seed, unit of work)
 ```
 
-StoragePort позволяет заменить LocalStorage → Tauri FS / HTTP без переписывания сервисов.
+## Следующие улучшения (после MVP)
 
-## Правила
-
-1. Не переходить к следующему этапу, пока текущий не собран и проверен.
-2. Бизнес-логика — вне React (`src/domain`, `src/application`).
-3. Zustand — модульные store (`theme`, `shell`, `workspace`).
-4. После этапа: `npm run build` + `npm test`.
-5. Следующий фокус: Planning Engine (forecast dates) + Sprint commit UI + supply-side Capacity.
-
-## Definition of Done (этапы 2–7)
-
-- [x] Domain types/enums/errors
-- [x] Workflow apply + hybrid policy
-- [x] Dependency cycle checks + ready/blocked helpers
-- [x] Capacity demand aggregation
-- [x] LocalStorage + Memory storage ports
-- [x] UnitOfWork + Story/Catalog/Bootstrap services
-- [x] Demo seed (product, quarter, sprint, templates, team)
-- [x] UI: create Story → auto WorkItems; Backlog; Templates; Load
-- [x] Unit tests for engines + StoryService
+- DnD на Board (`@dnd-kit`)
+- Story Peek drawer
+- Critical path visualization (React Flow)
+- Tauri FS persistence вместо LocalStorage
+- Native `.dmg` на macOS (`npm run build:dmg`)

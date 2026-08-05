@@ -1,4 +1,5 @@
 import { Outlet } from 'react-router-dom'
+import { CommandPalette } from '@/features/command-palette/ui/CommandPalette'
 import { AppSidebar } from '@/widgets/sidebar/ui/AppSidebar'
 import { AppTopbar } from '@/widgets/topbar/ui/AppTopbar'
 
@@ -12,6 +13,7 @@ export function AppShell() {
           <Outlet />
         </main>
       </div>
+      <CommandPalette />
     </div>
   )
 }

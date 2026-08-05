@@ -16,13 +16,16 @@ Desktop-приложение для управления продуктовой 
 
 ## Статус разработки
 
-Этапы **1–7** (каркас → domain → storage → seed → workflow/auto-tasks → dependency core → capacity demand) — см. [DEVELOPMENT.md](./DEVELOPMENT.md).
+Этапы **1–13** MVP — см. [DEVELOPMENT.md](./DEVELOPMENT.md).  
+Этап 14 (`.dmg`) — на macOS: `npm run build:dmg`.
 
 Уже можно:
 
-- создать User Story с автогенерацией WorkItems и зависимостей из Workflow Template;
-- смотреть Backlog / Templates / Load;
-- хранить данные локально (LocalStorage) с возможностью смены StoragePort.
+- создать User Story → авто WorkItems + deps + forecast;
+- Sprint commit, Board status transitions, Release readiness;
+- Quarter / Roadmap / Load / Risks / Analytics;
+- Command Palette (`⌘K`), Import/Export JSON;
+- локальное хранение (LocalStorage) через StoragePort.
 
 ---
 

@@ -1,16 +1,14 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { AppShell } from '@/app/layouts/AppShell'
+import { AnalyticsPage } from '@/pages/analytics/ui/AnalyticsPage'
 import { BacklogPage } from '@/pages/backlog/ui/BacklogPage'
+import { BoardPage } from '@/pages/board/ui/BoardPage'
 import { LoadPage } from '@/pages/load/ui/LoadPage'
-import {
-  AnalyticsPage,
-  BoardPage,
-  QuarterPage,
-  ReleasesPage,
-  RisksPage,
-  RoadmapPage,
-  SettingsPage,
-} from '@/pages/placeholders'
+import { QuarterPage } from '@/pages/quarter/ui/QuarterPage'
+import { ReleasesPage } from '@/pages/releases/ui/ReleasesPage'
+import { RisksPage } from '@/pages/risks/ui/RisksPage'
+import { RoadmapPage } from '@/pages/roadmap/ui/RoadmapPage'
+import { SettingsPage } from '@/pages/settings/ui/SettingsPage'
 import { SprintPage } from '@/pages/sprint/ui/SprintPage'
 import { TemplatesPage } from '@/pages/templates/ui/TemplatesPage'
 import { TodayPage } from '@/pages/today/ui/TodayPage'
