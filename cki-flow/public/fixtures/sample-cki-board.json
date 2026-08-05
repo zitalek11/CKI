@@ -1,0 +1,289 @@
+{
+  "format": "cki-board-export",
+  "formatVersion": 1,
+  "notes": [
+    "Пример импорта существующей доски ЦКИ для Migration Wizard"
+  ],
+  "people": [
+    { "displayName": "Анна PM", "roleHint": "PM" },
+    { "displayName": "Борис BA", "roleHint": "БА" },
+    { "displayName": "Светлана SA", "roleHint": "СА" },
+    { "displayName": "Дмитрий BE", "roleHint": "ВР" },
+    { "displayName": "Елена FE", "roleHint": "FE" },
+    { "displayName": "Игорь QA", "roleHint": "QA" },
+    { "displayName": "Мария DevOps", "roleHint": "DevOps" },
+    { "displayName": "Олег Designer", "roleHint": "Designer" }
+  ],
+  "quarters": [
+    {
+      "key": "2026-Q1",
+      "year": 2026,
+      "index": 1,
+      "startDate": "2026-01-01",
+      "endDate": "2026-03-31"
+    },
+    {
+      "key": "2026-Q2",
+      "year": 2026,
+      "index": 2,
+      "startDate": "2026-04-01",
+      "endDate": "2026-06-30"
+    },
+    {
+      "key": "2026-Q3",
+      "year": 2026,
+      "index": 3,
+      "startDate": "2026-07-01",
+      "endDate": "2026-09-30"
+    }
+  ],
+  "sprints": [
+    {
+      "name": "Sprint 1",
+      "quarterKey": "2026-Q3",
+      "startDate": "2026-07-01",
+      "endDate": "2026-07-14"
+    },
+    {
+      "name": "Sprint 2",
+      "quarterKey": "2026-Q3",
+      "startDate": "2026-07-15",
+      "endDate": "2026-07-28"
+    },
+    {
+      "name": "Sprint 3",
+      "quarterKey": "2026-Q3",
+      "startDate": "2026-07-29",
+      "endDate": "2026-08-11"
+    },
+    {
+      "name": "Sprint 4",
+      "quarterKey": "2026-Q3",
+      "startDate": "2026-08-12",
+      "endDate": "2026-08-25"
+    }
+  ],
+  "initiatives": [
+    {
+      "key": "INI-1",
+      "title": "Квартальная отчётность ЦКИ",
+      "quarterKey": "2026-Q3",
+      "outcome": "Еженедельный отчёт собирается за 1 день"
+    },
+    {
+      "key": "INI-2",
+      "title": "Прозрачность загрузки команд",
+      "quarterKey": "2026-Q3",
+      "outcome": "Capacity виден на уровне ролей"
+    },
+    {
+      "key": "INI-3",
+      "title": "Миграция бэклога с доски",
+      "quarterKey": "2026-Q3",
+      "outcome": "Бэклог перенесён без ручного ввода"
+    }
+  ],
+  "epics": [
+    {
+      "key": "EPIC-1",
+      "title": "Сбор метрик поставки",
+      "initiativeKey": "INI-1"
+    },
+    {
+      "key": "EPIC-2",
+      "title": "Дашборд квартала",
+      "initiativeKey": "INI-1"
+    },
+    {
+      "key": "EPIC-3",
+      "title": "Модель capacity",
+      "initiativeKey": "INI-2"
+    },
+    {
+      "key": "EPIC-4",
+      "title": "Migration Wizard",
+      "initiativeKey": "INI-3"
+    }
+  ],
+  "stories": [
+    {
+      "key": "CKI-101",
+      "title": "Собрать источники метрик отчётности",
+      "storyType": "feature",
+      "status": "in_progress",
+      "epicKey": "EPIC-1",
+      "initiativeKey": "INI-1",
+      "sprintName": "Sprint 1",
+      "quarterKey": "2026-Q3",
+      "releaseKey": "REL-2026.3",
+      "ownerName": "Борис BA",
+      "assigneeHints": ["БА"],
+      "stageHints": ["В работе"],
+      "storyPoints": 5
+    },
+    {
+      "key": "CKI-102",
+      "title": "Описать модель еженедельного отчёта",
+      "storyType": "documentation",
+      "status": "ready",
+      "epicKey": "EPIC-1",
+      "initiativeKey": "INI-1",
+      "sprintName": "Sprint 1",
+      "quarterKey": "2026-Q3",
+      "releaseKey": "REL-2026.3",
+      "ownerName": "Светлана SA",
+      "assigneeHints": ["СА"],
+      "storyPoints": 3
+    },
+    {
+      "key": "CKI-103",
+      "title": "API агрегации метрик квартала",
+      "storyType": "feature",
+      "status": "ready",
+      "epicKey": "EPIC-2",
+      "initiativeKey": "INI-1",
+      "sprintName": "Sprint 2",
+      "quarterKey": "2026-Q3",
+      "releaseKey": "REL-2026.3",
+      "ownerName": "Дмитрий BE",
+      "assigneeHints": ["ВР"],
+      "storyPoints": 8
+    },
+    {
+      "key": "CKI-104",
+      "title": "UI дашборда квартальных целей",
+      "storyType": "feature",
+      "status": "ready",
+      "epicKey": "EPIC-2",
+      "initiativeKey": "INI-1",
+      "sprintName": "Sprint 2",
+      "quarterKey": "2026-Q3",
+      "releaseKey": "REL-2026.3",
+      "ownerName": "Елена FE",
+      "assigneeHints": ["FE"],
+      "storyPoints": 5
+    },
+    {
+      "key": "CKI-105",
+      "title": "Расчёт demand по ролям",
+      "storyType": "feature",
+      "status": "ready",
+      "epicKey": "EPIC-3",
+      "initiativeKey": "INI-2",
+      "sprintName": "Sprint 3",
+      "quarterKey": "2026-Q3",
+      "ownerName": "Дмитрий BE",
+      "assigneeHints": ["ВР"],
+      "storyPoints": 5
+    },
+    {
+      "key": "CKI-106",
+      "title": "Экран загрузки команды",
+      "storyType": "feature",
+      "status": "ready",
+      "epicKey": "EPIC-3",
+      "initiativeKey": "INI-2",
+      "sprintName": "Sprint 3",
+      "quarterKey": "2026-Q3",
+      "ownerName": "Елена FE",
+      "assigneeHints": ["FE"],
+      "storyPoints": 5
+    },
+    {
+      "key": "CKI-107",
+      "title": "JSON-адаптер Migration Wizard",
+      "storyType": "feature",
+      "status": "done",
+      "epicKey": "EPIC-4",
+      "initiativeKey": "INI-3",
+      "sprintName": "Sprint 1",
+      "quarterKey": "2026-Q3",
+      "releaseKey": "REL-2026.3",
+      "ownerName": "Дмитрий BE",
+      "assigneeHints": ["BE"],
+      "storyPoints": 3
+    },
+    {
+      "key": "CKI-108",
+      "title": "PDF-эвристики распознавания доски",
+      "storyType": "spike",
+      "status": "in_review",
+      "epicKey": "EPIC-4",
+      "initiativeKey": "INI-3",
+      "sprintName": "Sprint 2",
+      "quarterKey": "2026-Q3",
+      "ownerName": "Светлана SA",
+      "assigneeHints": ["SA"],
+      "storyPoints": 2
+    },
+    {
+      "key": "CKI-109",
+      "title": "Проверка корректности перед импортом",
+      "storyType": "feature",
+      "status": "ready",
+      "epicKey": "EPIC-4",
+      "initiativeKey": "INI-3",
+      "sprintName": "Sprint 3",
+      "quarterKey": "2026-Q3",
+      "ownerName": "Игорь QA",
+      "assigneeHints": ["QA"],
+      "storyPoints": 3
+    },
+    {
+      "key": "CKI-110",
+      "title": "Журнал импорта и предупреждения",
+      "storyType": "feature",
+      "status": "ready",
+      "epicKey": "EPIC-4",
+      "initiativeKey": "INI-3",
+      "sprintName": "Sprint 4",
+      "quarterKey": "2026-Q3",
+      "ownerName": "Анна PM",
+      "assigneeHints": ["PM"],
+      "storyPoints": 2
+    }
+  ],
+  "dependencies": [
+    {
+      "fromStoryKey": "CKI-101",
+      "toStoryKey": "CKI-102",
+      "kind": "FS"
+    },
+    {
+      "fromStoryKey": "CKI-102",
+      "toStoryKey": "CKI-103",
+      "kind": "FS"
+    },
+    {
+      "fromStoryKey": "CKI-103",
+      "toStoryKey": "CKI-104",
+      "kind": "FS"
+    },
+    {
+      "fromStoryKey": "CKI-105",
+      "toStoryKey": "CKI-106",
+      "kind": "FS"
+    },
+    {
+      "fromStoryKey": "CKI-107",
+      "toStoryKey": "CKI-108",
+      "kind": "FS"
+    },
+    {
+      "fromStoryKey": "UNKNOWN-1",
+      "toStoryKey": "CKI-110",
+      "kind": "FS",
+      "unresolved": true,
+      "reviewReason": "Источник зависимости не найден на доске"
+    }
+  ],
+  "releases": [
+    {
+      "key": "REL-2026.3",
+      "name": "Release 2026.3",
+      "versionName": "2026.3.0",
+      "plannedDate": "2026-09-15",
+      "storyKeys": ["CKI-101", "CKI-102", "CKI-103", "CKI-104", "CKI-107"]
+    }
+  ]
+}

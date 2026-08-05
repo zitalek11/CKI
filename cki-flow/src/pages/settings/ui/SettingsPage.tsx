@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { appServices } from '@/application/composition'
 import { useThemeStore } from '@/features/theme/model/theme-store'
 import { useWorkspaceStore } from '@/features/workspace/model/workspace-store'
@@ -60,6 +61,21 @@ export function SettingsPage() {
                 {value}
               </Button>
             ))}
+          </div>
+        </section>
+
+        <section className="rounded-[var(--radius-md)] border border-[var(--color-border-subtle)] bg-[var(--color-bg-surface)] p-4">
+          <h2 className="text-[13px] font-semibold">Migration</h2>
+          <p className="mt-1 text-[12px] text-[var(--color-text-secondary)]">
+            Перенос существующей доски ЦКИ (PDF / JSON) через пошаговый мастер.
+          </p>
+          <div className="mt-2">
+            <Link
+              to="/system/migration"
+              className="inline-flex h-8 items-center rounded-[var(--radius-sm)] bg-[var(--color-accent)] px-3 text-[13px] font-medium text-white hover:brightness-105"
+            >
+              Open Migration Wizard
+            </Link>
           </div>
         </section>
 

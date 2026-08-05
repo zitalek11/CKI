@@ -47,6 +47,7 @@ export function CommandPalette() {
       { id: 'risks', label: 'Go to Risks', run: () => navigate('/insights/risks') },
       { id: 'analytics', label: 'Go to Analytics', run: () => navigate('/insights/analytics') },
       { id: 'templates', label: 'Go to Templates', run: () => navigate('/system/templates') },
+      { id: 'migration', label: 'Open Migration Wizard', run: () => navigate('/system/migration') },
       { id: 'settings', label: 'Go to Settings', run: () => navigate('/system/settings') },
       { id: 'theme', label: 'Cycle theme', run: () => cycleMode() },
       { id: 'reset', label: 'Reset demo data', run: () => void resetDemoData() },

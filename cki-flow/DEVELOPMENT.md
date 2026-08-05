@@ -19,11 +19,12 @@
 | **11** | Analytics | **done** |
 | **12** | Import / Export | **done** |
 | **13** | UI polish (Command Palette, settings) | **done (core)** |
+| **13.5** | Migration Wizard (PDF/JSON → domain) | **done** |
 | **14** | macOS `.dmg` сборка | pending (requires macOS builder) |
 
 ## Рабочие экраны
 
-Today · Quarter · Sprint · Backlog · Board · Roadmap · Releases · Load · Risks · Analytics · Templates · Settings
+Today · Quarter · Sprint · Backlog · Board · Roadmap · Releases · Load · Risks · Analytics · Templates · Migration · Settings
 
 ## Архитектура слоёв
 

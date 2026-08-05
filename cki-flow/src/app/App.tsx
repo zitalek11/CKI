@@ -4,6 +4,7 @@ import { AnalyticsPage } from '@/pages/analytics/ui/AnalyticsPage'
 import { BacklogPage } from '@/pages/backlog/ui/BacklogPage'
 import { BoardPage } from '@/pages/board/ui/BoardPage'
 import { LoadPage } from '@/pages/load/ui/LoadPage'
+import { MigrationPage } from '@/pages/migration/ui/MigrationPage'
 import { QuarterPage } from '@/pages/quarter/ui/QuarterPage'
 import { ReleasesPage } from '@/pages/releases/ui/ReleasesPage'
 import { RisksPage } from '@/pages/risks/ui/RisksPage'
@@ -28,6 +29,7 @@ export function App() {
         <Route path="insights/risks" element={<RisksPage />} />
         <Route path="insights/analytics" element={<AnalyticsPage />} />
         <Route path="system/templates" element={<TemplatesPage />} />
+        <Route path="system/migration" element={<MigrationPage />} />
         <Route path="system/settings" element={<SettingsPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>

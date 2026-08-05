@@ -2,6 +2,7 @@ import type { LucideIcon } from 'lucide-react'
 import {
   Activity,
   CalendarRange,
+  FileInput,
   Gauge,
   GitBranch,
   Inbox,
@@ -65,6 +66,7 @@ export const NAV_GROUPS: NavGroup[] = [
     label: 'System',
     items: [
       { id: 'templates', label: 'Templates', path: '/system/templates', icon: Workflow },
+      { id: 'migration', label: 'Migration', path: '/system/migration', icon: FileInput },
       { id: 'settings', label: 'Settings', path: '/system/settings', icon: Settings },
     ],
   },

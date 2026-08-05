@@ -1,3 +1,5 @@
+import { MigrationApplyService } from '@/application/migration/apply-service'
+import { MigrationEngine } from '@/application/migration/engine'
 import { AnalyticsService } from '@/application/services/analytics-service'
 import { BoardService } from '@/application/services/board-service'
 import { BootstrapService } from '@/application/services/bootstrap-service'
@@ -8,6 +10,7 @@ import { ReleaseService } from '@/application/services/release-service'
 import { RoadmapService } from '@/application/services/roadmap-service'
 import { SprintService } from '@/application/services/sprint-service'
 import { StoryService } from '@/application/services/story-service'
+import { createMigrationAdapters } from '@/infrastructure/migration/adapters'
 import { LocalStorageAdapter } from '@/infrastructure/storage/local-storage-adapter'
 import { LocalUnitOfWork } from '@/infrastructure/repositories/local-unit-of-work'
 
@@ -26,6 +29,8 @@ export const appServices = {
   roadmap: new RoadmapService(uow),
   analytics: new AnalyticsService(uow),
   io: new IoService(uow),
+  migration: new MigrationEngine(createMigrationAdapters()),
+  migrationApply: new MigrationApplyService(uow),
 }
 
 export type AppServices = typeof appServices
