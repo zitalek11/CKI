@@ -49,6 +49,15 @@ export function SettingsPage() {
 
       <div className="grid max-w-2xl gap-4">
         <section className="rounded-[var(--radius-md)] border border-[var(--color-border-subtle)] bg-[var(--color-bg-surface)] p-4">
+          <h2 className="text-[13px] font-semibold">Desktop build</h2>
+          <p className="mt-1 text-[12px] text-[var(--color-text-secondary)]">
+            macOS <code className="text-[11px]">.dmg</code>: локально{' '}
+            <code className="text-[11px]">npm run build:dmg</code>, либо GitHub Actions → «CKI Flow —
+            macOS DMG». Подробности в <code className="text-[11px]">cki-flow/BUILD.md</code>.
+          </p>
+        </section>
+
+        <section className="rounded-[var(--radius-md)] border border-[var(--color-border-subtle)] bg-[var(--color-bg-surface)] p-4">
           <h2 className="text-[13px] font-semibold">Theme</h2>
           <div className="mt-2 flex gap-2">
             {(['light', 'dark', 'system'] as const).map((value) => (

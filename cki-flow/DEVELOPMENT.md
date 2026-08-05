@@ -20,7 +20,7 @@
 | **12** | Import / Export | **done** |
 | **13** | UI polish (Command Palette, settings) | **done (core)** |
 | **13.5** | Migration Wizard (PDF/JSON → domain) | **done** |
-| **14** | macOS `.dmg` сборка | pending (requires macOS builder) |
+| **14** | macOS `.dmg` сборка | **ready** — конфиг + CI; артефакт на macOS / Actions |
 
 ## Рабочие экраны
 
@@ -38,10 +38,17 @@ Domain (entities, rules, engines — pure)
 Infrastructure (storage adapters, seed, unit of work)
 ```
 
+## Сборка DMG (этап 14)
+
+См. [`BUILD.md`](./BUILD.md).
+
+- Локально (macOS): `npm run build:dmg`
+- CI: Actions → **CKI Flow — macOS DMG** (`workflow_dispatch`) или тег `cki-flow-v*`
+
 ## Следующие улучшения (после MVP)
 
 - DnD на Board (`@dnd-kit`)
 - Story Peek drawer
 - Critical path visualization (React Flow)
 - Tauri FS persistence вместо LocalStorage
-- Native `.dmg` на macOS (`npm run build:dmg`)
+- Apple Developer ID signing + notarization для публичной раздачи

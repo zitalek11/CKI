@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "CKI Flow — product delivery workspace"
 authors = ["CKI"]
 edition = "2021"
+rust-version = "1.85"
 
 [lib]
 name = "cki_flow_lib"
