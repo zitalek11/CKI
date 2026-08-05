@@ -33,6 +33,7 @@
 | 09 | [Архитектура системы](./09-system-architecture.md) | Логическая архитектура, модули, масштабируемость |
 | 10 | [Альтернативы и решение](./10-alternatives-decision.md) | Сравнение архитектур, обоснование выбора |
 | DM | [**Domain Model (нормативная спецификация)**](./domain/README.md) | Полная предметная модель: сущности, поля, UML, engines, события, правила |
+| UX | [**UX Design**](./ux/README.md) | IA, сценарии, экраны, Command Palette, Design System, journey (без кода) |
 
 ---
 
