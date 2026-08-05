@@ -82,20 +82,28 @@ export const useReportStore = create<ReportState>()(
       report: () => get().library[get().activeId],
 
       hydrate: async () => {
-        const library = await loadLibrary()
-        const fallback = Object.keys(library).sort().at(-1)!
-        const activeIdCandidate = await loadActiveId(fallback)
-        const activeId = library[activeIdCandidate] ? activeIdCandidate : fallback
-        const active = library[activeId]
-        set((state) => {
-          state.library = library
-          state.activeId = activeId
-          state.previous = getPrevious(library, active)
-          state.issues = validateReport(active)
-          state.hydrated = true
-        })
-        await persistActiveId(activeId)
-        await persistLibrary(library)
+        try {
+          const library = await loadLibrary()
+          const fallback = Object.keys(library).sort().at(-1)!
+          const activeIdCandidate = await loadActiveId(fallback)
+          const activeId = library[activeIdCandidate] ? activeIdCandidate : fallback
+          const active = library[activeId]
+          set((state) => {
+            state.library = library
+            state.activeId = activeId
+            state.previous = getPrevious(library, active)
+            state.issues = validateReport(active)
+            state.hydrated = true
+          })
+          void persistActiveId(activeId)
+          void persistLibrary(library)
+        } catch (error) {
+          console.error('hydrate failed', error)
+          // Always unlock UI even if FS fails
+          set((state) => {
+            state.hydrated = true
+          })
+        }
       },
 
       setMode: (mode) => set({ mode }),

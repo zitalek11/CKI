@@ -1,5 +1,3 @@
-import { BaseDirectory, exists, mkdir, readDir, readTextFile, writeTextFile } from '@tauri-apps/plugin-fs'
-import { save } from '@tauri-apps/plugin-dialog'
 import type { WeeklyReport } from '@/core/model/types'
 import seed from '../../../resources/reports/2026-07-23.json'
 
@@ -13,7 +11,16 @@ export function isTauri(): boolean {
   return typeof window !== 'undefined' && '__TAURI_INTERNALS__' in window
 }
 
+async function fsApi() {
+  return import('@tauri-apps/plugin-fs')
+}
+
+async function dialogApi() {
+  return import('@tauri-apps/plugin-dialog')
+}
+
 async function ensureAppDirs(): Promise<void> {
+  const { BaseDirectory, exists, mkdir } = await fsApi()
   if (!(await exists(APP_DIR, { baseDir: BaseDirectory.Document }))) {
     await mkdir(APP_DIR, { baseDir: BaseDirectory.Document, recursive: true })
   }
@@ -28,6 +35,7 @@ function seedLibrary(): Record<string, WeeklyReport> {
 }
 
 async function loadLibraryFromFs(): Promise<Record<string, WeeklyReport>> {
+  const { BaseDirectory, readDir, readTextFile } = await fsApi()
   await ensureAppDirs()
   const entries = await readDir(REPORTS_DIR, { baseDir: BaseDirectory.Document })
   const library: Record<string, WeeklyReport> = {}
@@ -50,6 +58,7 @@ async function loadLibraryFromFs(): Promise<Record<string, WeeklyReport>> {
 }
 
 async function persistLibraryToFs(library: Record<string, WeeklyReport>): Promise<void> {
+  const { BaseDirectory, writeTextFile } = await fsApi()
   await ensureAppDirs()
   for (const report of Object.values(library)) {
     await writeTextFile(`${REPORTS_DIR}/${report.meta.id}.json`, JSON.stringify(report, null, 2), {
@@ -98,6 +107,7 @@ export async function persistLibrary(library: Record<string, WeeklyReport>): Pro
 export async function loadActiveId(fallback: string): Promise<string> {
   if (isTauri()) {
     try {
+      const { BaseDirectory, exists, readTextFile } = await fsApi()
       await ensureAppDirs()
       if (await exists(META_FILE, { baseDir: BaseDirectory.Document })) {
         const raw = await readTextFile(META_FILE, { baseDir: BaseDirectory.Document })
@@ -115,6 +125,7 @@ export async function persistActiveId(activeId: string): Promise<void> {
   localStorage.setItem(ACTIVE_KEY, activeId)
   if (!isTauri()) return
   try {
+    const { BaseDirectory, writeTextFile } = await fsApi()
     await ensureAppDirs()
     await writeTextFile(META_FILE, JSON.stringify({ activeId }, null, 2), {
       baseDir: BaseDirectory.Document,
@@ -136,6 +147,8 @@ export async function exportHtmlToDisk(defaultName: string, html: string): Promi
     return defaultName
   }
 
+  const { save } = await dialogApi()
+  const { writeTextFile } = await fsApi()
   const path = await save({
     defaultPath: defaultName,
     filters: [{ name: 'HTML', extensions: ['html'] }],
@@ -158,6 +171,8 @@ export async function exportJsonToDisk(defaultName: string, report: WeeklyReport
     return defaultName
   }
 
+  const { save } = await dialogApi()
+  const { writeTextFile } = await fsApi()
   const path = await save({
     defaultPath: defaultName,
     filters: [{ name: 'JSON', extensions: ['json'] }],

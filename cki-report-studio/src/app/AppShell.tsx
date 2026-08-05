@@ -132,13 +132,13 @@ export function AppShell() {
         />
       </header>
 
-      <div className="grid min-h-0 flex-1 gap-3 lg:grid-cols-[380px_1fr]">
-        <Panel className="min-h-0 overflow-hidden p-3">
+      <div className="grid min-h-0 flex-1 gap-3 lg:grid-cols-[380px_1fr] lg:grid-rows-1">
+        <Panel className="min-h-0 overflow-hidden p-3 lg:max-h-full">
           {mode === 'editor' && <EditorPanel />}
           {mode === 'wizard' && <WizardPanel onExport={() => void doExport()} />}
           {mode === 'history' && <HistoryPanel />}
         </Panel>
-        <div className="min-h-0">
+        <div className="h-[min(70vh,720px)] min-h-[520px] lg:h-auto lg:min-h-0">
           {mode === 'wizard' && wizardStep === 8 ? (
             <div className="flex h-full items-center justify-center rounded-2xl border border-dashed border-white/15 text-sm text-[#8b8bb8]">
               Предпросмотр открыт в панели мастера слева
