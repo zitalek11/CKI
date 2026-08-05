@@ -28,4 +28,5 @@ Optional MOEX Passport credentials for protected endpoints: `MOEX_USER`, `MOEX_P
 
 ## Docs
 
-See [ROADMAP.md](./ROADMAP.md) for development stages.
+- Portal roadmap: [ROADMAP.md](./ROADMAP.md)
+- **CKI Flow** — архитектура системы управления продуктовой разработкой команды ЦКИ (этап проектирования, без кода): [`docs/cki-flow/`](./docs/cki-flow/)
