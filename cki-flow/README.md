@@ -7,6 +7,7 @@ Desktop-приложение для управления продуктовой 
 
 Документы продукта:
 
+- **[Руководство пользователя](./USER_GUIDE.md)** — как пользоваться приложением после установки
 - [Архитектура](../docs/cki-flow/README.md)
 - [Domain Model](../docs/cki-flow/domain/README.md)
 - [UX Design](../docs/cki-flow/ux/README.md)
